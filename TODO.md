@@ -17,3 +17,13 @@ Vanilla+ - Developer's Pick
 
 TO BE ADDED - 
 - Contributions
+- Display Types (Show Case Page)
+ - Photo
+ - Gallery (Photos - Plural)
+ - Videos
+ - Code Fencing
+ - Demo Games
+- Dark/Light Mode
+- Heart/Likes for Display Types (Code Fencing Excluded)
+- Quotes
+- Time Zone, Availability, Experience, Philosophy
