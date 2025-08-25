@@ -10,13 +10,13 @@
   - History & Past
   - Philosophy
   - Availability (+ Time Zone)
+  - Socials
 - **Publications**
   - Open Source
   - Showcase *(Best of my work)*
   - Projects *(Most projects I have worked on)*
   - Up-And-Coming Publications
   - Other Specialisations
-- **Contact**
 
 ---
 
@@ -44,3 +44,12 @@
 - Code Fencing
 - Demo Games
 - Noding *(Serhelius & Valhalla)*
+
+### Social Types
+- X
+- Discord
+- Email (DON'T CONTACT)
+- Developer Forum
+- Roblox
+- Youtube
+- My Discord Server
