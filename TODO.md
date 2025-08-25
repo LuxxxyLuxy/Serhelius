@@ -1,22 +1,25 @@
-# Pages
-- Front (OPENING PAGE)
-- Back (BACKGROUND PAGE)
-- About Me
- - Total Contributions
- - Specialisations
- - Experiences
- - History & Past
- - Philosophy
- - Availability (+ Time Zone)
-- Publications
- - Open Source
- - Showcase (Best of my work)
-  - 
- - Projects (Most projects I have worked on)
- - Other Specialisations
-- Contact
+# Portfolio Structure
 
-# Themes
+## Pages
+- **Front** (Opening Page)  
+- **Back** (Background Page)  
+- **About Me**
+  - Total Contributions
+  - Specialisations
+  - Experiences
+  - History & Past
+  - Philosophy
+  - Availability (+ Time Zone)
+- **Publications**
+  - Open Source
+  - Showcase *(Best of my work)*
+  - Projects *(Most projects I have worked on)*
+  - Other Specialisations
+- **Contact**
+
+---
+
+## Themes
 - Legacy
 - Dark
 - Light
@@ -24,14 +27,19 @@
 - Valhalla
 - Serhelius
 
-# Misc
-- Heart/Likes for Publications (Code Fencing Excluded)
+---
+
+## Misc
+- Likes / Hearts for Publications *(Code fencing excluded)*
 - Quotes
 
-# Compatibility & Feature Support
-- Display Types
- - Videos
- - Photos
- - (Code) Fencing
- - Demo Games
- - Noding (Serhelius & Valhalla)
+---
+
+## Compatibility & Feature Support
+
+### Display Types
+- Videos
+- Photos
+- Code Fencing
+- Demo Games
+- Noding *(Serhelius & Valhalla)*
