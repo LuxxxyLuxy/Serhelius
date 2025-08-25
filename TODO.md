@@ -1,29 +1,37 @@
-Pages:
-- Front
-- Back
-- Open Source Publications
+# Pages
+- Front (OPENING PAGE)
+- Back (BACKGROUND PAGE)
+- About Me
+ - Total Contributions
+ - Specialisations
+ - Experiences
+ - History & Past
+ - Philosophy
+ - Availability (+ Time Zone)
+- Publications
+ - Open Source
+ - Showcase (Best of my work)
+  - 
+ - Projects (Most projects I have worked on)
+ - Other Specialisations
+- Contact
 
-Legacy - 
-- Front Page
-- Back Page
+# Themes
+- Legacy
+- Dark
+- Light
+- Vanilla
+- Valhalla
+- Serhelius
 
-Vanilla - 
-- Front Page
-- Back Page
-
-Vanilla+ - Developer's Pick
-- Front Page
-- Back Page
-
-TO BE ADDED - 
-- Contributions
-- Display Types (Show Case Page)
- - Photo
- - Gallery (Photos - Plural)
- - Videos
- - Code Fencing
- - Demo Games
-- Dark/Light Mode
-- Heart/Likes for Display Types (Code Fencing Excluded)
+# Misc
+- Heart/Likes for Publications (Code Fencing Excluded)
 - Quotes
-- Time Zone, Availability, Experience, Philosophy
+
+# Compatibility & Feature Support
+- Display Types
+ - Videos
+ - Photos
+ - (Code) Fencing
+ - Demo Games
+ - Noding (Serhelius & Valhalla)
