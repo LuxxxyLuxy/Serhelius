@@ -14,6 +14,7 @@
   - Open Source
   - Showcase *(Best of my work)*
   - Projects *(Most projects I have worked on)*
+  - Up-And-Coming Publications
   - Other Specialisations
 - **Contact**
 
