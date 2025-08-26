@@ -21,9 +21,9 @@
 ---
 
 ## Themes
-- Legacy
 - Dark
 - Light
+- Legacy
 - Vanilla
 - Valhalla
 - Serhelius
