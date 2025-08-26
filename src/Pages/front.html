@@ -1,1 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Front Page - Theme Framework</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="themes.css">
+    <style>
+        body, html {
+            
+        }
+        #theme-container {
+            
+        }
+    </style>
+</head>
+<body>
+    <div id="theme-container" class="theme-dark">
+        <span>Select a theme to begin!</span>
+    </div>
 
+    <script>
+        const themes = {
+            dark: {
+                class: 'theme-dark',
+                load: function(container) {
+                    container.innerHTML = '<span>Dark theme will go here.</span>';
+                }
+            },
+            light: {
+                class: 'theme-light',
+                load: function(container) {
+                    container.innerHTML = '<span>Light theme will go here.</span>';
+                }
+            },
+            legacy: {
+                class: 'theme-legacy',
+                load: function(container) {
+                    container.innerHTML = '<span>Legacy theme will go here.</span>';
+                }
+            },
+            vanilla: {
+                class: 'theme-vanilla',
+                load: function(container) {
+                    container.innerHTML = '<span>Vanilla theme will go here.</span>';
+                }
+            },
+            valhalla: {
+                class: 'theme-valhalla',
+                load: function(container) {
+                    container.innerHTML = '<span>Valhalla theme will go here.</span>';
+                }
+            },
+            serhelius: {
+                class: 'theme-serhelius',
+                load: function(container) {
+                    container.innerHTML = '<span>Serhelius theme will go here.</span>';
+                }
+            }
+        };
+
+        function setTheme(themeName) {
+            const container = document.getElementById('theme-container');
+            container.className = '';
+            const theme = themes[themeName] || themes['dark'];
+            container.classList.add(theme.class);
+            theme.load(container);
+        }
+
+        function createThemeSelector() {
+            const selector = document.createElement('select');
+            selector.style.position = 'fixed';
+            selector.style.top = '20px';
+            selector.style.right = '20px';
+            selector.style.zIndex = '1000';
+            ['dark', 'light', 'legacy', 'vanilla', 'valhalla', 'serhelius'].forEach(theme => {
+                const option = document.createElement('option');
+                option.value = theme;
+                option.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
+                selector.appendChild(option);
+            });
+            selector.addEventListener('change', (e) => setTheme(e.target.value));
+            document.body.appendChild(selector);
+        }
+
+        window.onload = () => {
+            createThemeSelector();
+            setTheme('dark');
+        };
+    </script>
+</body>
+</html>
