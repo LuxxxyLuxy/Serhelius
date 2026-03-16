@@ -1922,9 +1922,7 @@ example()</code></pre>
   <div id="spotify-panel">
     <iframe
       id="spotify-iframe"
-      src="https://open.spotify.com/embed/playlist/2QdK71A2ig299qaeYiv2nY?utm_source=generator&theme=0"
       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-      loading="lazy"
       title="Now playing">
     </iframe>
   </div>
@@ -2252,6 +2250,10 @@ example()</code></pre>
       cancelAnimationFrame(raf);
       splash.classList.add('leaving');
       mainWrap.classList.add('visible');
+      /* Autoplay Spotify — set src here so browser user-gesture allows it */
+      const spIframe = document.getElementById('spotify-iframe');
+      if (spIframe) spIframe.src = 'https://open.spotify.com/embed/playlist/2QdK71A2ig299qaeYiv2nY?utm_source=generator&theme=0&autoplay=1';
+      sfx('enter');
       setTimeout(() => { splash.style.display = 'none'; document.body.style.overflowY = ''; }, 850);
     }
     document.addEventListener('keydown', dismiss);
@@ -2442,6 +2444,177 @@ example()</code></pre>
   });
 
   /* ════════════════════════════════════════════════
+     SOUND EFFECTS  (Web Audio API — no files needed)
+  ════════════════════════════════════════════════ */
+  const _sfxCtx = (() => {
+    let ctx = null;
+    return () => {
+      if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      return ctx;
+    };
+  })();
+
+  function sfx(type) {
+    try {
+      const ac  = _sfxCtx();
+      const now = ac.currentTime;
+
+      const osc  = ac.createOscillator();
+      const gain = ac.createGain();
+      osc.connect(gain);
+      gain.connect(ac.destination);
+
+      switch (type) {
+
+        /* General UI click — short, crisp tick */
+        case 'click':
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(900, now);
+          osc.frequency.exponentialRampToValueAtTime(400, now + .06);
+          gain.gain.setValueAtTime(.18, now);
+          gain.gain.exponentialRampToValueAtTime(.0001, now + .07);
+          osc.start(now); osc.stop(now + .07);
+          break;
+
+        /* Tab switch — slightly higher, airy */
+        case 'tab':
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(1100, now);
+          osc.frequency.exponentialRampToValueAtTime(700, now + .08);
+          gain.gain.setValueAtTime(.12, now);
+          gain.gain.exponentialRampToValueAtTime(.0001, now + .1);
+          osc.start(now); osc.stop(now + .1);
+          break;
+
+        /* Like / heart — two-tone pop */
+        case 'like': {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(600, now);
+          osc.frequency.setValueAtTime(900, now + .05);
+          gain.gain.setValueAtTime(.14, now);
+          gain.gain.exponentialRampToValueAtTime(.0001, now + .13);
+          osc.start(now); osc.stop(now + .13);
+          break;
+        }
+
+        /* Unlike — reverse two-tone */
+        case 'unlike':
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(500, now);
+          osc.frequency.exponentialRampToValueAtTime(300, now + .1);
+          gain.gain.setValueAtTime(.1, now);
+          gain.gain.exponentialRampToValueAtTime(.0001, now + .11);
+          osc.start(now); osc.stop(now + .11);
+          break;
+
+        /* Copy button — clipboard tick */
+        case 'copy':
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(1400, now);
+          osc.frequency.exponentialRampToValueAtTime(800, now + .05);
+          gain.gain.setValueAtTime(.07, now);
+          gain.gain.exponentialRampToValueAtTime(.0001, now + .06);
+          osc.start(now); osc.stop(now + .06);
+          break;
+
+        /* Spotify panel open — soft rising chime */
+        case 'open':
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(500, now);
+          osc.frequency.exponentialRampToValueAtTime(900, now + .15);
+          gain.gain.setValueAtTime(.1, now);
+          gain.gain.exponentialRampToValueAtTime(.0001, now + .2);
+          osc.start(now); osc.stop(now + .2);
+          break;
+
+        /* Spotify panel close — soft falling */
+        case 'close':
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(450, now + .12);
+          gain.gain.setValueAtTime(.09, now);
+          gain.gain.exponentialRampToValueAtTime(.0001, now + .14);
+          osc.start(now); osc.stop(now + .14);
+          break;
+
+        /* Splash enter — warm low thud + shimmer */
+        case 'enter': {
+          /* thud */
+          const o2 = ac.createOscillator();
+          const g2 = ac.createGain();
+          o2.connect(g2); g2.connect(ac.destination);
+          o2.type = 'sine';
+          o2.frequency.setValueAtTime(120, now);
+          o2.frequency.exponentialRampToValueAtTime(60, now + .3);
+          g2.gain.setValueAtTime(.22, now);
+          g2.gain.exponentialRampToValueAtTime(.0001, now + .35);
+          o2.start(now); o2.stop(now + .35);
+          /* shimmer */
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(2200, now + .05);
+          osc.frequency.exponentialRampToValueAtTime(1400, now + .25);
+          gain.gain.setValueAtTime(.06, now + .05);
+          gain.gain.exponentialRampToValueAtTime(.0001, now + .28);
+          osc.start(now + .05); osc.stop(now + .28);
+          break;
+        }
+
+        /* Hover — barely-there tick, very subtle */
+        case 'hover':
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(1200, now);
+          gain.gain.setValueAtTime(.04, now);
+          gain.gain.exponentialRampToValueAtTime(.0001, now + .03);
+          osc.start(now); osc.stop(now + .03);
+          break;
+
+        default:
+          osc.start(now); osc.stop(now);
+      }
+    } catch(e) { /* audio blocked — silently ignore */ }
+  }
+
+  /* ── Wire up sfx to existing UI elements ── */
+  (function wireSfx() {
+    /* Buttons: nav links, tab buttons, filter buttons, btn-primary/outline */
+    document.addEventListener('click', e => {
+      const t = e.target.closest('a.btn, .filter-btn, .copy-btn, .social-card, #nav .nav-links a, #mobile-menu a, .roblox-link-card, #front-scroll-hint');
+      if (t) sfx('click');
+    });
+
+    /* Tab buttons */
+    document.addEventListener('click', e => {
+      if (e.target.closest('.tab-btn')) sfx('tab');
+    });
+
+    /* Like buttons */
+    const origToggleLike = window.toggleLike;
+    window.toggleLike = function(btn, id) {
+      const wasLiked = btn.classList.contains('liked');
+      origToggleLike(btn, id);
+      sfx(wasLiked ? 'unlike' : 'like');
+    };
+
+    /* Copy button */
+    const origCopyCode = window.copyCode;
+    window.copyCode = function(btn) {
+      origCopyCode(btn);
+      sfx('copy');
+    };
+
+    /* Subtle hover tick on interactive cards — throttled */
+    let lastHover = 0;
+    document.addEventListener('mouseover', e => {
+      const now = Date.now();
+      if (now - lastHover < 80) return;
+      if (e.target.closest('.pub-card, .spec-card, .social-card, .upcoming-item, .stat-cell')) {
+        lastHover = now;
+        sfx('hover');
+      }
+    });
+  })();
+
+  /* ════════════════════════════════════════════════
      SPOTIFY WIDGET
   ════════════════════════════════════════════════ */
   (function () {
@@ -2449,19 +2622,18 @@ example()</code></pre>
     const pill   = document.getElementById('spotify-pill');
     const panel  = document.getElementById('spotify-panel');
 
-    /* Show widget after splash is dismissed */
-    function showWidget() {
-      if (document.getElementById('splash').style.display === 'none' ||
-          document.getElementById('main-wrap').classList.contains('visible')) {
-        widget.classList.add('visible');
-      }
-    }
-
-    /* Poll until main-wrap is visible (i.e. splash dismissed) */
+    /* Poll until main-wrap visible, then show widget + auto-open panel */
     const pollId = setInterval(() => {
       if (document.getElementById('main-wrap').classList.contains('visible')) {
         clearInterval(pollId);
-        setTimeout(() => widget.classList.add('visible'), 600);
+        setTimeout(() => {
+          widget.classList.add('visible');
+          /* Auto-open the player panel */
+          setTimeout(() => {
+            panel.classList.add('open');
+            pill.classList.add('expanded');
+          }, 400);
+        }, 600);
       }
     }, 200);
 
@@ -2470,6 +2642,7 @@ example()</code></pre>
       const isOpen = panel.classList.contains('open');
       panel.classList.toggle('open', !isOpen);
       pill.classList.toggle('expanded', !isOpen);
+      sfx(isOpen ? 'close' : 'open');
     };
 
     /* Keyboard accessibility */
