@@ -741,8 +741,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
       flex-shrink: 0;
+    }
+    .social-card .social-icon svg { display: block; }
+    .social-card .social-info {
+      min-width: 0;
+      flex: 1;
     }
     .social-card .social-info .social-name {
       font-size: 11px;
@@ -750,22 +754,31 @@
       text-transform: uppercase;
       letter-spacing: .08em;
       color: var(--text);
+      margin-bottom: 2px;
     }
     .social-card .social-info .social-handle {
       font-size: 10px;
       color: var(--text-3);
+      word-break: break-all;
+      line-height: 1.5;
     }
     .social-card.no-contact {
-      opacity: .45;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      opacity: .5;
       cursor: not-allowed;
       pointer-events: none;
     }
-    .social-card.no-contact::after {
-      content: 'DO NOT CONTACT';
+    .social-card.no-contact .no-contact-badge {
       font-size: 8px;
       color: var(--red);
-      letter-spacing: .12em;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      border: 1px solid rgba(224,85,85,.4);
+      border-radius: 2px;
+      padding: 2px 7px;
       margin-left: auto;
+      flex-shrink: 0;
     }
 
     /* ═══════════════════════════════════════════════
@@ -1504,31 +1517,34 @@
           <div class="social-icon">💬</div>
           <div class="social-info">
             <div class="social-name">Discord</div>
-            <div class="social-handle">[YOUR_DISCORD_TAG]</div>
+            <div class="social-handle">luxora._</div>
           </div>
         </a>
         <!-- Email — DO NOT CONTACT -->
         <div class="social-card no-contact">
-          <div class="social-icon">✉️</div>
-          <div class="social-info">
-            <div class="social-name">Email</div>
-            <div class="social-handle">[YOUR_EMAIL]</div>
+          <div class="no-contact-row">
+            <div class="social-icon">✉️</div>
+            <div class="social-info">
+              <div class="social-name">Email</div>
+              <div class="social-handle">luxoralexandra2000@gmail.com</div>
+            </div>
           </div>
+          <span class="no-contact-badge">⛔ Do not contact</span>
         </div>
         <!-- Developer Forum -->
-        <a href="[FORUM_URL]" target="_blank" class="social-card">
+        <a href="https://devforum.roblox.com/u/luxoralexandra/summary" target="_blank" class="social-card">
           <div class="social-icon">🛠️</div>
           <div class="social-info">
             <div class="social-name">Dev Forum</div>
-            <div class="social-handle">@[HANDLE]</div>
+            <div class="social-handle">@luxoralexandra</div>
           </div>
         </a>
         <!-- Roblox -->
-        <a href="https://www.roblox.com/users/[ID]/profile" target="_blank" class="social-card">
+        <a href="https://www.roblox.com/users/3566522125/profile" target="_blank" class="social-card">
           <div class="social-icon">🎮</div>
           <div class="social-info">
             <div class="social-name">Roblox</div>
-            <div class="social-handle">@[ROBLOX_NAME]</div>
+            <div class="social-handle">@luxoralexandra</div>
           </div>
         </a>
         <!-- YouTube -->
@@ -1540,7 +1556,7 @@
           </div>
         </a>
         <!-- Discord Server -->
-        <a href="https://discord.gg/[INVITE]" target="_blank" class="social-card">
+        <a href="#" target="_blank" class="social-card">
           <div class="social-icon">🏠</div>
           <div class="social-info">
             <div class="social-name">Discord Server</div>
@@ -1894,9 +1910,9 @@ example()</code></pre>
     <a href="https://x.com/[HANDLE]"                       target="_blank" title="X">𝕏</a>
     <a href="#"                                                              title="Discord">💬</a>
     <a href="https://youtube.com/@[CHANNEL]"               target="_blank" title="YouTube">▶</a>
-    <a href="https://www.roblox.com/users/[ID]/profile"    target="_blank" title="Roblox">🎮</a>
-    <a href="[FORUM_URL]"                                  target="_blank" title="Dev Forum">🛠</a>
-    <a href="https://discord.gg/[INVITE]"                  target="_blank" title="Discord Server">🏠</a>
+    <a href="https://www.roblox.com/users/3566522125/profile"    target="_blank" title="Roblox">🎮</a>
+    <a href="https://devforum.roblox.com/u/luxoralexandra/summary"                                  target="_blank" title="Dev Forum">🛠</a>
+    <a href="#"                  target="_blank" title="Discord Server">🏠</a>
   </div>
   <div class="footer-copy">
     © <span id="footer-year"></span> [YOUR NAME] — All rights reserved.
@@ -2649,6 +2665,53 @@ example()</code></pre>
     pill.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSpotify(); }
     });
+
+    /* ── Scroll sound — subtle tick per scroll step, throttled ── */
+    (function () {
+      let lastScroll  = 0;
+      let lastScrollY = window.scrollY;
+      let scrollDir   = 0;
+      let accumulator = 0;       // accumulate delta to avoid firing on tiny nudges
+      const STEP      = 120;     // px of scroll before a tick fires
+      const THROTTLE  = 80;      // ms minimum between ticks
+
+      window.addEventListener('scroll', () => {
+        const now      = Date.now();
+        const currentY = window.scrollY;
+        const delta    = currentY - lastScrollY;
+        lastScrollY    = currentY;
+        accumulator   += Math.abs(delta);
+
+        if (accumulator < STEP) return;
+        accumulator = 0;
+
+        if (now - lastScroll < THROTTLE) return;
+        lastScroll = now;
+
+        try {
+          const ac  = _sfxCtx();
+          const t   = ac.currentTime;
+          const osc = ac.createOscillator();
+          const g   = ac.createGain();
+          osc.connect(g);
+          g.connect(ac.destination);
+
+          /* Pitch shifts slightly depending on scroll position for variety */
+          const progress  = currentY / (document.body.scrollHeight - window.innerHeight);
+          const basePitch = 600 + progress * 300;   // 600–900 Hz as you scroll down
+          const pitch     = basePitch * (delta > 0 ? 1 : 1.18); // higher pitch scrolling up
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(pitch, t);
+          osc.frequency.exponentialRampToValueAtTime(pitch * .72, t + .055);
+          g.gain.setValueAtTime(.055, t);
+          g.gain.exponentialRampToValueAtTime(.0001, t + .065);
+          osc.start(t);
+          osc.stop(t + .065);
+        } catch(e) {}
+      }, { passive: true });
+    })();
+
   })();
 
 </script>
