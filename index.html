@@ -1124,6 +1124,69 @@
       .stats-row { grid-template-columns: 1fr 1fr; }
       .spec-grid { grid-template-columns: 1fr; }
     }
+
+    /* ═══════════════════════════════════════════════
+       SPOTIFY WIDGET
+    ═══════════════════════════════════════════════ */
+    #spotify-widget {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity .5s ease, transform .5s ease;
+      pointer-events: none;
+    }
+    #spotify-widget.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+    #spotify-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(10,10,10,.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border-2);
+      border-radius: 40px;
+      padding: 8px 14px 8px 10px;
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition);
+      user-select: none;
+    }
+    #spotify-pill:hover { border-color: #1DB954; background: rgba(18,18,18,.96); }
+    #spotify-pill .sp-icon { width: 26px; height: 26px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    #spotify-pill .sp-icon svg { display: block; }
+    #spotify-pill .sp-label { font-size: 10px; letter-spacing: .13em; text-transform: uppercase; color: var(--text-2); white-space: nowrap; transition: color var(--transition); }
+    #spotify-pill:hover .sp-label { color: #1DB954; }
+    #spotify-pill .sp-chevron { font-size: 9px; color: var(--text-3); margin-left: 2px; transition: transform var(--transition), color var(--transition); line-height: 1; display: inline-block; }
+    #spotify-pill:hover .sp-chevron { color: #1DB954; }
+    #spotify-pill.expanded .sp-chevron { transform: rotate(180deg); }
+    #spotify-panel {
+      width: 320px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border-2);
+      box-shadow: 0 24px 48px rgba(0,0,0,.6);
+      max-height: 0;
+      opacity: 0;
+      transition: max-height .4s cubic-bezier(.4,0,.2,1), opacity .3s ease, margin-bottom .4s cubic-bezier(.4,0,.2,1);
+      margin-bottom: 0;
+      pointer-events: none;
+    }
+    #spotify-panel.open { max-height: 160px; opacity: 1; margin-bottom: 10px; pointer-events: all; }
+    #spotify-panel iframe { display: block; width: 100%; height: 160px; border: none; }
+    @media (max-width: 480px) {
+      #spotify-widget { bottom: 16px; right: 16px; }
+      #spotify-panel  { width: calc(100vw - 32px); }
+    }
   </style>
 </head>
 <body>
@@ -1840,6 +1903,45 @@ example()</code></pre>
   </div>
 </footer>
 
+<!-- ═══════════════════════════ SPOTIFY WIDGET ═══════════════════════════ -->
+<!--
+  HOW TO SET YOUR TRACK / ALBUM / PLAYLIST
+  ─────────────────────────────────────────
+  1. Open Spotify and find the album, track, or playlist you want to feature.
+  2. Right-click it → Share → Copy Spotify URI.
+     It looks like:  spotify:album:4aawyAB9vmqN3uQ7FjRGTy
+                  or spotify:track:6rqhFgbbKwnb9MLmUQDhG6
+                  or spotify:playlist:37i9dQZF1DXcBWIGoYBM5M
+  3. Take the part AFTER the second colon — e.g. "4aawyAB9vmqN3uQ7FjRGTy"
+  4. Replace SPOTIFY_TYPE with "album", "track", or "playlist"
+  5. Replace SPOTIFY_ID with that ID string
+  6. The embed URL format is:
+       https://open.spotify.com/embed/SPOTIFY_TYPE/SPOTIFY_ID?utm_source=generator&theme=0
+-->
+<div id="spotify-widget">
+  <div id="spotify-panel">
+    <iframe
+      id="spotify-iframe"
+      src="https://open.spotify.com/embed/playlist/2QdK71A2ig299qaeYiv2nY?utm_source=generator&theme=0"
+      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+      loading="lazy"
+      title="Now playing">
+    </iframe>
+  </div>
+  <div id="spotify-pill" onclick="toggleSpotify()" role="button" tabindex="0" aria-label="Toggle music player">
+    <div class="sp-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="11" stroke="#1DB954" stroke-width="1.5"/>
+        <path d="M7 8.5C9.8 7.5 14.5 7.8 17 9.5" stroke="#1DB954" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M7.5 11.5C9.8 10.7 14 11 16 12.5" stroke="#1DB954" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M8.5 14.5C10.3 13.9 13.5 14.1 15 15.2" stroke="#1DB954" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="sp-label">Now Playing</span>
+    <span class="sp-chevron">▲</span>
+  </div>
+</div>
+
 </div><!-- /main-wrap -->
 
 <!-- ═══════════════════════════ SCRIPTS ═══════════════════════════ -->
@@ -2338,6 +2440,44 @@ example()</code></pre>
   document.querySelectorAll('.reveal').forEach(el => {
     if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible');
   });
+
+  /* ════════════════════════════════════════════════
+     SPOTIFY WIDGET
+  ════════════════════════════════════════════════ */
+  (function () {
+    const widget = document.getElementById('spotify-widget');
+    const pill   = document.getElementById('spotify-pill');
+    const panel  = document.getElementById('spotify-panel');
+
+    /* Show widget after splash is dismissed */
+    function showWidget() {
+      if (document.getElementById('splash').style.display === 'none' ||
+          document.getElementById('main-wrap').classList.contains('visible')) {
+        widget.classList.add('visible');
+      }
+    }
+
+    /* Poll until main-wrap is visible (i.e. splash dismissed) */
+    const pollId = setInterval(() => {
+      if (document.getElementById('main-wrap').classList.contains('visible')) {
+        clearInterval(pollId);
+        setTimeout(() => widget.classList.add('visible'), 600);
+      }
+    }, 200);
+
+    /* Toggle expand / collapse */
+    window.toggleSpotify = function () {
+      const isOpen = panel.classList.contains('open');
+      panel.classList.toggle('open', !isOpen);
+      pill.classList.toggle('expanded', !isOpen);
+    };
+
+    /* Keyboard accessibility */
+    pill.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSpotify(); }
+    });
+  })();
+
 </script>
 </body>
 </html>
