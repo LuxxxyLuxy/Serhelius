@@ -2589,12 +2589,19 @@ example()</code></pre>
   /* ── Roblox proxy ── */
   const WORKER_URL = 'https://sparkling-grass-9637.luxoralexandra2000.workers.dev'; // e.g. https://roblox-proxy.yourname.workers.dev
 
-  async function rbxFetch(url) {
+  async function rbxFetch(url, retries = 3) {
     const endpoint = `${WORKER_URL}?url=${encodeURIComponent(url)}`;
-    const res = await fetch(endpoint, { signal: AbortSignal.timeout(12000) });
-    if (!res.ok) throw new Error(`Worker responded ${res.status} for ${url}`);
-    const text = await res.text();
-    return JSON.parse(text);
+    for (let i = 0; i < retries; i++) {
+      const res = await fetch(endpoint, { signal: AbortSignal.timeout(14000) });
+      if (res.status === 429) {
+        /* Rate limited — wait then retry */
+        await new Promise(r => setTimeout(r, 1500 * Math.pow(2, i)));
+        continue;
+      }
+      if (!res.ok) throw new Error(`Worker responded ${res.status} for ${url}`);
+      return JSON.parse(await res.text());
+    }
+    throw new Error(`Still rate limited after ${retries} retries`);
   }
   /* Universe IDs are hardcoded — no lookup needed */
   function getUniverseIds() {
@@ -2755,10 +2762,10 @@ example()</code></pre>
       const universeIds = getUniverseIds();
 
       /* Step 2: fetch game details + thumbnails in parallel */
-      const [games, thumbMap] = await Promise.all([
-        getGameDetails(universeIds),
-        getGameThumbnails(universeIds),
-      ]);
+      /* Sequential fetches — avoids triggering Roblox rate limits */
+      const games    = await getGameDetails(universeIds);
+      await new Promise(r => setTimeout(r, 300));
+      const thumbMap = await getGameThumbnails(universeIds);
 
       if (!games || games.length === 0) throw new Error('No games returned');
 
