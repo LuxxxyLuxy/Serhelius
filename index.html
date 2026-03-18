@@ -2578,10 +2578,12 @@ example()</code></pre>
   ──────────────────────────────────────────────── */
   /* ════════════════════════════════════════════════
      ROBLOX GAMES — API + CAROUSEL
-     Add more Place IDs to PLACE_IDS to include more games.
+     Add more games to the GAMES array below.
   ════════════════════════════════════════════════ */
-  const PLACE_IDS = [
-    124476070457738   // Combat Parameters — add more comma-separated
+  /* Map your games directly as placeId → universeId
+     To add more games: find the universeId in the Roblox game URL / Network tab */
+  const GAMES = [
+    { placeId: 124476070457738, universeId: 8284455342 }, // Combat Parameters
   ];
 
   /* ── Roblox proxy ── */
@@ -2594,16 +2596,9 @@ example()</code></pre>
     const text = await res.text();
     return JSON.parse(text);
   }
-  /* Resolve place IDs → universe IDs via public Roblox web API */
-  async function getUniverseIds(placeIds) {
-    const results = await Promise.all(placeIds.map(async (placeId) => {
-      /* www.roblox.com/places/api-get-details is publicly accessible */
-      const data = await rbxFetch(
-        `https://www.roblox.com/places/api-get-details?assetId=${placeId}`
-      );
-      return data.universeId || data.UniverseId || null;
-    }));
-    return results.filter(Boolean);
+  /* Universe IDs are hardcoded — no lookup needed */
+  function getUniverseIds() {
+    return GAMES.map(g => g.universeId);
   }
 
   async function getGameDetails(universeIds) {
@@ -2757,7 +2752,7 @@ example()</code></pre>
   async function loadRobloxGames() {
     try {
       /* Step 1: resolve universe IDs from place IDs */
-      const universeIds = await getUniverseIds(PLACE_IDS);
+      const universeIds = getUniverseIds();
 
       /* Step 2: fetch game details + thumbnails in parallel */
       const [games, thumbMap] = await Promise.all([
