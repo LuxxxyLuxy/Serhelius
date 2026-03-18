@@ -1201,6 +1201,276 @@
       #spotify-widget { bottom: 16px; right: 16px; }
       #spotify-panel  { width: calc(100vw - 32px); }
     }
+
+    /* ═══════════════════════════════════════════════
+       ROBLOX GAMES CAROUSEL
+    ═══════════════════════════════════════════════ */
+
+    /* Total visits banner */
+    .rbx-total-banner {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 18px 24px;
+      margin-bottom: 28px;
+    }
+    .rbx-total-banner .rbx-total-val {
+      font-family: var(--f-display);
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .rbx-total-banner .rbx-total-label {
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .rbx-total-banner .rbx-total-icon {
+      width: 40px; height: 40px;
+      flex-shrink: 0;
+      border-radius: var(--r);
+      background: var(--bg-3);
+      border: 1px solid var(--border-2);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Carousel wrapper */
+    .rbx-carousel {
+      position: relative;
+      user-select: none;
+    }
+    .rbx-track-outer {
+      overflow: hidden;
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+    }
+    .rbx-track {
+      display: flex;
+      transition: transform .45s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* Individual slide / game card */
+    .rbx-slide {
+      min-width: 100%;
+      background: var(--bg-2);
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 0;
+    }
+    .rbx-slide-thumb {
+      position: relative;
+      overflow: hidden;
+      background: var(--bg-3);
+      min-height: 220px;
+    }
+    .rbx-slide-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0;
+      display: block;
+      transition: transform .6s ease;
+    }
+    .rbx-slide:hover .rbx-slide-thumb img { transform: scale(1.04); }
+    .rbx-slide-thumb .rbx-thumb-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, transparent 60%, var(--bg-2));
+    }
+
+    /* Skeleton loader for thumbnail */
+    .rbx-slide-thumb.loading {
+      background: linear-gradient(90deg, var(--bg-3) 25%, var(--bg-4) 50%, var(--bg-3) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .rbx-slide-body {
+      padding: 28px 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 0;
+    }
+    .rbx-slide-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .rbx-slide-eyebrow .rbx-slide-num {
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: .18em;
+    }
+    .rbx-slide-title {
+      font-family: var(--f-display);
+      font-size: clamp(18px, 2.5vw, 26px);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -.01em;
+      color: var(--text);
+    }
+    .rbx-slide-desc {
+      font-size: 11px;
+      color: var(--text-2);
+      line-height: 1.8;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .rbx-slide-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .rbx-stat-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 5px 10px;
+      font-size: 10px;
+      color: var(--text-2);
+    }
+    .rbx-stat-chip .rbx-stat-icon { flex-shrink: 0; }
+    .rbx-stat-chip .rbx-stat-val {
+      font-weight: 700;
+      color: var(--text);
+    }
+    .rbx-stat-chip.accent { border-color: var(--accent); }
+    .rbx-stat-chip.accent .rbx-stat-val { color: var(--accent); }
+
+    .rbx-slide-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .rbx-slide-footer .rbx-meta {
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: .08em;
+    }
+    .rbx-play-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      background: var(--accent);
+      color: #080808;
+      font-family: var(--f-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      border-radius: var(--r);
+      text-decoration: none;
+      transition: opacity var(--transition);
+      flex-shrink: 0;
+    }
+    .rbx-play-btn:hover { opacity: .82; }
+
+    /* Loading / error state */
+    .rbx-slide.loading-card {
+      grid-template-columns: 1fr;
+      align-items: center;
+      justify-items: center;
+      min-height: 220px;
+      padding: 40px;
+      text-align: center;
+    }
+    .rbx-loading-spinner {
+      width: 28px; height: 28px;
+      border: 2px solid var(--border-2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Carousel nav */
+    .rbx-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .rbx-nav-btn {
+      width: 32px; height: 32px;
+      border: 1px solid var(--border-2);
+      border-radius: var(--r);
+      background: var(--bg-2);
+      color: var(--text-2);
+      font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: border-color var(--transition), color var(--transition), background var(--transition);
+    }
+    .rbx-nav-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+    .rbx-nav-btn:disabled {
+      opacity: .3;
+      cursor: not-allowed;
+    }
+    .rbx-dots {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .rbx-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--border-2);
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+    }
+    .rbx-dot.active {
+      background: var(--accent);
+      transform: scale(1.3);
+    }
+
+    /* Auto-advance progress bar */
+    .rbx-progress {
+      height: 2px;
+      background: var(--border);
+      border-radius: 1px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .rbx-progress-bar {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width linear;
+    }
+
+    @media (max-width: 768px) {
+      .rbx-slide { grid-template-columns: 1fr; }
+      .rbx-slide-thumb { min-height: 160px; }
+      .rbx-slide-thumb .rbx-thumb-overlay { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -1337,21 +1607,43 @@
 
     <!-- ── Contributions ── -->
     <div class="tab-panel active" id="about-contributions">
-      <div class="contrib-header">
-        <span class="label">Contribution activity — past year</span>
-        <span class="muted" id="contrib-total-label" style="font-size:11px;"></span>
+
+      <!-- Total visits banner -->
+      <div class="rbx-total-banner">
+        <div class="rbx-total-icon">
+          <img src="https://cdn.simpleicons.org/roblox/c9a84c" width="20" height="20" alt="roblox" draggable="false" />
+        </div>
+        <div>
+          <div class="rbx-total-val" id="rbx-total-visits">—</div>
+          <div class="rbx-total-label">Total visits across all games</div>
+        </div>
+        <div style="margin-left:auto;text-align:right;">
+          <div style="font-size:10px;color:var(--text-3);letter-spacing:.12em;">ACTIVE NOW</div>
+          <div style="font-family:var(--f-display);font-size:22px;font-weight:900;color:var(--green)" id="rbx-total-playing">—</div>
+        </div>
       </div>
-      <div class="contrib-grid" id="contrib-grid"></div>
-      <p style="font-size:10px;color:var(--text-3);margin-top:12px;">
-        ● Less &nbsp;&nbsp;
-        <span style="color:rgba(201,168,76,.2)">■</span>
-        <span style="color:rgba(201,168,76,.45)">■</span>
-        <span style="color:rgba(201,168,76,.7)">■</span>
-        <span style="color:var(--accent)">■</span>
-        &nbsp;&nbsp; More
-        &nbsp;&nbsp;|&nbsp;&nbsp;
-        Update <code style="font-size:10px;color:var(--text-3)">CONTRIB_DATA</code> in JS to reflect real stats.
-      </p>
+
+      <!-- Carousel -->
+      <div class="rbx-carousel" id="rbx-carousel">
+        <div class="rbx-track-outer">
+          <div class="rbx-track" id="rbx-track">
+            <!-- Loading state -->
+            <div class="rbx-slide loading-card">
+              <div>
+                <div class="rbx-loading-spinner"></div>
+                <div style="font-size:11px;color:var(--text-3);letter-spacing:.12em;">FETCHING GAME DATA</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="rbx-progress"><div class="rbx-progress-bar" id="rbx-progress-bar"></div></div>
+        <div class="rbx-nav">
+          <button class="rbx-nav-btn" id="rbx-prev" onclick="rbxCarousel.prev()" aria-label="Previous">&#8592;</button>
+          <div class="rbx-dots" id="rbx-dots"></div>
+          <button class="rbx-nav-btn" id="rbx-next" onclick="rbxCarousel.next()" aria-label="Next">&#8594;</button>
+        </div>
+      </div>
+
     </div>
 
     <!-- ── Specialisations ── -->
@@ -1526,7 +1818,7 @@
           <div class="social-icon"><img src="https://cdn.simpleicons.org/gmail/555555" width="18" height="18" alt="gmail" draggable="false" /></div>
           <div class="social-info">
             <div class="social-name">Email</div>
-            <div class="social-handle">luxoralexandra2000@gmail.com</div>
+            <div class="social-handle"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b6dac3ced9c4d7dad3ced7d8d2c4d784868686f6d1dbd7dfda98d5d9db">[email&#160;protected]</a></div>
           </div>
           <span class="no-contact-badge">DO NOT CONTACT</span>
         </div>
@@ -1958,7 +2250,7 @@ example()</code></pre>
 </div><!-- /main-wrap -->
 
 <!-- ═══════════════════════════ SCRIPTS ═══════════════════════════ -->
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   /* ════════════════════════════════════════════════
      SPLASH — PARTICLE CANVAS  (optimised)
   ════════════════════════════════════════════════ */
@@ -2282,29 +2574,215 @@ example()</code></pre>
      Replace with your real data.
      Array of 364 integers (0–4): 0=none, 1–4=levels
   ──────────────────────────────────────────────── */
-  const CONTRIB_DATA = (() => {
-    const arr = [];
-    for (let i = 0; i < 364; i++) {
-      const r = Math.random();
-      arr.push(r < .45 ? 0 : r < .65 ? 1 : r < .8 ? 2 : r < .93 ? 3 : 4);
+  /* ════════════════════════════════════════════════
+     ROBLOX GAMES — API + CAROUSEL
+     Add more Place IDs to PLACE_IDS to include more games.
+  ════════════════════════════════════════════════ */
+  const PLACE_IDS = [
+    124476070457738   // Combat Parameters — add more comma-separated
+  ];
+
+  const PROXY = url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+
+  async function rbxFetch(url) {
+    const res  = await fetch(PROXY(url));
+    const json = await res.json();
+    return JSON.parse(json.contents);
+  }
+
+  async function getUniverseId(placeId) {
+    const data = await rbxFetch(`https://apis.roblox.com/universes/v1/places/${placeId}/universe`);
+    return data.universeId;
+  }
+
+  async function getGameDetails(universeIds) {
+    const data = await rbxFetch(`https://games.roblox.com/v1/games?universeIds=${universeIds.join(',')}`);
+    return data.data;
+  }
+
+  async function getGameThumbnails(universeIds) {
+    const data = await rbxFetch(
+      `https://thumbnails.roblox.com/v1/games/icons?universeIds=${universeIds.join(',')}&size=512x512&format=Png&isCircular=false`
+    );
+    const map = {};
+    (data.data || []).forEach(t => { map[t.targetId] = t.imageUrl; });
+    return map;
+  }
+
+  function fmtNum(n) {
+    if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
+    if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
+    return n.toLocaleString();
+  }
+
+  function fmtDate(iso) {
+    return new Date(iso).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  function buildSlide(game, thumb, index, total) {
+    const visits  = fmtNum(game.visits || 0);
+    const playing = fmtNum(game.playing || 0);
+    const favs    = fmtNum(game.favoritedCount || 0);
+    const gameUrl = `https://www.roblox.com/games/${game.rootPlaceId}`;
+
+    return `
+    <div class="rbx-slide">
+      <div class="rbx-slide-thumb ${thumb ? '' : 'loading'}" id="rbx-thumb-${game.id}">
+        ${thumb ? `<img src="${thumb}" alt="${game.name} thumbnail" loading="lazy" />` : ''}
+        <div class="rbx-thumb-overlay"></div>
+      </div>
+      <div class="rbx-slide-body">
+        <div class="rbx-slide-eyebrow">
+          <span class="rbx-slide-num">${String(index + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}</span>
+          <span class="tag accent-tag">Roblox</span>
+          ${game.playing > 0 ? '<span class="tag" style="border-color:var(--green);color:var(--green);">● Live</span>' : ''}
+        </div>
+        <div class="rbx-slide-title">${game.name}</div>
+        <div class="rbx-slide-desc">${game.description || 'No description provided.'}</div>
+        <div class="rbx-slide-stats">
+          <div class="rbx-stat-chip accent">
+            <span class="rbx-stat-icon">
+              <img src="https://cdn.simpleicons.org/roblox/c9a84c" width="11" height="11" alt="" />
+            </span>
+            <span class="rbx-stat-val">${visits}</span>
+            <span style="color:var(--text-3)">visits</span>
+          </div>
+          <div class="rbx-stat-chip">
+            <svg class="rbx-stat-icon" width="11" height="11" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            <span class="rbx-stat-val">${playing}</span>
+            <span style="color:var(--text-3)">playing</span>
+          </div>
+          <div class="rbx-stat-chip">
+            <svg class="rbx-stat-icon" width="11" height="11" viewBox="0 0 24 24" fill="none">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="currentColor" stroke-width="1.6" fill="none"/>
+            </svg>
+            <span class="rbx-stat-val">${favs}</span>
+            <span style="color:var(--text-3)">favourites</span>
+          </div>
+          ${game.maxPlayers ? `<div class="rbx-stat-chip">
+            <span style="font-size:9px;color:var(--text-3)">MAX</span>
+            <span class="rbx-stat-val">${game.maxPlayers}</span>
+          </div>` : ''}
+        </div>
+        <div class="rbx-slide-footer">
+          <span class="rbx-meta">Updated ${fmtDate(game.updated)}</span>
+          <a href="${gameUrl}" target="_blank" class="rbx-play-btn">
+            <img src="https://cdn.simpleicons.org/roblox/080808" width="12" height="12" alt="" />
+            Play
+          </a>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  /* ── Carousel controller ── */
+  const rbxCarousel = (() => {
+    let current  = 0;
+    let total    = 0;
+    let timer    = null;
+    let games    = [];
+    const INTERVAL = 6000;
+
+    function go(idx) {
+      const track    = document.getElementById('rbx-track');
+      const dots     = document.getElementById('rbx-dots');
+      const prevBtn  = document.getElementById('rbx-prev');
+      const nextBtn  = document.getElementById('rbx-next');
+      const bar      = document.getElementById('rbx-progress-bar');
+      if (!track) return;
+
+      current = ((idx % total) + total) % total;
+      track.style.transform = `translateX(-${current * 100}%)`;
+
+      /* dots */
+      document.querySelectorAll('.rbx-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === current);
+      });
+      if (prevBtn) prevBtn.disabled = false;
+      if (nextBtn) nextBtn.disabled = false;
+
+      /* reset progress bar */
+      if (bar) {
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
+        requestAnimationFrame(() => {
+          bar.style.transition = `width ${INTERVAL}ms linear`;
+          bar.style.width = '100%';
+        });
+      }
+
+      resetTimer();
+      sfx('tab');
     }
-    return arr; // ← Replace this entire IIFE with your real data array
+
+    function resetTimer() {
+      clearInterval(timer);
+      timer = setInterval(() => go(current + 1), INTERVAL);
+    }
+
+    function init(gameList, thumbMap) {
+      games = gameList;
+      total = games.length;
+      const track = document.getElementById('rbx-track');
+      const dots  = document.getElementById('rbx-dots');
+      if (!track || !dots) return;
+
+      track.innerHTML = games.map((g, i) => buildSlide(g, thumbMap[g.id], i, total)).join('');
+      dots.innerHTML  = games.map((_, i) =>
+        `<div class="rbx-dot ${i === 0 ? 'active' : ''}" onclick="rbxCarousel.go(${i})"></div>`
+      ).join('');
+
+      current = 0;
+      go(0);
+    }
+
+    return { go, prev: () => go(current - 1), next: () => go(current + 1), init };
   })();
 
-  function buildContribGrid() {
-    const grid = document.getElementById('contrib-grid');
-    let total = 0;
-    CONTRIB_DATA.forEach(v => {
-      const cell = document.createElement('div');
-      cell.className = 'contrib-cell' + (v > 0 ? ' l' + v : '');
-      cell.title = v + ' contribution' + (v !== 1 ? 's' : '');
-      grid.appendChild(cell);
-      total += v;
-    });
-    const el = document.getElementById('contrib-count');
-    if (el) el.textContent = total.toLocaleString();
-    const lbl = document.getElementById('contrib-total-label');
-    if (lbl) lbl.textContent = total.toLocaleString() + ' total contributions';
+  /* ── Bootstrap: fetch all game data ── */
+  async function loadRobloxGames() {
+    try {
+      /* Step 1: resolve universe IDs from place IDs */
+      const universeIds = await Promise.all(PLACE_IDS.map(getUniverseId));
+
+      /* Step 2: fetch game details + thumbnails in parallel */
+      const [games, thumbMap] = await Promise.all([
+        getGameDetails(universeIds),
+        getGameThumbnails(universeIds),
+      ]);
+
+      if (!games || games.length === 0) throw new Error('No games returned');
+
+      /* Step 3: update totals */
+      const totalVisits  = games.reduce((s, g) => s + (g.visits  || 0), 0);
+      const totalPlaying = games.reduce((s, g) => s + (g.playing || 0), 0);
+
+      const tvEl = document.getElementById('rbx-total-visits');
+      const tpEl = document.getElementById('rbx-total-playing');
+      const ccEl = document.getElementById('contrib-count');
+      if (tvEl) tvEl.textContent = fmtNum(totalVisits);
+      if (tpEl) tpEl.textContent = fmtNum(totalPlaying);
+      if (ccEl) ccEl.textContent = fmtNum(totalVisits);
+
+      /* Step 4: build carousel */
+      rbxCarousel.init(games, thumbMap);
+
+    } catch (err) {
+      console.warn('Roblox API error:', err);
+      const track = document.getElementById('rbx-track');
+      if (track) track.innerHTML = `
+        <div class="rbx-slide loading-card">
+          <div>
+            <div style="font-size:22px;margin-bottom:12px;opacity:.3">⚠</div>
+            <div style="font-size:11px;color:var(--text-3);letter-spacing:.12em;">COULD NOT LOAD GAME DATA</div>
+            <div style="font-size:10px;color:var(--text-3);margin-top:6px;">Check console for details</div>
+          </div>
+        </div>`;
+    }
   }
 
   /* ────────────────────────────────────────────────
@@ -2447,7 +2925,7 @@ example()</code></pre>
      INIT
   ──────────────────────────────────────────────── */
   window.addEventListener('scroll', updateActiveNav, { passive: true });
-  buildContribGrid();
+  loadRobloxGames();
   restoreLikes();
   updateLocalTime();
   setInterval(updateLocalTime, 30000);
