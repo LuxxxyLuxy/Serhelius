@@ -715,7 +715,7 @@
     /* Socials */
     .socials-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 12px;
     }
     .social-card {
@@ -760,8 +760,8 @@
       font-size: 10px;
       color: var(--text-3);
       line-height: 1.5;
-      overflow-wrap: break-word;
-      word-break: break-word;
+      overflow-wrap: anywhere;
+      min-width: 0;
     }
     .social-card.no-contact {
       align-items: flex-start;
@@ -1522,7 +1522,7 @@
           </div>
         </a>
         <!-- Email — DO NOT CONTACT -->
-        <div class="social-card no-contact">
+        <div class="social-card no-contact" style="grid-column: span 2;">
           <div class="social-icon"><img src="https://cdn.simpleicons.org/gmail/555555" width="18" height="18" alt="gmail" draggable="false" /></div>
           <div class="social-info">
             <div class="social-name">Email</div>
