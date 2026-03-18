@@ -1818,7 +1818,7 @@
           <div class="social-icon"><img src="https://cdn.simpleicons.org/gmail/555555" width="18" height="18" alt="gmail" draggable="false" /></div>
           <div class="social-info">
             <div class="social-name">Email</div>
-            <div class="social-handle"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b6dac3ced9c4d7dad3ced7d8d2c4d784868686f6d1dbd7dfda98d5d9db">[email&#160;protected]</a></div>
+            <div class="social-handle" id="email-handle" data-u="luxoralexandra2000" data-d="gmail.com"></div>
           </div>
           <span class="no-contact-badge">DO NOT CONTACT</span>
         </div>
@@ -1922,7 +1922,7 @@ example()</code></pre>
 
           <!-- Photo display — replace src with your own image URL -->
           <div class="pub-media">
-            <img src="https://via.placeholder.com/640x320/0f0f0f/333333?text=[PROJECT+SCREENSHOT]" alt="Project screenshot" />
+            <img src="" onerror="this.style.display='none'" alt="Project screenshot" />
           </div>
 
           <div class="pub-card-footer">
@@ -2087,7 +2087,7 @@ example()</code></pre>
           </div>
           <p>[Description of this project.]</p>
           <div class="pub-media">
-            <img src="https://via.placeholder.com/640x320/0f0f0f/333333?text=[PROJECT]" alt="" />
+            <img src="" onerror="this.style.display='none'" alt="" />
           </div>
           <div class="pub-card-footer">
             <div class="pub-tags">
@@ -2582,12 +2582,32 @@ example()</code></pre>
     124476070457738   // Combat Parameters — add more comma-separated
   ];
 
-  const PROXY = url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+  const PROXIES = [
+    url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+  ];
 
   async function rbxFetch(url) {
-    const res  = await fetch(PROXY(url));
-    const json = await res.json();
-    return JSON.parse(json.contents);
+    /* Try each proxy in order until one works */
+    for (let i = 0; i < PROXIES.length; i++) {
+      try {
+        const res = await fetch(PROXIES[i](url), { signal: AbortSignal.timeout(8000) });
+        if (!res.ok) continue;
+        const text = await res.text();
+        /* corsproxy.io returns raw JSON; allorigins wraps it */
+        try {
+          const parsed = JSON.parse(text);
+          /* allorigins wrapper */
+          if (parsed && parsed.contents !== undefined) return JSON.parse(parsed.contents);
+          return parsed;
+        } catch {
+          return JSON.parse(text);
+        }
+      } catch (e) {
+        if (i === PROXIES.length - 1) throw e;
+        console.warn(`Proxy ${i} failed, trying next...`, e.message);
+      }
+    }
   }
 
   async function getUniverseId(placeId) {
@@ -3189,6 +3209,12 @@ example()</code></pre>
       }, { passive: true });
     })();
 
+  })();
+
+  /* ── Reconstruct email from data attributes (avoids Cloudflare obfuscation) ── */
+  (function() {
+    const el = document.getElementById('email-handle');
+    if (el) el.textContent = el.dataset.u + '@' + el.dataset.d;
   })();
 
 </script>
