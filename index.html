@@ -3108,7 +3108,7 @@ example()</code></pre>
       go(0);
     }
 
-    return { go, prev: () => go(current - 1), next: () => go(current + 1), init, pause, resume };
+    return { go, prev: () => go(current - 1), next: () => go(current + 1), init };
   })();
 
   /* ── Bootstrap: fetch all game data ── */
