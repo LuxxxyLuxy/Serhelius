@@ -1510,6 +1510,202 @@
     }
     #footer .footer-visit-count span { color: var(--text-3); }
     #footer .footer-visit-count strong { color: var(--accent); font-weight: 700; }
+
+    /* ═══════════════════════════════════════════════
+       REVIEWS CAROUSEL
+    ═══════════════════════════════════════════════ */
+    .rv-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .rv-nav-hint { opacity: .5; }
+
+    .rv-track-outer {
+      overflow: hidden;
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+    }
+    .rv-track {
+      display: flex;
+      transition: transform .45s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* Review slide */
+    .rv-slide {
+      min-width: 100%;
+      background: var(--bg-2);
+      display: grid;
+      grid-template-columns: 220px 1fr;
+    }
+
+    /* Left panel — avatar + reviewer info */
+    .rv-left {
+      padding: 36px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      border-right: 1px solid var(--border);
+      background: var(--bg-3);
+    }
+    .rv-avatar-wrap {
+      position: relative;
+      width: 96px; height: 96px;
+      flex-shrink: 0;
+    }
+    .rv-avatar {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      border: 2px solid var(--border-2);
+      object-fit: cover;
+      background: var(--bg-4);
+      display: block;
+    }
+    .rv-avatar-ring {
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1px solid var(--accent);
+      opacity: .5;
+    }
+    .rv-reviewer-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: .04em;
+      text-align: center;
+    }
+    .rv-reviewer-sub {
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .rv-roblox-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 3px 10px;
+      transition: border-color var(--transition), color var(--transition);
+      text-decoration: none;
+    }
+    .rv-roblox-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      opacity: 1;
+    }
+
+    /* Right panel — project + review */
+    .rv-right {
+      padding: 32px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-width: 0;
+    }
+    .rv-project-block {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .rv-project-eyebrow {
+      font-size: 9px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    /* Single project pill */
+    .rv-project-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-3);
+      border: 1px solid var(--border-2);
+      border-radius: 2px;
+      padding: 6px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+      width: fit-content;
+    }
+    /* Multiple project tags */
+    .rv-project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .rv-project-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 4px 10px;
+      font-size: 10px;
+      color: var(--text-2);
+    }
+
+    /* Review text */
+    .rv-divider {
+      width: 32px;
+      height: 1px;
+      background: var(--accent);
+      opacity: .5;
+    }
+    .rv-quote-mark {
+      font-family: var(--f-display);
+      font-size: 48px;
+      line-height: .6;
+      color: var(--accent);
+      opacity: .25;
+      user-select: none;
+    }
+    .rv-review-text {
+      font-family: var(--f-display);
+      font-style: italic;
+      font-size: clamp(14px, 1.8vw, 18px);
+      line-height: 1.7;
+      color: var(--text);
+    }
+    .rv-date {
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: .1em;
+      margin-top: auto;
+    }
+
+    /* Slide number badge */
+    .rv-slide-num {
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: .18em;
+      margin-bottom: 4px;
+    }
+
+    @media (max-width: 768px) {
+      .rv-slide { grid-template-columns: 1fr; }
+      .rv-left {
+        flex-direction: row;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 20px 24px;
+        gap: 16px;
+        align-items: flex-start;
+      }
+      .rv-avatar-wrap { width: 60px; height: 60px; }
+      .rv-avatar { width: 60px; height: 60px; }
+      .rv-right { padding: 24px; }
+    }
   </style>
 </head>
 <body>
@@ -1912,6 +2108,7 @@
       <button class="tab-btn"        onclick="switchTab('pub','projects')">Projects</button>
       <button class="tab-btn"        onclick="switchTab('pub','upcoming')">Up-and-Coming</button>
       <button class="tab-btn"        onclick="switchTab('pub','other')">Other Specialisations</button>
+      <button class="tab-btn"        onclick="switchTab('pub','reviews')">Reviews</button>
     </nav>
 
     <!-- ─── Open Source ─── -->
@@ -2226,6 +2423,43 @@ example()</code></pre>
             </button>
           </div>
         </div>
+      </div>
+    </div>
+
+
+    <!-- ─── Reviews ─── -->
+    <div class="tab-panel" id="pub-reviews">
+
+      <!-- Loading state -->
+      <div id="reviews-loading" style="text-align:center;padding:48px 0;">
+        <div class="rbx-loading-spinner" style="margin:0 auto 12px;"></div>
+        <div class="label">Loading reviews</div>
+      </div>
+
+      <!-- Carousel (hidden until loaded) -->
+      <div id="reviews-carousel" style="display:none;">
+
+        <!-- Counter bar -->
+        <div class="rv-header">
+          <span class="label" id="rv-counter">— reviews</span>
+          <span class="rv-nav-hint label">← →  navigate</span>
+        </div>
+
+        <!-- Track -->
+        <div class="rv-track-outer">
+          <div class="rv-track" id="rv-track"></div>
+        </div>
+
+        <!-- Progress + nav -->
+        <div class="rbx-progress" style="margin-top:12px;">
+          <div class="rbx-progress-bar" id="rv-progress-bar"></div>
+        </div>
+        <div class="rbx-nav" style="margin-top:12px;">
+          <button class="rbx-nav-btn" onclick="rvCarousel.prev()">&#8592;</button>
+          <div class="rbx-dots" id="rv-dots"></div>
+          <button class="rbx-nav-btn" onclick="rvCarousel.next()">&#8594;</button>
+        </div>
+
       </div>
     </div>
 
@@ -3364,6 +3598,171 @@ example()</code></pre>
       })
       .catch(() => {}); // silently fail if offline
   })();
+
+
+  /* ════════════════════════════════════════════════
+     REVIEWS — DATA + CAROUSEL
+     ────────────────────────────────────────────────
+     Each review object:
+     {
+       userId:   123456789,          // Roblox user ID (for avatar + profile link)
+       username: 'TheirUsername',    // Display name
+       project:  'My Cool System',  // Single project — OR:
+       projects: ['Sys A','Sys B'],  // Multiple projects (use one or the other)
+       review:   'The review text…',
+       date:     'Mar 2025',         // optional
+     }
+  ════════════════════════════════════════════════ */
+  const REVIEWS = [
+    {
+      userId:   3566522125, // ← replace with real Roblox user ID
+      username: '[LuxorAlexandra]',
+      project:  '[Valhalla]',
+      review:   '[Handsome guy with a lot of potential.]',
+      date:     '[21/02/24]',
+    },
+    {
+      userId:   0, // ← replace with real Roblox user ID
+      username: '[Client Name]',
+      projects: ['[Project A]', '[Project B]', '[Project C]'], // multiple projects
+      review:   '[Their review text.]',
+      date:     '[Month Year]',
+    },
+    // Add more review objects here
+  ];
+
+  /* Fetch headshot avatars for all reviewers via worker */
+  async function fetchReviewerAvatars(userIds) {
+    const unique = [...new Set(userIds.filter(id => id > 0))];
+    if (!unique.length) return {};
+    try {
+      const data = await rbxFetch(
+        `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${unique.join(',')}&size=150x150&format=Png&isCircular=true`
+      );
+      const map = {};
+      (data.data || []).forEach(t => { map[t.targetId] = t.imageUrl; });
+      return map;
+    } catch { return {}; }
+  }
+
+  function buildReviewSlide(review, avatarUrl, index, total) {
+    const profileUrl = review.userId > 0
+      ? `https://www.roblox.com/users/${review.userId}/profile`
+      : '#';
+
+    const avatarHtml = avatarUrl
+      ? `<img src="${avatarUrl}" class="rv-avatar" alt="${review.username}" />`
+      : `<div class="rv-avatar" style="display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--text-3);">?</div>`;
+
+    const projectHtml = review.projects
+      ? `<div class="rv-project-tags">${review.projects.map(p =>
+          `<span class="rv-project-tag">
+            <img src="https://cdn.simpleicons.org/roblox/555555" width="10" height="10" alt="" />
+            ${p}
+          </span>`).join('')}</div>`
+      : `<div class="rv-project-pill">
+          <img src="https://cdn.simpleicons.org/roblox/c9a84c" width="11" height="11" alt="" />
+          ${review.project}
+        </div>`;
+
+    return `
+    <div class="rv-slide">
+      <div class="rv-left">
+        <div class="rv-avatar-wrap">
+          ${avatarHtml}
+          <div class="rv-avatar-ring"></div>
+        </div>
+        <div>
+          <div class="rv-reviewer-name">${review.username}</div>
+          <div class="rv-reviewer-sub" style="margin-bottom:8px;">Roblox Client</div>
+          ${review.userId > 0 ? `<a href="${profileUrl}" target="_blank" class="rv-roblox-link">
+            <img src="https://cdn.simpleicons.org/roblox/555555" width="10" height="10" alt="" />
+            Profile
+          </a>` : ''}
+        </div>
+      </div>
+      <div class="rv-right">
+        <div>
+          <div class="rv-slide-num">${String(index + 1).padStart(2,'0')} / ${String(total).padStart(2,'0')}</div>
+          <div class="rv-project-eyebrow">Project${review.projects ? 's' : ''}</div>
+          ${projectHtml}
+        </div>
+        <div class="rv-divider"></div>
+        <div>
+          <div class="rv-quote-mark">"</div>
+          <div class="rv-review-text">${review.review}</div>
+        </div>
+        ${review.date ? `<div class="rv-date">${review.date}</div>` : ''}
+      </div>
+    </div>`;
+  }
+
+  /* ── Reviews carousel controller ── */
+  const rvCarousel = (() => {
+    let current = 0, total = 0, timer = null;
+    const INTERVAL = 8000; // longer than game carousel — reviews need reading time
+
+    function go(idx) {
+      const track = document.getElementById('rv-track');
+      const bar   = document.getElementById('rv-progress-bar');
+      if (!track) return;
+      current = ((idx % total) + total) % total;
+      track.style.transform = `translateX(-${current * 100}%)`;
+      document.querySelectorAll('#rv-dots .rbx-dot').forEach((d, i) =>
+        d.classList.toggle('active', i === current));
+      if (bar) {
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
+        requestAnimationFrame(() => {
+          bar.style.transition = `width ${INTERVAL}ms linear`;
+          bar.style.width = '100%';
+        });
+      }
+      clearInterval(timer);
+      timer = setInterval(() => go(current + 1), INTERVAL);
+      sfx('tab');
+    }
+
+    function init(reviews, avatarMap) {
+      total = reviews.length;
+      const track  = document.getElementById('rv-track');
+      const dots   = document.getElementById('rv-dots');
+      const loader = document.getElementById('reviews-loading');
+      const wrap   = document.getElementById('reviews-carousel');
+      const ctr    = document.getElementById('rv-counter');
+      if (!track) return;
+
+      track.innerHTML = reviews.map((r, i) =>
+        buildReviewSlide(r, avatarMap[r.userId], i, total)
+      ).join('');
+
+      dots.innerHTML = reviews.map((_, i) =>
+        `<div class="rbx-dot ${i===0?'active':''}" onclick="rvCarousel.go(${i})"></div>`
+      ).join('');
+
+      if (ctr) ctr.textContent = total + (total === 1 ? ' review' : ' reviews');
+      if (loader) loader.style.display = 'none';
+      if (wrap)   wrap.style.display   = 'block';
+
+      current = 0;
+      go(0);
+    }
+
+    return { go, prev: () => go(current - 1), next: () => go(current + 1), init };
+  })();
+
+  /* Bootstrap reviews */
+  async function loadReviews() {
+    try {
+      const userIds  = REVIEWS.map(r => r.userId);
+      const avatarMap = await fetchReviewerAvatars(userIds);
+      rvCarousel.init(REVIEWS, avatarMap);
+    } catch(e) {
+      const loader = document.getElementById('reviews-loading');
+      if (loader) loader.innerHTML = '<div class="label" style="color:var(--text-3)">Could not load reviews</div>';
+    }
+  }
+  loadReviews();
 
 
 </script>
