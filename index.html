@@ -1501,6 +1501,15 @@
       cursor: pointer;
     }
     .rbx-inner-dot.active { background: rgba(255,255,255,.9); }
+
+    #footer .footer-visit-count {
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: .14em;
+      margin-bottom: 24px;
+    }
+    #footer .footer-visit-count span { color: var(--text-3); }
+    #footer .footer-visit-count strong { color: var(--accent); font-weight: 700; }
   </style>
 </head>
 <body>
@@ -2227,6 +2236,9 @@ example()</code></pre>
 <footer id="footer">
   <div class="footer-name">[YOUR NAME]</div>
   <div class="footer-sub">Developer · Creator · Builder</div>
+  <div class="footer-visit-count">
+    <span id="visit-count-label">— visitors</span>
+  </div>
   <div class="footer-socials">
     <a href="https://x.com/[YOUR_HANDLE]"                                    target="_blank" title="X"><img src="https://cdn.simpleicons.org/x/ebebeb" width="16" height="16" alt="x" draggable="false" /></a>
     <a href="#"                                                               title="Discord"><img src="https://cdn.simpleicons.org/discord/5865F2" width="16" height="16" alt="discord" draggable="false" /></a>
@@ -3338,6 +3350,21 @@ example()</code></pre>
     if (handle) handle.textContent = addr;
     if (lbl)    lbl.textContent    = name;
   })();
+
+  /* ── Visitor counter (counterapi.dev — free, no signup) ── */
+  (function() {
+    fetch('https://api.counterapi.dev/v1/luxxxyluxy-portfolio/visits/up')
+      .then(r => r.json())
+      .then(data => {
+        const el = document.getElementById('visit-count-label');
+        if (el && data && data.count != null) {
+          const n = parseInt(data.count).toLocaleString();
+          el.innerHTML = '<strong>' + n + '</strong> visitors';
+        }
+      })
+      .catch(() => {}); // silently fail if offline
+  })();
+
 
 </script>
 </body>
