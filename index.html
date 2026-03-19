@@ -1473,6 +1473,34 @@
       .rbx-slide-thumb { min-height: 160px; }
       .rbx-slide-thumb .rbx-thumb-overlay { display: none; }
     }
+
+    /* Inner thumbnail slideshow */
+    .rbx-slide-thumb { overflow: hidden; }
+    .rbx-thumb-img {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 0;
+      opacity: 0;
+      transition: opacity .7s ease;
+    }
+    .rbx-thumb-img.active { opacity: 1; }
+    .rbx-slide-thumb { position: relative; }
+    .rbx-inner-dots {
+      position: absolute;
+      bottom: 8px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; gap: 5px; z-index: 3;
+    }
+    .rbx-inner-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.3);
+      transition: background .3s;
+      cursor: pointer;
+    }
+    .rbx-inner-dot.active { background: rgba(255,255,255,.9); }
   </style>
 </head>
 <body>
@@ -2614,11 +2642,35 @@ example()</code></pre>
   }
 
   async function getGameThumbnails(universeIds) {
-    const data = await rbxFetch(
-      `https://thumbnails.roblox.com/v1/games/icons?universeIds=${universeIds.join(',')}&size=512x512&format=Png&isCircular=false`
-    );
-    const map = {};
-    (data.data || []).forEach(t => { map[t.targetId] = t.imageUrl; });
+    /* Fetch up to 10 screenshots per game (16:9), plus icon as fallback */
+    const [screenshotsRes, iconsRes] = await Promise.allSettled([
+      rbxFetch(
+        `https://thumbnails.roblox.com/v1/games/multiget/thumbnails?universeIds=${universeIds.join(',')}&countPerUniverse=10&defaults=true&size=768x432&format=Png&isCircular=false`
+      ),
+      rbxFetch(
+        `https://thumbnails.roblox.com/v1/games/icons?universeIds=${universeIds.join(',')}&size=512x512&format=Png&isCircular=false`
+      ),
+    ]);
+
+    const map = {}; // universeId → array of image URLs
+
+    /* Screenshots (multiple per game) */
+    if (screenshotsRes.status === 'fulfilled') {
+      (screenshotsRes.value.data || []).forEach(entry => {
+        const imgs = (entry.thumbnails || [])
+          .filter(t => t.state === 'Completed' && t.imageUrl)
+          .map(t => t.imageUrl);
+        if (imgs.length) map[entry.universeId] = imgs;
+      });
+    }
+
+    /* Icon fallback for any game without screenshots */
+    if (iconsRes.status === 'fulfilled') {
+      (iconsRes.value.data || []).forEach(t => {
+        if (!map[t.targetId] && t.imageUrl) map[t.targetId] = [t.imageUrl];
+      });
+    }
+
     return map;
   }
   function fmtNum(n) {
@@ -2632,17 +2684,32 @@ example()</code></pre>
     return new Date(iso).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
   }
 
-  function buildSlide(game, thumb, index, total) {
+  function buildSlide(game, thumbs, index, total) {
     const visits  = fmtNum(game.visits || 0);
     const playing = fmtNum(game.playing || 0);
     const favs    = fmtNum(game.favoritedCount || 0);
     const gameUrl = `https://www.roblox.com/games/${game.rootPlaceId}`;
+    const imgs    = Array.isArray(thumbs) ? thumbs : (thumbs ? [thumbs] : []);
+    const hasImgs = imgs.length > 0;
+
+    /* Build inner image strip for multi-thumbnail cycling */
+    const imgStrip = hasImgs
+      ? imgs.map((src, i) =>
+          `<img src="${src}" alt="${game.name} screenshot ${i+1}" loading="lazy" class="rbx-thumb-img${i === 0 ? ' active' : ''}" />`
+        ).join('')
+      : '';
+
+    const dots = imgs.length > 1
+      ? `<div class="rbx-inner-dots">${imgs.map((_, i) =>
+          `<span class="rbx-inner-dot${i === 0 ? ' active' : ''}"></span>`).join('')}</div>`
+      : '';
 
     return `
     <div class="rbx-slide">
-      <div class="rbx-slide-thumb ${thumb ? '' : 'loading'}" id="rbx-thumb-${game.id}">
-        ${thumb ? `<img src="${thumb}" alt="${game.name} thumbnail" loading="lazy" />` : ''}
+      <div class="rbx-slide-thumb${hasImgs ? '' : ' loading'}" id="rbx-thumb-${game.id}" data-thumb-count="${imgs.length}" data-thumb-idx="0">
+        ${imgStrip}
         <div class="rbx-thumb-overlay"></div>
+        ${dots}
       </div>
       <div class="rbx-slide-body">
         <div class="rbx-slide-eyebrow">
@@ -2689,6 +2756,46 @@ example()</code></pre>
         </div>
       </div>
     </div>`;
+  }
+
+
+  /* ── Inner thumbnail auto-cycler (runs per-slide) ── */
+  const _thumbTimers = [];
+  function startThumbCyclers() {
+    /* Clear any existing timers */
+    _thumbTimers.forEach(clearInterval);
+    _thumbTimers.length = 0;
+
+    document.querySelectorAll('.rbx-slide-thumb').forEach(thumb => {
+      const count = parseInt(thumb.dataset.thumbCount || '0');
+      if (count <= 1) return;
+
+      let idx = 0;
+      const imgs = thumb.querySelectorAll('.rbx-thumb-img');
+      const dots = thumb.querySelectorAll('.rbx-inner-dot');
+
+      const advance = () => {
+        imgs[idx].classList.remove('active');
+        dots[idx]?.classList.remove('active');
+        idx = (idx + 1) % count;
+        imgs[idx].classList.add('active');
+        dots[idx]?.classList.add('active');
+      };
+
+      /* Dot click navigation */
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', e => {
+          e.stopPropagation();
+          imgs[idx].classList.remove('active');
+          dots[idx]?.classList.remove('active');
+          idx = i;
+          imgs[idx].classList.add('active');
+          dots[idx]?.classList.add('active');
+        });
+      });
+
+      _thumbTimers.push(setInterval(advance, 3500));
+    });
   }
 
   /* ── Carousel controller ── */
@@ -2743,7 +2850,8 @@ example()</code></pre>
       const dots  = document.getElementById('rbx-dots');
       if (!track || !dots) return;
 
-      track.innerHTML = games.map((g, i) => buildSlide(g, thumbMap[g.id], i, total)).join('');
+      track.innerHTML = games.map((g, i) => buildSlide(g, thumbMap[g.id] || [], i, total)).join('');
+      startThumbCyclers();
       dots.innerHTML  = games.map((_, i) =>
         `<div class="rbx-dot ${i === 0 ? 'active' : ''}" onclick="rbxCarousel.go(${i})"></div>`
       ).join('');
@@ -2816,17 +2924,26 @@ example()</code></pre>
   /* ────────────────────────────────────────────────
      LIKES (localStorage)
   ──────────────────────────────────────────────── */
+  /* Likes storage: { id: count } — count per publication, per-browser */
   function getLikes() {
-    try { return JSON.parse(localStorage.getItem('portfolio_likes') || '{}'); }
+    try { return JSON.parse(localStorage.getItem('portfolio_likes_v2') || '{}'); }
     catch { return {}; }
   }
   function saveLikes(obj) {
-    try { localStorage.setItem('portfolio_likes', JSON.stringify(obj)); }
+    try { localStorage.setItem('portfolio_likes_v2', JSON.stringify(obj)); }
     catch {}
   }
+
+  function getLikeId(btn) {
+    const oc = btn.getAttribute('onclick') || '';
+    const m  = oc.match(/'([^']+)'\)/);
+    return m ? m[1] : null;
+  }
+
   function toggleLike(btn, id) {
-    const likes = getLikes();
+    const likes   = getLikes();
     const isLiked = !!likes[id];
+
     if (isLiked) {
       delete likes[id];
       btn.classList.remove('liked');
@@ -2839,18 +2956,27 @@ example()</code></pre>
       );
     }
     saveLikes(likes);
-    // Count = total global likes stored (per-browser, no backend)
-    const count = isLiked ? Math.max(0, parseInt(btn.querySelector('.like-count').textContent) - 1) : parseInt(btn.querySelector('.like-count').textContent) + 1;
-    btn.querySelector('.like-count').textContent = count;
+
+    /* Count is total unique IDs liked — shown on every button as total likes you've given */
+    const total = Object.keys(getLikes()).length;
+    document.querySelectorAll('.like-count').forEach(el => {
+      /* Per-card: show 1 if liked, 0 if not */
+    });
+
+    /* Per-card count: 1 if this user liked it, else 0 */
+    btn.querySelector('.like-count').textContent = likes[id] ? 1 : 0;
   }
 
   function restoreLikes() {
     const likes = getLikes();
     document.querySelectorAll('.like-btn').forEach(btn => {
-      const onclick = btn.getAttribute('onclick') || '';
-      const match = onclick.match(/'([^']+)'\)/);
-      if (match && likes[match[1]]) {
+      const id = getLikeId(btn);
+      if (!id) return;
+      if (likes[id]) {
         btn.classList.add('liked');
+        btn.querySelector('.like-count').textContent = '1';
+      } else {
+        btn.querySelector('.like-count').textContent = '0';
       }
     });
   }
