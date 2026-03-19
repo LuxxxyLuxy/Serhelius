@@ -1587,6 +1587,7 @@
     .rv-roblox-link {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 5px;
       font-size: 10px;
       color: var(--text-3);
@@ -1597,6 +1598,7 @@
       padding: 3px 10px;
       transition: border-color var(--transition), color var(--transition);
       text-decoration: none;
+      width: 100%;
     }
     .rv-roblox-link:hover {
       border-color: var(--accent);
@@ -3106,7 +3108,7 @@ example()</code></pre>
       go(0);
     }
 
-    return { go, prev: () => go(current - 1), next: () => go(current + 1), init };
+    return { go, prev: () => go(current - 1), next: () => go(current + 1), init, pause, resume };
   })();
 
   /* ── Bootstrap: fetch all game data ── */
@@ -3615,11 +3617,11 @@ example()</code></pre>
   ════════════════════════════════════════════════ */
   const REVIEWS = [
     {
-      userId:   3566522125, // ← replace with real Roblox user ID
-      username: '[LuxorAlexandra]',
-      project:  '[Valhalla]',
-      review:   '[Handsome guy with a lot of potential.]',
-      date:     '[21/02/24]',
+      userId:   0, // ← replace with real Roblox user ID
+      username: '[Client Name]',
+      project:  '[Project Name]',
+      review:   '[Their review text — what they said about your work, the quality, the experience working with you.]',
+      date:     '[Month Year]',
     },
     {
       userId:   0, // ← replace with real Roblox user ID
@@ -3698,59 +3700,119 @@ example()</code></pre>
   }
 
   /* ── Reviews carousel controller ── */
-  const rvCarousel = (() => {
-    let current = 0, total = 0, timer = null;
-    const INTERVAL = 8000; // longer than game carousel — reviews need reading time
+  const rvCarousel = (function() {
+    var _current  = 0;
+    var _total    = 0;
+    var _timer    = null;
+    var _paused   = false;
+    var _elapsed  = 0;
+    var INTERVAL  = 8000;
+
+    function _resetBar(duration) {
+      var bar = document.getElementById('rv-progress-bar');
+      if (!bar) return;
+      bar.style.transition = 'none';
+      bar.style.width = '0%';
+      requestAnimationFrame(function() {
+        bar.style.transition = 'width ' + duration + 'ms linear';
+        bar.style.width = '100%';
+      });
+    }
+
+    function _freezeBar() {
+      var bar = document.getElementById('rv-progress-bar');
+      if (!bar) return 0;
+      var w     = parseFloat(getComputedStyle(bar).width) || 0;
+      var outer = parseFloat(getComputedStyle(bar.parentElement).width) || 1;
+      var pct   = (w / outer) * 100;
+      bar.style.transition = 'none';
+      bar.style.width = pct + '%';
+      return pct / 100 * INTERVAL;
+    }
 
     function go(idx) {
-      const track = document.getElementById('rv-track');
-      const bar   = document.getElementById('rv-progress-bar');
+      var track = document.getElementById('rv-track');
       if (!track) return;
-      current = ((idx % total) + total) % total;
-      track.style.transform = `translateX(-${current * 100}%)`;
-      document.querySelectorAll('#rv-dots .rbx-dot').forEach((d, i) =>
-        d.classList.toggle('active', i === current));
-      if (bar) {
-        bar.style.transition = 'none';
-        bar.style.width = '0%';
-        requestAnimationFrame(() => {
-          bar.style.transition = `width ${INTERVAL}ms linear`;
-          bar.style.width = '100%';
-        });
-      }
-      clearInterval(timer);
-      timer = setInterval(() => go(current + 1), INTERVAL);
+      _current = ((idx % _total) + _total) % _total;
+      _elapsed = 0;
+      track.style.transform = 'translateX(-' + (_current * 100) + '%)';
+      document.querySelectorAll('#rv-dots .rbx-dot').forEach(function(d, i) {
+        d.classList.toggle('active', i === _current);
+      });
+      _resetBar(INTERVAL);
+      clearInterval(_timer);
+      clearTimeout(_timer);
+      if (!_paused) _timer = setInterval(function() { go(_current + 1); }, INTERVAL);
       sfx('tab');
     }
 
+    function pause() {
+      if (_paused) return;
+      _paused  = true;
+      _elapsed = _freezeBar();
+      clearInterval(_timer);
+      clearTimeout(_timer);
+    }
+
+    function resume() {
+      if (!_paused) return;
+      _paused = false;
+      var remaining = Math.max(300, INTERVAL - _elapsed);
+      var bar = document.getElementById('rv-progress-bar');
+      if (bar) {
+        requestAnimationFrame(function() {
+          bar.style.transition = 'width ' + remaining + 'ms linear';
+          bar.style.width = '100%';
+        });
+      }
+      _timer = setTimeout(function() { go(_current + 1); }, remaining);
+    }
+
     function init(reviews, avatarMap) {
-      total = reviews.length;
-      const track  = document.getElementById('rv-track');
-      const dots   = document.getElementById('rv-dots');
-      const loader = document.getElementById('reviews-loading');
-      const wrap   = document.getElementById('reviews-carousel');
-      const ctr    = document.getElementById('rv-counter');
+      _total = reviews.length;
+      var track  = document.getElementById('rv-track');
+      var dots   = document.getElementById('rv-dots');
+      var loader = document.getElementById('reviews-loading');
+      var wrap   = document.getElementById('reviews-carousel');
+      var ctr    = document.getElementById('rv-counter');
       if (!track) return;
 
-      track.innerHTML = reviews.map((r, i) =>
-        buildReviewSlide(r, avatarMap[r.userId], i, total)
-      ).join('');
+      track.innerHTML = reviews.map(function(r, i) {
+        return buildReviewSlide(r, avatarMap[r.userId], i, _total);
+      }).join('');
 
-      dots.innerHTML = reviews.map((_, i) =>
-        `<div class="rbx-dot ${i===0?'active':''}" onclick="rvCarousel.go(${i})"></div>`
-      ).join('');
+      dots.innerHTML = reviews.map(function(_, i) {
+        return '<div class="rbx-dot ' + (i === 0 ? 'active' : '') +
+               '" onclick="rvCarousel.go(' + i + ')"></div>';
+      }).join('');
 
-      if (ctr) ctr.textContent = total + (total === 1 ? ' review' : ' reviews');
+      if (ctr)    ctr.textContent      = _total + (_total === 1 ? ' review' : ' reviews');
       if (loader) loader.style.display = 'none';
       if (wrap)   wrap.style.display   = 'block';
 
-      current = 0;
+      /* Attach hold-to-pause directly using the public API */
+      var outer = document.querySelector('.rv-track-outer');
+      if (outer) {
+        outer.addEventListener('mousedown',  function() { rvCarousel.pause();  }, { passive: true });
+        outer.addEventListener('touchstart', function() { rvCarousel.pause();  }, { passive: true });
+        outer.addEventListener('mouseup',    function() { rvCarousel.resume(); }, { passive: true });
+        outer.addEventListener('touchend',   function() { rvCarousel.resume(); }, { passive: true });
+        outer.addEventListener('mouseleave', function() { rvCarousel.resume(); }, { passive: true });
+      }
+
+      _current = 0;
       go(0);
     }
 
-    return { go, prev: () => go(current - 1), next: () => go(current + 1), init };
-  })();
-
+    return {
+      go:     go,
+      prev:   function() { go(_current - 1); },
+      next:   function() { go(_current + 1); },
+      pause:  pause,
+      resume: resume,
+      init:   init,
+    };
+  }());
   /* Bootstrap reviews */
   async function loadReviews() {
     try {
