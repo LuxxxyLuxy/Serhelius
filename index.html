@@ -2084,11 +2084,13 @@
           </div>
         </a>
         <!-- Discord Server -->
-        <a href="#" target="_blank" class="social-card">
-          <div class="social-icon"><img src="https://cdn.simpleicons.org/discord/5865F2" width="18" height="18" alt="discord" draggable="false" /></div>
+        <a href="https://discord.gg/Cg7Yzgu6Yh" target="_blank" class="social-card">
+          <div class="social-icon" id="discord-server-icon-wrap">
+            <img id="discord-server-icon" src="https://cdn.simpleicons.org/discord/5865F2" width="18" height="18" alt="discord" draggable="false" />
+          </div>
           <div class="social-info">
             <div class="social-name">Discord Server</div>
-            <div class="social-handle">[SERVER_NAME]</div>
+            <div class="social-handle" id="discord-server-name">Server</div>
           </div>
         </a>
       </div>
@@ -2481,7 +2483,7 @@ example()</code></pre>
     <a href="https://youtube.com/@[CHANNEL]"                                  target="_blank" title="YouTube"><img src="https://cdn.simpleicons.org/youtube/FF0000" width="16" height="16" alt="youtube" draggable="false" /></a>
     <a href="https://www.roblox.com/users/3566522125/profile"                 target="_blank" title="Roblox"><img src="https://cdn.simpleicons.org/roblox/ebebeb" width="16" height="16" alt="roblox" draggable="false" /></a>
     <a href="https://devforum.roblox.com/u/luxoralexandra/summary"            target="_blank" title="Dev Forum"><img src="https://cdn.simpleicons.org/discourse/ebebeb" width="16" height="16" alt="discourse" draggable="false" /></a>
-    <a href="#"                                                                target="_blank" title="Discord Server"><img src="https://cdn.simpleicons.org/discord/5865F2" width="16" height="16" alt="discord" draggable="false" /></a>
+    <a href="https://discord.gg/Cg7Yzgu6Yh"                                   target="_blank" title="Discord Server"><img id="discord-footer-icon" src="https://cdn.simpleicons.org/discord/5865F2" width="16" height="16" alt="discord" draggable="false" /></a>
   </div>
   <div class="footer-copy">
     © <span id="footer-year"></span> [YOUR NAME] — All rights reserved.
@@ -3617,11 +3619,11 @@ example()</code></pre>
   ════════════════════════════════════════════════ */
   const REVIEWS = [
     {
-      userId:   3566522125, // ← replace with real Roblox user ID
-      username: '[LuxorAlexandra]',
-      project:  '[Valhalla]',
-      review:   '[Nicest guy I ever met.]',
-      date:     '[21/02/24]',
+      userId:   0, // ← replace with real Roblox user ID
+      username: '[Client Name]',
+      project:  '[Project Name]',
+      review:   '[Their review text — what they said about your work, the quality, the experience working with you.]',
+      date:     '[Month Year]',
     },
     {
       userId:   0, // ← replace with real Roblox user ID
@@ -3825,6 +3827,57 @@ example()</code></pre>
     }
   }
   loadReviews();
+
+
+  /* ── Discord server icon + name from public invite API ── */
+  (function() {
+    fetch('https://discord.com/api/v10/invites/Cg7Yzgu6Yh?with_counts=true')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var guild = data.guild;
+        if (!guild) return;
+
+        /* Build icon URL */
+        var iconUrl = null;
+        if (guild.icon) {
+          var ext = guild.icon.startsWith('a_') ? 'gif' : 'png';
+          iconUrl = 'https://cdn.discordapp.com/icons/' + guild.id + '/' + guild.icon + '.' + ext + '?size=64';
+        }
+
+        /* Swap socials card icon */
+        var cardIcon = document.getElementById('discord-server-icon');
+        if (cardIcon && iconUrl) {
+          var img = document.createElement('img');
+          img.src    = iconUrl;
+          img.width  = 24;
+          img.height = 24;
+          img.alt    = guild.name;
+          img.draggable = false;
+          img.style.borderRadius = '50%';
+          img.style.objectFit   = 'cover';
+          cardIcon.replaceWith(img);
+        }
+
+        /* Swap footer icon */
+        var footerIcon = document.getElementById('discord-footer-icon');
+        if (footerIcon && iconUrl) {
+          var fImg = document.createElement('img');
+          fImg.src    = iconUrl;
+          fImg.width  = 18;
+          fImg.height = 18;
+          fImg.alt    = guild.name;
+          fImg.draggable = false;
+          fImg.style.borderRadius = '50%';
+          fImg.style.objectFit   = 'cover';
+          footerIcon.replaceWith(fImg);
+        }
+
+        /* Fill in server name */
+        var nameEl = document.getElementById('discord-server-name');
+        if (nameEl && guild.name) nameEl.textContent = guild.name;
+      })
+      .catch(function() {}); /* silently fail */
+  })();
 
 
 </script>
