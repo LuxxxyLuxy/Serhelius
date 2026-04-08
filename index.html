@@ -6,16 +6,15 @@
   <title>[YOUR HANDLE] — Portfolio</title>
   <meta name="description" content="Portfolio, services and client base of [YOUR HANDLE]." />
 
-  <!-- Fonts: Playfair Display (display) + JetBrains Mono (body/code) — optimized loading -->
+  <!-- Fonts: Playfair Display (display) + JetBrains Mono (body/code) -->
   <!-- Favicon — set dynamically from Discord server icon -->
   <link rel="icon" id="dynamic-favicon" type="image/png" href="https://cdn.simpleicons.org/discord/5865F2" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
 
-  <!-- Highlight.js for code fencing — deferred loading -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css" media="print" onload="this.media='all'" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+  <!-- Highlight.js for code fencing -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
   <style>
     /* ═══════════════════════════════════════════════
@@ -57,12 +56,10 @@
       font-size: 13px;
       line-height: 1.8;
       overflow-x: hidden;
-      will-change: auto;
     }
     a { color: var(--accent); text-decoration: none; transition: opacity var(--transition); }
     a:hover { opacity: .7; }
     img, video { max-width: 100%; border-radius: var(--r); display: block; }
-    img[loading="lazy"] { background: var(--bg-3); }
     ul { list-style: none; }
     button { font-family: var(--f-mono); cursor: pointer; border: none; background: none; }
 
@@ -79,6 +76,7 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      cursor: none;
     }
     #splash-canvas {
       position: absolute;
@@ -323,12 +321,10 @@
       opacity: 0;
       transform: translateY(20px);
       transition: opacity .6s ease, transform .6s ease;
-      will-change: opacity, transform;
     }
     .reveal.visible {
       opacity: 1;
       transform: none;
-      will-change: auto;
     }
     .reveal-delay-1 { transition-delay: .1s; }
     .reveal-delay-2 { transition-delay: .2s; }
@@ -377,14 +373,10 @@
       border-radius: 50%;
       background: var(--accent);
       animation: pulse 2.4s ease-in-out infinite;
-      will-change: opacity, transform;
     }
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: .4; transform: scale(.6); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .front-eyebrow .dot { animation: none; opacity: 1; }
     }
     #front h1 {
       font-family: var(--f-display);
@@ -458,9 +450,6 @@
     @keyframes scrollArrow {
       0%, 100% { transform: scaleY(1); opacity: .6; }
       50% { transform: scaleY(.5); opacity: .2; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      #front-scroll-hint .arrow { animation: none; opacity: .6; }
     }
 
     /* ═══════════════════════════════════════════════
@@ -576,9 +565,6 @@
       transition: transform .2s;
       cursor: default;
     }
-    .contrib-cell {
-      will-change: transform;
-    }
     .contrib-cell:hover { transform: scale(1.4); z-index: 1; }
     .contrib-cell.l1 { background: rgba(201,168,76,.2); }
     .contrib-cell.l2 { background: rgba(201,168,76,.45); }
@@ -599,7 +585,6 @@
       background: var(--bg-2);
       padding: 24px 20px;
       transition: background var(--transition);
-      contain: layout style paint;
     }
     .spec-card:hover { background: var(--bg-3); }
     .spec-card .spec-icon { font-size: 22px; margin-bottom: 12px; }
@@ -745,7 +730,6 @@
       padding: 16px;
       transition: border-color var(--transition), background var(--transition);
       text-decoration: none;
-      contain: layout style paint;
     }
     .social-card:hover {
       border-color: var(--accent);
@@ -841,7 +825,6 @@
       gap: 16px;
       transition: background var(--transition);
       position: relative;
-      contain: layout style paint;
     }
     .pub-card:hover { background: var(--bg-3); }
     .pub-card-header {
@@ -1060,7 +1043,6 @@
       align-items: center;
       gap: 16px;
       transition: background var(--transition);
-      contain: layout style paint;
     }
     .upcoming-item:hover { background: var(--bg-3); }
     .upcoming-item .upcoming-num {
@@ -1125,7 +1107,6 @@
       justify-content: center;
       font-size: 16px;
       transition: border-color var(--transition), background var(--transition);
-      will-change: border-color, background;
     }
     #footer .footer-socials a:hover {
       border-color: var(--accent);
@@ -1209,13 +1190,12 @@
       border-radius: 12px;
       overflow: hidden;
       border: 1px solid var(--border-2);
-      box-shadow: 0 10px 30px rgba(0,0,0,.4);
+      box-shadow: 0 24px 48px rgba(0,0,0,.6);
       max-height: 0;
       opacity: 0;
       transition: max-height .4s cubic-bezier(.4,0,.2,1), opacity .3s ease, margin-bottom .4s cubic-bezier(.4,0,.2,1);
       margin-bottom: 0;
       pointer-events: none;
-      contain: layout style paint;
     }
     #spotify-panel.open { max-height: 160px; opacity: 1; margin-bottom: 10px; pointer-events: all; }
     #spotify-panel iframe { display: block; width: 100%; height: 160px; border: none; }
@@ -1750,20 +1730,20 @@
 <nav id="nav">
   <div class="nav-logo">[YOUR<span>.</span>HANDLE]</div>
   <div class="nav-links">
-    <a href="#front" class="active" data-section="front">Front</a>
-    <a href="#back" data-section="back">Background</a>
-    <a href="#about" data-section="about">About</a>
-    <a href="#publications" data-section="publications">Publications</a>
+    <a href="#front"        class="active">Front</a>
+    <a href="#back"                       >Background</a>
+    <a href="#about"                      >About</a>
+    <a href="#publications"               >Publications</a>
   </div>
-  <button id="nav-mobile-toggle" aria-label="Menu" onclick="toggleMobileMenu()" type="button">
+  <button id="nav-mobile-toggle" aria-label="Menu" onclick="toggleMobileMenu()">
     <span></span><span></span><span></span>
   </button>
 </nav>
 <div id="mobile-menu">
-  <a href="#front" onclick="closeMobileMenu()" data-section="front">Front</a>
-  <a href="#back" onclick="closeMobileMenu()" data-section="back">Background</a>
-  <a href="#about" onclick="closeMobileMenu()" data-section="about">About</a>
-  <a href="#publications" onclick="closeMobileMenu()" data-section="publications">Publications</a>
+  <a href="#front"        onclick="closeMobileMenu()">Front</a>
+  <a href="#back"         onclick="closeMobileMenu()">Background</a>
+  <a href="#about"        onclick="closeMobileMenu()">About</a>
+  <a href="#publications" onclick="closeMobileMenu()">Publications</a>
 </div>
 
 <!-- ═══════════════════════════ §0 FRONT ═══════════════════════════ -->
@@ -1868,7 +1848,7 @@
       <!-- Total visits banner -->
       <div class="rbx-total-banner">
         <div class="rbx-total-icon">
-          <img src="https://cdn.simpleicons.org/roblox/c9a84c" width="20" height="20" alt="roblox" draggable="false" loading="lazy" />
+          <img src="https://cdn.simpleicons.org/roblox/c9a84c" width="20" height="20" alt="roblox" draggable="false" />
         </div>
         <div>
           <div class="rbx-total-val" id="rbx-total-visits">—</div>
@@ -2182,7 +2162,7 @@ example()</code></pre>
 
           <!-- Photo display — replace src with your own image URL -->
           <div class="pub-media">
-            <img src="" loading="lazy" onerror="this.style.display='none'" alt="Project screenshot" />
+            <img src="" onerror="this.style.display='none'" alt="Project screenshot" />
           </div>
 
           <div class="pub-card-footer">
@@ -2215,7 +2195,7 @@ example()</code></pre>
 
           <!-- Video display — replace src with your own hosted video -->
           <div class="pub-media">
-            <video controls preload="metadata" poster="">
+            <video controls preload="none">
               <source src="[VIDEO_URL.mp4]" type="video/mp4" />
               Your browser does not support video.
             </video>
@@ -2347,7 +2327,7 @@ example()</code></pre>
           </div>
           <p>[Description of this project.]</p>
           <div class="pub-media">
-            <img src="" loading="lazy" onerror="this.style.display='none'" alt="" />
+            <img src="" onerror="this.style.display='none'" alt="" />
           </div>
           <div class="pub-card-footer">
             <div class="pub-tags">
@@ -2498,12 +2478,12 @@ example()</code></pre>
     <span id="visit-count-label">— visitors</span>
   </div>
   <div class="footer-socials">
-    <a href="https://x.com/[YOUR_HANDLE]"                                    target="_blank" title="X" rel="noopener"><img src="https://cdn.simpleicons.org/x/ebebeb" width="16" height="16" alt="x" loading="lazy" draggable="false" /></a>
-    <a href="#"                                                               title="Discord" rel="noopener"><img src="https://cdn.simpleicons.org/discord/5865F2" width="16" height="16" alt="discord" loading="lazy" draggable="false" /></a>
-    <a href="https://youtube.com/@[CHANNEL]"                                  target="_blank" title="YouTube" rel="noopener"><img src="https://cdn.simpleicons.org/youtube/FF0000" width="16" height="16" alt="youtube" loading="lazy" draggable="false" /></a>
-    <a href="https://www.roblox.com/users/3566522125/profile"                 target="_blank" title="Roblox" rel="noopener"><img src="https://cdn.simpleicons.org/roblox/ebebeb" width="16" height="16" alt="roblox" loading="lazy" draggable="false" /></a>
-    <a href="https://devforum.roblox.com/u/luxoralexandra/summary"            target="_blank" title="Dev Forum" rel="noopener"><img src="https://doy2mn9upadnk.cloudfront.net/user_avatar/devforum.roblox.com/roblox/120/4100645_2.png" width="16" height="16" alt="discourse" loading="lazy" draggable="false" /></a>
-    <a href="https://discord.gg/Cg7Yzgu6Yh"                                   target="_blank" title="Discord Server" rel="noopener"><img id="discord-footer-icon" src="https://cdn.simpleicons.org/discord/5865F2" width="16" height="16" alt="discord" loading="lazy" draggable="false" /></a>
+    <a href="https://x.com/[YOUR_HANDLE]"                                    target="_blank" title="X"><img src="https://cdn.simpleicons.org/x/ebebeb" width="16" height="16" alt="x" draggable="false" /></a>
+    <a href="#"                                                               title="Discord"><img src="https://cdn.simpleicons.org/discord/5865F2" width="16" height="16" alt="discord" draggable="false" /></a>
+    <a href="https://youtube.com/@[CHANNEL]"                                  target="_blank" title="YouTube"><img src="https://cdn.simpleicons.org/youtube/FF0000" width="16" height="16" alt="youtube" draggable="false" /></a>
+    <a href="https://www.roblox.com/users/3566522125/profile"                 target="_blank" title="Roblox"><img src="https://cdn.simpleicons.org/roblox/ebebeb" width="16" height="16" alt="roblox" draggable="false" /></a>
+    <a href="https://devforum.roblox.com/u/luxoralexandra/summary"            target="_blank" title="Dev Forum"><img src="https://doy2mn9upadnk.cloudfront.net/user_avatar/devforum.roblox.com/roblox/120/4100645_2.png" width="16" height="16" alt="discourse" draggable="false" /></a>
+    <a href="https://discord.gg/Cg7Yzgu6Yh"                                   target="_blank" title="Discord Server"><img id="discord-footer-icon" src="https://cdn.simpleicons.org/discord/5865F2" width="16" height="16" alt="discord" draggable="false" /></a>
   </div>
   <div class="footer-copy">
     © <span id="footer-year"></span> [YOUR NAME] — All rights reserved.
@@ -2552,19 +2532,19 @@ example()</code></pre>
 <!-- ═══════════════════════════ SCRIPTS ═══════════════════════════ -->
 <script>
   /* ════════════════════════════════════════════════
-     SPLASH — PARTICLE CANVAS  (optimised for performance)
+     SPLASH — PARTICLE CANVAS  (optimised)
   ════════════════════════════════════════════════ */
   (function () {
     const splash   = document.getElementById('splash');
     const canvas   = document.getElementById('splash-canvas');
     const mainWrap = document.getElementById('main-wrap');
-    const ctx      = canvas.getContext('2d', { alpha: true, willReadFrequently: false });
+    const ctx      = canvas.getContext('2d');
 
-    let W = canvas.width, H = canvas.height;
-    let dismissed = false, raf;
+    let W, H, dismissed = false, raf;
     let particles  = [];
     let shockwaves = [];
     let mouse     = { x: -9999, y: -9999, px: -9999, py: -9999, vx: 0, vy: 0 };
+    let cursorDraw = { x: -9999, y: -9999 }; // lagged cursor position
 
     /* ─── palette (pre-built strings for speed) ─── */
     const COLORS = [
@@ -2639,6 +2619,7 @@ example()</code></pre>
 
     /* ─── draw loop ─── */
     let lastSpawn = 0, trailTick = 0;
+    let cursorPulse = 0;
 
     function draw(ts) {
       if (dismissed) return;
@@ -2780,12 +2761,64 @@ example()</code></pre>
       }
       ctx.globalAlpha = 1;
 
+      /* ── cursor ── */
+      if (mouse.x > 0 && mouse.x < W) {
+        cursorPulse += .045;
+
+        /* near-instant follow — just 1 frame of smoothing to remove jitter */
+        cursorDraw.x += (mouse.x - cursorDraw.x) * 0.72;
+        cursorDraw.y += (mouse.y - cursorDraw.y) * 0.72;
+
+        const cx  = cursorDraw.x;
+        const cy  = cursorDraw.y;
+        const R   = 13;
+        const rot = cursorPulse * .6; // slow rotation
+
+        ctx.save();
+
+        /* rotating dashed ring — 4 arcs */
+        ctx.strokeStyle = 'rgba(201,168,76,0.9)';
+        ctx.lineWidth   = 1.2;
+        const gap = .5;
+        for (let s = 0; s < 4; s++) {
+          const a = rot + s * (Math.PI / 2);
+          ctx.beginPath();
+          ctx.arc(cx, cy, R, a + gap * .5, a + Math.PI / 2 - gap * .5);
+          ctx.stroke();
+        }
+
+        /* 4 static corner ticks — don't rotate, anchors the reticle */
+        ctx.globalAlpha = .5;
+        ctx.lineWidth   = 1;
+        const off = R + 5;
+        const tl  = 4;
+        ctx.strokeStyle = 'rgba(201,168,76,1)';
+        [[-1,-1],[1,-1],[1,1],[-1,1]].forEach(([sx,sy]) => {
+          ctx.beginPath();
+          ctx.moveTo(cx + sx * off,      cy + sy * off);
+          ctx.lineTo(cx + sx * (off+tl), cy + sy * off);
+          ctx.moveTo(cx + sx * off,      cy + sy * off);
+          ctx.lineTo(cx + sx * off,      cy + sy * (off+tl));
+          ctx.stroke();
+        });
+
+        /* centre dot */
+        ctx.globalAlpha = 1;
+        ctx.fillStyle   = 'rgba(224,196,120,1)';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+
       raf = requestAnimationFrame(draw);
     }
     raf = requestAnimationFrame(draw);
 
     /* ─── mouse events ─── */
     splash.addEventListener('mousemove', e => {
+      if (cursorDraw.x === -9999) { cursorDraw.x = e.clientX; cursorDraw.y = e.clientY; }
       mouse.x = e.clientX; mouse.y = e.clientY;
     });
     splash.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
@@ -3236,37 +3269,17 @@ example()</code></pre>
      ACTIVE NAV on scroll
   ──────────────────────────────────────────────── */
   function updateActiveNav() {
+    const sections = ['front','back','about','publications'];
     const navH = 70;
-    const scrollY = window.scrollY;
     let current = 'front';
-    
-    const sections = [
-      { id: 'publications', el: document.getElementById('publications') },
-      { id: 'about', el: document.getElementById('about') },
-      { id: 'back', el: document.getElementById('back') },
-      { id: 'front', el: document.getElementById('front') },
-    ];
-    
-    // Check sections in reverse order for efficiency
-    for (let section of sections) {
-      if (section.el && scrollY >= section.el.offsetTop - navH - 40) {
-        current = section.id;
-        break;
-      }
-    }
-    
-    document.querySelectorAll('[data-section]').forEach(a => {
-      const isActive = a.getAttribute('data-section') === current;
-      a.classList.toggle('active', isActive);
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && window.scrollY >= el.offsetTop - navH - 40) current = id;
+    });
+    document.querySelectorAll('#nav .nav-links a').forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
     });
   }
-  
-  // Debounce scroll updates
-  let scrollTimeout;
-  window.addEventListener('scroll', () => {
-    clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(updateActiveNav, 100);
-  }, { passive: true });
 
   /* ────────────────────────────────────────────────
      REVEAL on scroll
@@ -3299,6 +3312,7 @@ example()</code></pre>
   /* ────────────────────────────────────────────────
      INIT
   ──────────────────────────────────────────────── */
+  window.addEventListener('scroll', updateActiveNav, { passive: true });
   loadRobloxGames();
   restoreLikes();
   updateLocalTime();
@@ -3521,9 +3535,10 @@ example()</code></pre>
     (function () {
       let lastScroll  = 0;
       let lastScrollY = window.scrollY;
-      let accumulator = 0;
-      const STEP      = 160;     // Increased threshold to reduce frequency
-      const THROTTLE  = 120;     // Increased wait between ticks
+      let scrollDir   = 0;
+      let accumulator = 0;       // accumulate delta to avoid firing on tiny nudges
+      const STEP      = 120;     // px of scroll before a tick fires
+      const THROTTLE  = 80;      // ms minimum between ticks
 
       window.addEventListener('scroll', () => {
         const now      = Date.now();
@@ -3532,8 +3547,10 @@ example()</code></pre>
         lastScrollY    = currentY;
         accumulator   += Math.abs(delta);
 
-        if (accumulator < STEP || now - lastScroll < THROTTLE) return;
+        if (accumulator < STEP) return;
         accumulator = 0;
+
+        if (now - lastScroll < THROTTLE) return;
         lastScroll = now;
 
         try {
@@ -3544,10 +3561,10 @@ example()</code></pre>
           osc.connect(g);
           g.connect(ac.destination);
 
-          const bodyHeight = document.body.scrollHeight - window.innerHeight;
-          const progress   = bodyHeight > 0 ? currentY / bodyHeight : 0;
-          const basePitch  = 600 + progress * 300;
-          const pitch      = basePitch * (delta > 0 ? 1 : 1.18);
+          /* Pitch shifts slightly depending on scroll position for variety */
+          const progress  = currentY / (document.body.scrollHeight - window.innerHeight);
+          const basePitch = 600 + progress * 300;   // 600–900 Hz as you scroll down
+          const pitch     = basePitch * (delta > 0 ? 1 : 1.18);
 
           osc.type = 'sine';
           osc.frequency.setValueAtTime(pitch, t);
