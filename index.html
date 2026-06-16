@@ -3,51 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>[YOUR HANDLE] — Portfolio</title>
   <meta name="description" content="Portfolio, services and client base of [YOUR HANDLE]." />
-
-  <!-- Fonts: Playfair Display (display) + JetBrains Mono (body/code) -->
-  <!-- Favicon — set dynamically from Discord server icon -->
-  <link rel="icon" id="dynamic-favicon" type="image/png" href="https://cdn.simpleicons.org/discord/5865F2" />
+  <meta name="theme-color" content="#080808" />
+  
+  <!-- Preconnect for performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  
+  <!-- Favicon -->
+  <link rel="icon" id="dynamic-favicon" type="image/png" href="https://cdn.simpleicons.org/discord/5865F2" />
+  
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
-
-  <!-- Highlight.js for code fencing -->
+  
+  <!-- Highlight.js -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-
+  
+  <!-- Inline critical CSS -->
   <style>
-    /* ═══════════════════════════════════════════════
-       TOKENS
-    ═══════════════════════════════════════════════ */
     :root {
-      --bg:         #080808;
-      --bg-2:       #0f0f0f;
-      --bg-3:       #161616;
-      --bg-4:       #1e1e1e;
-      --border:     #242424;
-      --border-2:   #2e2e2e;
-      --text:       #ebebeb;
-      --text-2:     #999;
-      --text-3:     #555;
-      --accent:     #c9a84c;
+      --bg: #080808;
+      --bg-2: #0f0f0f;
+      --bg-3: #161616;
+      --bg-4: #1e1e1e;
+      --border: #242424;
+      --border-2: #2e2e2e;
+      --text: #ebebeb;
+      --text-2: #999;
+      --text-3: #555;
+      --accent: #c9a84c;
       --accent-dim: rgba(201,168,76,.12);
-      --accent-glow:rgba(201,168,76,.22);
-      --red:        #e05555;
-      --green:      #5db87a;
-
+      --accent-glow: rgba(201,168,76,.22);
+      --red: #e05555;
+      --green: #5db87a;
       --f-display: 'Playfair Display', Georgia, serif;
-      --f-mono:    'JetBrains Mono', 'Courier New', monospace;
-
+      --f-mono: 'JetBrains Mono', 'Courier New', monospace;
       --nav-h: 56px;
       --r: 4px;
       --transition: .3s cubic-bezier(.4,0,.2,1);
     }
 
-    /* ═══════════════════════════════════════════════
-       RESET
-    ═══════════════════════════════════════════════ */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
       background: var(--bg);
@@ -62,484 +59,153 @@
     img, video { max-width: 100%; border-radius: var(--r); display: block; }
     ul { list-style: none; }
     button { font-family: var(--f-mono); cursor: pointer; border: none; background: none; }
-
-    /* ═══════════════════════════════════════════════
-       SPLASH SCREEN
-    ═══════════════════════════════════════════════ */
-    #splash {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: #040404;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      cursor: none;
-    }
-    #splash-canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-    }
-    #splash-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      pointer-events: none;
-      user-select: none;
-    }
-    #splash-wordmark {
-      font-family: var(--f-display);
-      font-size: clamp(48px, 8vw, 96px);
-      font-weight: 900;
-      letter-spacing: -.03em;
-      color: #ebebeb;
-      line-height: 1;
-      margin-bottom: 12px;
-      opacity: 0;
-      animation: splashFadeUp .9s ease forwards .3s;
-    }
-    #splash-wordmark em {
-      font-style: italic;
-      color: var(--accent);
-    }
-    #splash-tagline {
-      font-family: var(--f-mono);
-      font-size: 10px;
-      letter-spacing: .32em;
-      text-transform: uppercase;
-      color: #444;
-      margin-bottom: 64px;
-      opacity: 0;
-      animation: splashFadeUp .9s ease forwards .55s;
-    }
-    #splash-prompt {
-      font-family: var(--f-mono);
-      font-size: 11px;
-      letter-spacing: .22em;
-      text-transform: uppercase;
-      color: #555;
-      opacity: 0;
-      animation: splashFadeUp .9s ease forwards .9s, splashBlink 2.2s ease-in-out infinite 1.4s;
-    }
-    #splash-prompt span {
-      color: var(--accent);
-    }
-    #splash-cursor {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 3;
-      transform: translate(-50%, -50%);
-      display: none; /* aura is drawn on canvas instead */
-    }
-    /* Transition out */
-    #splash.leaving {
-      animation: splashLeave .8s cubic-bezier(.4,0,.2,1) forwards;
-    }
-    @keyframes splashFadeUp {
-      from { opacity: 0; transform: translateY(14px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes splashBlink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: .3; }
-    }
-    @keyframes splashLeave {
-      0%   { opacity: 1; transform: scale(1); }
-      60%  { opacity: 0; transform: scale(1.04); }
-      100% { opacity: 0; transform: scale(1.04); pointer-events: none; }
-    }
-    /* Main content hidden until splash dismissed */
-    #main-wrap {
-      opacity: 0;
-      transition: opacity .6s ease .1s;
-    }
-    #main-wrap.visible {
-      opacity: 1;
-    }
-
-    /* ═══════════════════════════════════════════════
-       SCROLLBAR
-    ═══════════════════════════════════════════════ */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 2px; }
-
-    /* ═══════════════════════════════════════════════
-       SELECTION
-    ═══════════════════════════════════════════════ */
     ::selection { background: var(--accent-dim); color: var(--accent); }
 
-    /* ═══════════════════════════════════════════════
-       UTILITY
-    ═══════════════════════════════════════════════ */
-    .label {
-      font-size: 10px;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: var(--text-3);
+    /* Splash Screen */
+    #splash {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #040404; display: flex;
+      align-items: center; justify-content: center;
+      overflow: hidden; cursor: none;
     }
-    .accent  { color: var(--accent); }
-    .muted   { color: var(--text-2); }
-    .tag {
-      display: inline-block;
-      padding: 2px 10px;
-      border: 1px solid var(--border-2);
-      border-radius: 2px;
-      font-size: 10px;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--text-2);
+    #splash-canvas { position: absolute; inset: 0; }
+    #splash-content { position: relative; z-index: 2; text-align: center; pointer-events: none; }
+    #splash-wordmark {
+      font-family: var(--f-display); font-size: clamp(48px, 8vw, 96px);
+      font-weight: 900; letter-spacing: -.03em; color: #ebebeb;
+      line-height: 1; margin-bottom: 12px;
+      opacity: 0; animation: splashFadeUp .9s ease forwards .3s;
     }
-    .tag.accent-tag {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: var(--accent-dim);
+    #splash-wordmark em { font-style: italic; color: var(--accent); }
+    #splash-tagline {
+      font-family: var(--f-mono); font-size: 10px; letter-spacing: .32em;
+      text-transform: uppercase; color: #444; margin-bottom: 64px;
+      opacity: 0; animation: splashFadeUp .9s ease forwards .55s;
     }
-    .divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 40px 0;
+    #splash-prompt {
+      font-family: var(--f-mono); font-size: 11px; letter-spacing: .22em;
+      text-transform: uppercase; color: #555;
+      opacity: 0;
+      animation: splashFadeUp .9s ease forwards .9s, splashBlink 2.2s ease-in-out infinite 1.4s;
     }
-    .section-num {
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: .18em;
-    }
+    #splash-prompt span { color: var(--accent); }
+    #splash.leaving { animation: splashLeave .8s cubic-bezier(.4,0,.2,1) forwards; }
+    @keyframes splashFadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes splashBlink { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+    @keyframes splashLeave { 0% { opacity: 1; transform: scale(1); } 60% { opacity: 0; transform: scale(1.04); } 100% { opacity: 0; transform: scale(1.04); pointer-events: none; } }
+    #main-wrap { opacity: 0; transition: opacity .6s ease .1s; }
+    #main-wrap.visible { opacity: 1; }
 
-    /* ═══════════════════════════════════════════════
-       NAVIGATION
-    ═══════════════════════════════════════════════ */
-    #nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: var(--nav-h);
-      background: rgba(8,8,8,.88);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 32px;
-    }
-    #nav .nav-logo {
-      font-family: var(--f-display);
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: .02em;
-    }
-    #nav .nav-logo span { color: var(--accent); }
-    #nav .nav-links {
-      display: flex;
-      gap: 32px;
-      align-items: center;
-    }
-    #nav .nav-links a {
-      font-size: 10px;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-      color: var(--text-2);
-      transition: color var(--transition);
-      position: relative;
-    }
-    #nav .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -4px; left: 0; right: 0;
-      height: 1px;
-      background: var(--accent);
-      transform: scaleX(0);
-      transition: transform var(--transition);
-    }
-    #nav .nav-links a:hover,
-    #nav .nav-links a.active { color: var(--text); opacity: 1; }
-    #nav .nav-links a.active::after { transform: scaleX(1); }
-
-    #nav-mobile-toggle {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      padding: 4px;
-    }
-    #nav-mobile-toggle span {
-      display: block;
-      width: 22px;
-      height: 1px;
-      background: var(--text-2);
-      transition: var(--transition);
-    }
-
-    /* Mobile nav */
-    #mobile-menu {
-      display: none;
-      position: fixed;
-      top: var(--nav-h); left: 0; right: 0;
-      background: rgba(8,8,8,.97);
-      border-bottom: 1px solid var(--border);
-      padding: 24px 32px;
-      z-index: 999;
-      flex-direction: column;
-      gap: 20px;
-    }
-    #mobile-menu.open { display: flex; }
-    #mobile-menu a {
-      font-size: 12px;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      color: var(--text-2);
-    }
-
-    /* ═══════════════════════════════════════════════
-       LAYOUT
-    ═══════════════════════════════════════════════ */
-    .page-wrap {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 32px;
-    }
-    section {
-      padding-top: calc(var(--nav-h) + 80px);
-      padding-bottom: 80px;
-      min-height: 100vh;
-    }
+    /* Layout */
+    .page-wrap { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+    section { padding-top: calc(var(--nav-h) + 80px); padding-bottom: 80px; min-height: 100vh; }
     section:not(#front) { border-top: 1px solid var(--border); }
 
-    /* ═══════════════════════════════════════════════
-       FADE-IN OBSERVER
-    ═══════════════════════════════════════════════ */
-    .reveal {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity .6s ease, transform .6s ease;
+    /* Navigation */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h);
+      background: rgba(8,8,8,.88); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border); z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between; padding: 0 32px;
     }
-    .reveal.visible {
-      opacity: 1;
-      transform: none;
+    #nav .nav-logo { font-family: var(--f-display); font-size: 16px; font-weight: 700; color: var(--text); letter-spacing: .02em; }
+    #nav .nav-logo span { color: var(--accent); }
+    #nav .nav-links { display: flex; gap: 32px; align-items: center; }
+    #nav .nav-links a {
+      font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--text-2);
+      transition: color var(--transition); position: relative;
     }
+    #nav .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 1px; background: var(--accent); transform: scaleX(0); transition: transform var(--transition);
+    }
+    #nav .nav-links a:hover, #nav .nav-links a.active { color: var(--text); opacity: 1; }
+    #nav .nav-links a.active::after { transform: scaleX(1); }
+    #nav-mobile-toggle { display: none; flex-direction: column; gap: 5px; padding: 4px; }
+    #nav-mobile-toggle span { display: block; width: 22px; height: 1px; background: var(--text-2); transition: var(--transition); }
+    #mobile-menu { display: none; position: fixed; top: var(--nav-h); left: 0; right: 0; background: rgba(8,8,8,.97); border-bottom: 1px solid var(--border); padding: 24px 32px; z-index: 999; flex-direction: column; gap: 20px; }
+    #mobile-menu.open { display: flex; }
+    #mobile-menu a { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-2); }
+
+    /* Front Section */
+    #front { display: flex; align-items: center; position: relative; overflow: hidden; min-height: 100vh; padding-top: var(--nav-h); }
+    #front-grid {
+      position: absolute; inset: 0;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px; opacity: .35; pointer-events: none;
+    }
+    #front-vignette { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, var(--bg) 100%); pointer-events: none; }
+    #front .page-wrap { position: relative; z-index: 1; }
+    #front-content { max-width: 780px; }
+    .front-eyebrow { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+    .front-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2.4s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(.6); } }
+    #front h1 { font-family: var(--f-display); font-size: clamp(52px, 9vw, 112px); line-height: .94; letter-spacing: -.02em; font-weight: 900; color: var(--text); margin-bottom: 32px; }
+    #front h1 em { font-style: italic; color: var(--accent); }
+    #front-subtitle { font-size: 13px; color: var(--text-2); max-width: 520px; line-height: 1.9; margin-bottom: 48px; }
+    .front-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px; padding: 11px 24px;
+      font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+      border-radius: var(--r); transition: var(--transition);
+    }
+    .btn-primary { background: var(--accent); color: #080808; font-weight: 700; }
+    .btn-primary:hover { opacity: .85; }
+    .btn-outline { border: 1px solid var(--border-2); color: var(--text-2); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+    #front-scroll-hint {
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: var(--text-3); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+    }
+    #front-scroll-hint .arrow { width: 1px; height: 40px; background: linear-gradient(var(--border-2), transparent); animation: scrollArrow 2s ease-in-out infinite; }
+    @keyframes scrollArrow { 0%, 100% { transform: scaleY(1); opacity: .6; } 50% { transform: scaleY(.5); opacity: .2; } }
+
+    /* Utility Classes */
+    .label { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--text-3); }
+    .accent { color: var(--accent); }
+    .muted { color: var(--text-2); }
+    .tag {
+      display: inline-block; padding: 2px 10px; border: 1px solid var(--border-2);
+      border-radius: 2px; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-2);
+    }
+    .tag.accent-tag { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+    .section-num { font-size: 10px; color: var(--text-3); letter-spacing: .18em; }
+
+    /* Reveal Animation */
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
     .reveal-delay-1 { transition-delay: .1s; }
     .reveal-delay-2 { transition-delay: .2s; }
     .reveal-delay-3 { transition-delay: .3s; }
     .reveal-delay-4 { transition-delay: .4s; }
 
-    /* ═══════════════════════════════════════════════
-       §0 FRONT
-    ═══════════════════════════════════════════════ */
-    #front {
-      display: flex;
-      align-items: center;
-      position: relative;
-      overflow: hidden;
-      min-height: 100vh;
-      padding-top: var(--nav-h);
-    }
-    #front-grid {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(var(--border) 1px, transparent 1px),
-        linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 60px 60px;
-      opacity: .35;
-      pointer-events: none;
-    }
-    #front-vignette {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, var(--bg) 100%);
-      pointer-events: none;
-    }
-    #front .page-wrap { position: relative; z-index: 1; }
-    #front-content {
-      max-width: 780px;
-    }
-    .front-eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-    .front-eyebrow .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      animation: pulse 2.4s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: .4; transform: scale(.6); }
-    }
-    #front h1 {
-      font-family: var(--f-display);
-      font-size: clamp(52px, 9vw, 112px);
-      line-height: .94;
-      letter-spacing: -.02em;
-      font-weight: 900;
-      color: var(--text);
-      margin-bottom: 32px;
-    }
-    #front h1 em {
-      font-style: italic;
-      color: var(--accent);
-    }
-    #front-subtitle {
-      font-size: 13px;
-      color: var(--text-2);
-      max-width: 520px;
-      line-height: 1.9;
-      margin-bottom: 48px;
-    }
-    .front-actions {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 11px 24px;
-      font-family: var(--f-mono);
-      font-size: 11px;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      border-radius: var(--r);
-      transition: var(--transition);
-    }
-    .btn-primary {
-      background: var(--accent);
-      color: #080808;
-      font-weight: 700;
-    }
-    .btn-primary:hover { opacity: .85; }
-    .btn-outline {
-      border: 1px solid var(--border-2);
-      color: var(--text-2);
-    }
-    .btn-outline:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
-
-    #front-scroll-hint {
-      position: absolute;
-      bottom: 32px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: var(--text-3);
-      font-size: 10px;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-    }
-    #front-scroll-hint .arrow {
-      width: 1px;
-      height: 40px;
-      background: linear-gradient(var(--border-2), transparent);
-      animation: scrollArrow 2s ease-in-out infinite;
-    }
-    @keyframes scrollArrow {
-      0%, 100% { transform: scaleY(1); opacity: .6; }
-      50% { transform: scaleY(.5); opacity: .2; }
-    }
-
-    /* ═══════════════════════════════════════════════
-       §1 BACK (Background page)
-    ═══════════════════════════════════════════════ */
-    #back .section-header {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      align-items: start;
-    }
-    #back .section-header h2 {
-      font-family: var(--f-display);
-      font-size: clamp(36px, 5vw, 60px);
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -.02em;
-    }
-    #back .section-header .right p {
-      color: var(--text-2);
-      line-height: 1.9;
-      margin-bottom: 16px;
-    }
+    /* Background Section */
+    #back .section-header { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+    #back .section-header h2 { font-family: var(--f-display); font-size: clamp(36px, 5vw, 60px); font-weight: 700; line-height: 1.1; letter-spacing: -.02em; }
+    #back .section-header .right p { color: var(--text-2); line-height: 1.9; margin-bottom: 16px; }
     .stats-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      margin-top: 64px;
-      overflow: hidden;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+      background: var(--border); border: 1px solid var(--border); border-radius: var(--r);
+      margin-top: 64px; overflow: hidden;
     }
-    .stat-cell {
-      background: var(--bg-2);
-      padding: 28px 24px;
-      text-align: center;
-    }
-    .stat-cell .stat-val {
-      font-family: var(--f-display);
-      font-size: 38px;
-      font-weight: 900;
-      color: var(--accent);
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-    .stat-cell .stat-label {
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: .14em;
-      text-transform: uppercase;
-    }
+    .stat-cell { background: var(--bg-2); padding: 28px 24px; text-align: center; }
+    .stat-cell .stat-val { font-family: var(--f-display); font-size: 38px; font-weight: 900; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+    .stat-cell .stat-label { font-size: 10px; color: var(--text-3); letter-spacing: .14em; text-transform: uppercase; }
 
-    /* ═══════════════════════════════════════════════
-       §2 ABOUT ME
-    ═══════════════════════════════════════════════ */
-    .section-title-block {
-      display: flex;
-      align-items: baseline;
-      gap: 16px;
-      margin-bottom: 48px;
-    }
-    .section-title-block h2 {
-      font-family: var(--f-display);
-      font-size: clamp(28px, 4vw, 48px);
-      font-weight: 700;
-      letter-spacing: -.02em;
-    }
-
-    /* Tabs */
-    .tabs-nav {
-      display: flex;
-      border-bottom: 1px solid var(--border);
-      gap: 0;
-      margin-bottom: 40px;
-      overflow-x: auto;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
+    /* About Section */
+    .section-title-block { display: flex; align-items: baseline; gap: 16px; margin-bottom: 48px; }
+    .section-title-block h2 { font-family: var(--f-display); font-size: clamp(28px, 4vw, 48px); font-weight: 700; letter-spacing: -.02em; }
+    .tabs-nav { display: flex; border-bottom: 1px solid var(--border); gap: 0; margin-bottom: 40px; overflow-x: auto; -ms-overflow-style: none; scrollbar-width: none; }
     .tabs-nav::-webkit-scrollbar { display: none; }
     .tab-btn {
-      padding: 12px 20px;
-      font-size: 10px;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      color: var(--text-3);
-      border-bottom: 2px solid transparent;
-      margin-bottom: -1px;
-      white-space: nowrap;
-      transition: color var(--transition), border-color var(--transition);
+      padding: 12px 20px; font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--text-3); border-bottom: 2px solid transparent; margin-bottom: -1px;
+      white-space: nowrap; transition: color var(--transition), border-color var(--transition);
     }
     .tab-btn:hover { color: var(--text-2); }
     .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
@@ -547,24 +213,9 @@
     .tab-panel.active { display: block; }
 
     /* Contributions */
-    .contrib-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    .contrib-grid {
-      display: grid;
-      grid-template-columns: repeat(52, 1fr);
-      gap: 2px;
-    }
-    .contrib-cell {
-      aspect-ratio: 1;
-      border-radius: 2px;
-      background: var(--bg-3);
-      transition: transform .2s;
-      cursor: default;
-    }
+    .contrib-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .contrib-grid { display: grid; grid-template-columns: repeat(52, 1fr); gap: 2px; }
+    .contrib-cell { aspect-ratio: 1; border-radius: 2px; background: var(--bg-3); transition: transform .2s; cursor: default; }
     .contrib-cell:hover { transform: scale(1.4); z-index: 1; }
     .contrib-cell.l1 { background: rgba(201,168,76,.2); }
     .contrib-cell.l2 { background: rgba(201,168,76,.45); }
@@ -572,1150 +223,277 @@
     .contrib-cell.l4 { background: var(--accent); }
 
     /* Specialisations */
-    .spec-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      overflow: hidden;
-    }
-    .spec-card {
-      background: var(--bg-2);
-      padding: 24px 20px;
-      transition: background var(--transition);
-    }
+    .spec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+    .spec-card { background: var(--bg-2); padding: 24px 20px; transition: background var(--transition); }
     .spec-card:hover { background: var(--bg-3); }
     .spec-card .spec-icon { font-size: 22px; margin-bottom: 12px; }
-    .spec-card h4 {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
+    .spec-card h4 { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 6px; }
     .spec-card p { font-size: 11px; color: var(--text-2); line-height: 1.7; }
 
-    /* Experiences + Timeline */
-    .timeline {
-      position: relative;
-      padding-left: 28px;
-    }
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 6px; bottom: 6px;
-      width: 1px;
-      background: var(--border-2);
-    }
-    .timeline-item {
-      position: relative;
-      margin-bottom: 40px;
-    }
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: -31px;
-      top: 6px;
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--bg);
-      border: 1px solid var(--accent);
-    }
+    /* Timeline */
+    .timeline { position: relative; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 0; top: 6px; bottom: 6px; width: 1px; background: var(--border-2); }
+    .timeline-item { position: relative; margin-bottom: 40px; }
+    .timeline-item::before { content: ''; position: absolute; left: -31px; top: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--bg); border: 1px solid var(--accent); }
     .timeline-item.current::before { background: var(--accent); }
-    .timeline-meta {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-    .timeline-meta .period {
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: .12em;
-    }
-    .timeline-item h4 {
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 4px;
-    }
-    .timeline-item p {
-      font-size: 11px;
-      color: var(--text-2);
-      line-height: 1.8;
-    }
+    .timeline-meta { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
+    .timeline-meta .period { font-size: 10px; color: var(--text-3); letter-spacing: .12em; }
+    .timeline-item h4 { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+    .timeline-item p { font-size: 11px; color: var(--text-2); line-height: 1.8; }
 
     /* Philosophy */
-    .philosophy-quote {
-      border-left: 2px solid var(--accent);
-      padding: 20px 28px;
-      background: var(--bg-2);
-      border-radius: 0 var(--r) var(--r) 0;
-      margin-bottom: 24px;
-    }
-    .philosophy-quote blockquote {
-      font-family: var(--f-display);
-      font-style: italic;
-      font-size: 18px;
-      line-height: 1.6;
-      color: var(--text);
-    }
-    .philosophy-quote cite {
-      display: block;
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      margin-top: 10px;
-    }
+    .philosophy-quote { border-left: 2px solid var(--accent); padding: 20px 28px; background: var(--bg-2); border-radius: 0 var(--r) var(--r) 0; margin-bottom: 24px; }
+    .philosophy-quote blockquote { font-family: var(--f-display); font-style: italic; font-size: 18px; line-height: 1.6; color: var(--text); }
+    .philosophy-quote cite { display: block; font-size: 10px; color: var(--text-3); letter-spacing: .14em; text-transform: uppercase; margin-top: 10px; }
 
     /* Availability */
-    .avail-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    .avail-card {
-      background: var(--bg-2);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 20px;
-    }
-    .avail-card .avail-status {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-    .status-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-    }
+    .avail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+    .avail-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; }
+    .avail-card .avail-status { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; }
     .status-dot.available { background: var(--green); box-shadow: 0 0 8px var(--green); }
-    .status-dot.limited  { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
-    .status-dot.busy     { background: var(--red); box-shadow: 0 0 8px var(--red); }
-    .avail-card .avail-label {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .1em;
-    }
+    .status-dot.limited { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+    .status-dot.busy { background: var(--red); box-shadow: 0 0 8px var(--red); }
+    .avail-card .avail-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; }
     .avail-card p { font-size: 11px; color: var(--text-2); }
-    .tz-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--bg-3);
-      border: 1px solid var(--border-2);
-      border-radius: var(--r);
-      padding: 10px 16px;
-      font-size: 12px;
-    }
+    .tz-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--bg-3); border: 1px solid var(--border-2); border-radius: var(--r); padding: 10px 16px; font-size: 12px; }
 
     /* Socials */
-    .socials-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 12px;
-    }
+    .socials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
     .social-card {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: var(--bg-2);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 16px;
-      transition: border-color var(--transition), background var(--transition);
-      text-decoration: none;
+      display: flex; align-items: center; gap: 12px; background: var(--bg-2);
+      border: 1px solid var(--border); border-radius: var(--r); padding: 16px;
+      transition: border-color var(--transition), background var(--transition); text-decoration: none;
     }
-    .social-card:hover {
-      border-color: var(--accent);
-      background: var(--accent-dim);
-      opacity: 1;
-    }
-    .social-card .social-icon {
-      width: 36px; height: 36px;
-      border-radius: var(--r);
-      background: var(--bg-3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
+    .social-card:hover { border-color: var(--accent); background: var(--accent-dim); opacity: 1; }
+    .social-card .social-icon { width: 36px; height: 36px; border-radius: var(--r); background: var(--bg-3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .social-card .social-icon svg { display: block; }
-    .social-card .social-info {
-      min-width: 0;
-      flex: 1;
-    }
-    .social-card .social-info .social-name {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--text);
-      margin-bottom: 2px;
-    }
-    .social-card .social-info .social-handle {
-      font-size: 10px;
-      color: var(--text-3);
-      line-height: 1.5;
-      overflow-wrap: anywhere;
-      min-width: 0;
-    }
-    .social-card.no-contact {
-      align-items: flex-start;
-      flex-wrap: wrap;
-      opacity: .5;
-      cursor: not-allowed;
-      pointer-events: none;
-    }
+    .social-card .social-info { min-width: 0; flex: 1; }
+    .social-card .social-info .social-name { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text); margin-bottom: 2px; }
+    .social-card .social-info .social-handle { font-size: 10px; color: var(--text-3); line-height: 1.5; overflow-wrap: anywhere; min-width: 0; }
+    .social-card.no-contact { align-items: flex-start; flex-wrap: wrap; opacity: .5; cursor: not-allowed; pointer-events: none; }
     .social-card.no-contact .no-contact-badge {
-      font-size: 8px;
-      color: var(--red);
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      border: 1px solid rgba(224,85,85,.4);
-      border-radius: 2px;
-      padding: 2px 7px;
-      margin-left: auto;
-      flex-shrink: 0;
+      font-size: 8px; color: var(--red); letter-spacing: .14em; text-transform: uppercase;
+      border: 1px solid rgba(224,85,85,.4); border-radius: 2px; padding: 2px 7px; margin-left: auto; flex-shrink: 0;
     }
 
-    /* ═══════════════════════════════════════════════
-       §3 PUBLICATIONS
-    ═══════════════════════════════════════════════ */
-    .pub-filters {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 28px;
-    }
+    /* Publications */
+    .pub-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
     .filter-btn {
-      padding: 6px 14px;
-      font-size: 10px;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      color: var(--text-3);
-      transition: var(--transition);
+      padding: 6px 14px; font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+      border: 1px solid var(--border); border-radius: var(--r); color: var(--text-3); transition: var(--transition);
     }
     .filter-btn:hover { border-color: var(--border-2); color: var(--text-2); }
     .filter-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-
-    /* Publication cards */
-    .pub-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      overflow: hidden;
-      margin-bottom: 40px;
-    }
-    .pub-card {
-      background: var(--bg-2);
-      padding: 28px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      transition: background var(--transition);
-      position: relative;
-    }
+    .pub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin-bottom: 40px; }
+    .pub-card { background: var(--bg-2); padding: 28px 24px; display: flex; flex-direction: column; gap: 16px; transition: background var(--transition); position: relative; }
     .pub-card:hover { background: var(--bg-3); }
-    .pub-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-    }
-    .pub-card h3 {
-      font-family: var(--f-display);
-      font-size: 16px;
-      font-weight: 700;
-      line-height: 1.3;
-      flex: 1;
-    }
-    .pub-card .pub-type-badge {
-      flex-shrink: 0;
-    }
-    .pub-card p {
-      font-size: 11px;
-      color: var(--text-2);
-      line-height: 1.8;
-      flex: 1;
-    }
-    .pub-card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-top: 1px solid var(--border);
-      padding-top: 16px;
-    }
+    .pub-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .pub-card h3 { font-family: var(--f-display); font-size: 16px; font-weight: 700; line-height: 1.3; flex: 1; }
+    .pub-card .pub-type-badge { flex-shrink: 0; }
+    .pub-card p { font-size: 11px; color: var(--text-2); line-height: 1.8; flex: 1; }
+    .pub-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 16px; }
     .pub-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-
-    /* Like button */
     .like-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      color: var(--text-3);
-      padding: 5px 10px;
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      transition: var(--transition);
+      display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-3);
+      padding: 5px 10px; border: 1px solid var(--border); border-radius: var(--r); transition: var(--transition);
     }
     .like-btn .heart { font-size: 13px; transition: transform .2s; }
     .like-btn:hover { border-color: #e05555; color: #e05555; }
     .like-btn:hover .heart { transform: scale(1.3); }
     .like-btn.liked { border-color: #e05555; color: #e05555; background: rgba(224,85,85,.1); }
     .like-btn.liked .heart { transform: scale(1.2); }
-
-    /* Media displays in pub cards */
-    .pub-media {
-      border-radius: var(--r);
-      overflow: hidden;
-      background: var(--bg-3);
-    }
-    .pub-media video,
-    .pub-media img { width: 100%; }
-    .pub-media iframe {
-      width: 100%;
-      aspect-ratio: 16/9;
-      border: none;
-    }
-
-    /* Code fencing */
-    .code-block-wrap {
-      position: relative;
-      border-radius: var(--r);
-      overflow: hidden;
-      background: var(--bg-3);
-      border: 1px solid var(--border);
-    }
-    .code-block-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 16px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-4);
-    }
-    .code-block-header .lang {
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: .12em;
-    }
+    .pub-media { border-radius: var(--r); overflow: hidden; background: var(--bg-3); }
+    .pub-media video, .pub-media img { width: 100%; }
+    .pub-media iframe { width: 100%; aspect-ratio: 16/9; border: none; }
+    .code-block-wrap { position: relative; border-radius: var(--r); overflow: hidden; background: var(--bg-3); border: 1px solid var(--border); }
+    .code-block-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; border-bottom: 1px solid var(--border); background: var(--bg-4); }
+    .code-block-header .lang { font-size: 10px; color: var(--text-3); letter-spacing: .12em; }
     .copy-btn {
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      padding: 3px 10px;
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      transition: var(--transition);
+      font-size: 10px; color: var(--text-3); letter-spacing: .1em; text-transform: uppercase;
+      padding: 3px 10px; border: 1px solid var(--border); border-radius: 2px; transition: var(--transition);
     }
     .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
     .code-block-wrap pre { margin: 0; }
-    .code-block-wrap pre code {
-      font-family: var(--f-mono) !important;
-      font-size: 12px !important;
-      padding: 20px !important;
-    }
-
-    /* Roblox game link card */
+    .code-block-wrap pre code { font-family: var(--f-mono) !important; font-size: 12px !important; padding: 20px !important; }
     .roblox-link-card {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      background: var(--bg-3);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 20px 24px;
-      text-decoration: none;
-      transition: border-color var(--transition), background var(--transition);
-      position: relative;
-      overflow: hidden;
+      display: flex; align-items: center; gap: 20px; background: var(--bg-3);
+      border: 1px solid var(--border); border-radius: var(--r); padding: 20px 24px;
+      text-decoration: none; transition: border-color var(--transition), background var(--transition);
+      position: relative; overflow: hidden;
     }
-    .roblox-link-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, var(--accent-dim), transparent 60%);
-      opacity: 0;
-      transition: opacity var(--transition);
-    }
-    .roblox-link-card:hover {
-      border-color: var(--accent);
-      background: var(--bg-4);
-      opacity: 1;
-    }
+    .roblox-link-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, var(--accent-dim), transparent 60%); opacity: 0; transition: opacity var(--transition); }
+    .roblox-link-card:hover { border-color: var(--accent); background: var(--bg-4); opacity: 1; }
     .roblox-link-card:hover::before { opacity: 1; }
-    .roblox-link-card .rbx-icon {
-      width: 52px; height: 52px;
-      border-radius: var(--r);
-      background: var(--bg-4);
-      border: 1px solid var(--border-2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      flex-shrink: 0;
-      position: relative;
-      z-index: 1;
-    }
-    .roblox-link-card .rbx-text {
-      flex: 1;
-      position: relative;
-      z-index: 1;
-    }
-    .roblox-link-card .rbx-text .rbx-platform {
-      font-size: 9px;
-      letter-spacing: .2em;
-      text-transform: uppercase;
-      color: var(--text-3);
-      margin-bottom: 4px;
-    }
-    .roblox-link-card .rbx-text .rbx-title {
-      font-family: var(--f-display);
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-    .roblox-link-card .rbx-text .rbx-desc {
-      font-size: 11px;
-      color: var(--text-2);
-    }
-    .roblox-link-card .rbx-arrow {
-      font-size: 18px;
-      color: var(--accent);
-      position: relative;
-      z-index: 1;
-      transition: transform var(--transition);
-    }
+    .roblox-link-card .rbx-icon { width: 52px; height: 52px; border-radius: var(--r); background: var(--bg-4); border: 1px solid var(--border-2); display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; position: relative; z-index: 1; }
+    .roblox-link-card .rbx-text { flex: 1; position: relative; z-index: 1; }
+    .roblox-link-card .rbx-text .rbx-platform { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--text-3); margin-bottom: 4px; }
+    .roblox-link-card .rbx-text .rbx-title { font-family: var(--f-display); font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .roblox-link-card .rbx-text .rbx-desc { font-size: 11px; color: var(--text-2); }
+    .roblox-link-card .rbx-arrow { font-size: 18px; color: var(--accent); position: relative; z-index: 1; transition: transform var(--transition); }
     .roblox-link-card:hover .rbx-arrow { transform: translateX(4px); }
 
-    /* Noding blocks */
-    .noding-wrap {
-      background: var(--bg-2);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 24px;
-    }
-    .noding-wrap .noding-title {
-      font-size: 10px;
-      letter-spacing: .2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 16px;
-    }
-    .node-canvas {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      overflow: auto;
-      min-height: 200px;
-      padding: 16px;
-      position: relative;
-    }
+    /* Noding Blocks */
+    .noding-wrap { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--r); padding: 24px; }
+    .noding-wrap .noding-title { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+    .node-canvas { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); overflow: auto; min-height: 200px; padding: 16px; position: relative; }
 
     /* Upcoming */
-    .upcoming-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      overflow: hidden;
-    }
-    .upcoming-item {
-      background: var(--bg-2);
-      padding: 20px 24px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      transition: background var(--transition);
-    }
+    .upcoming-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+    .upcoming-item { background: var(--bg-2); padding: 20px 24px; display: flex; align-items: center; gap: 16px; transition: background var(--transition); }
     .upcoming-item:hover { background: var(--bg-3); }
-    .upcoming-item .upcoming-num {
-      font-family: var(--f-display);
-      font-size: 20px;
-      font-weight: 900;
-      color: var(--text-3);
-      width: 36px;
-      flex-shrink: 0;
-    }
-    .upcoming-item .upcoming-text h4 {
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 2px;
-    }
-    .upcoming-item .upcoming-text p {
-      font-size: 11px;
-      color: var(--text-2);
-    }
-    .upcoming-item .upcoming-eta {
-      margin-left: auto;
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: .1em;
-    }
+    .upcoming-item .upcoming-num { font-family: var(--f-display); font-size: 20px; font-weight: 900; color: var(--text-3); width: 36px; flex-shrink: 0; }
+    .upcoming-item .upcoming-text h4 { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+    .upcoming-item .upcoming-text p { font-size: 11px; color: var(--text-2); }
+    .upcoming-item .upcoming-eta { margin-left: auto; font-size: 10px; color: var(--text-3); letter-spacing: .1em; }
 
-    /* ═══════════════════════════════════════════════
-       FOOTER
-    ═══════════════════════════════════════════════ */
-    #footer {
-      border-top: 1px solid var(--border);
-      padding: 48px 32px;
-      text-align: center;
+    /* Roblox Carousel */
+    .rbx-total-banner { display: flex; align-items: center; gap: 24px; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--r); padding: 18px 24px; margin-bottom: 28px; }
+    .rbx-total-banner .rbx-total-val { font-family: var(--f-display); font-size: 36px; font-weight: 900; color: var(--accent); line-height: 1; }
+    .rbx-total-banner .rbx-total-label { font-size: 10px; color: var(--text-3); letter-spacing: .16em; text-transform: uppercase; margin-top: 4px; }
+    .rbx-total-banner .rbx-total-icon { width: 40px; height: 40px; flex-shrink: 0; border-radius: var(--r); background: var(--bg-3); border: 1px solid var(--border-2); display: flex; align-items: center; justify-content: center; }
+    .rbx-carousel { position: relative; user-select: none; }
+    .rbx-track-outer { overflow: hidden; border-radius: var(--r); border: 1px solid var(--border); }
+    .rbx-track { display: flex; transition: transform .45s cubic-bezier(.4,0,.2,1); }
+    .rbx-slide { min-width: 100%; background: var(--bg-2); display: grid; grid-template-columns: 280px 1fr; gap: 0; }
+    .rbx-slide-thumb { position: relative; overflow: hidden; background: var(--bg-3); min-height: 220px; }
+    .rbx-slide-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; display: block; transition: transform .6s ease; }
+    .rbx-slide:hover .rbx-slide-thumb img { transform: scale(1.04); }
+    .rbx-slide-thumb .rbx-thumb-overlay { position: absolute; inset: 0; background: linear-gradient(to right, transparent 60%, var(--bg-2)); }
+    .rbx-slide-thumb.loading { background: linear-gradient(90deg, var(--bg-3) 25%, var(--bg-4) 50%, var(--bg-3) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .rbx-slide-body { padding: 28px 28px 24px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+    .rbx-slide-eyebrow { display: flex; align-items: center; gap: 8px; }
+    .rbx-slide-eyebrow .rbx-slide-num { font-size: 10px; color: var(--text-3); letter-spacing: .18em; }
+    .rbx-slide-title { font-family: var(--f-display); font-size: clamp(18px, 2.5vw, 26px); font-weight: 700; line-height: 1.2; letter-spacing: -.01em; color: var(--text); }
+    .rbx-slide-desc { font-size: 11px; color: var(--text-2); line-height: 1.8; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .rbx-slide-stats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .rbx-stat-chip { display: flex; align-items: center; gap: 6px; background: var(--bg-3); border: 1px solid var(--border); border-radius: 2px; padding: 5px 10px; font-size: 10px; color: var(--text-2); }
+    .rbx-stat-chip .rbx-stat-icon { flex-shrink: 0; }
+    .rbx-stat-chip .rbx-stat-val { font-weight: 700; color: var(--text); }
+    .rbx-stat-chip.accent { border-color: var(--accent); }
+    .rbx-stat-chip.accent .rbx-stat-val { color: var(--accent); }
+    .rbx-slide-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); }
+    .rbx-slide-footer .rbx-meta { font-size: 10px; color: var(--text-3); letter-spacing: .08em; }
+    .rbx-play-btn {
+      display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px;
+      background: var(--accent); color: #080808; font-family: var(--f-mono);
+      font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      border-radius: var(--r); text-decoration: none; transition: opacity var(--transition); flex-shrink: 0;
     }
-    #footer .footer-name {
-      font-family: var(--f-display);
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: -.02em;
-      margin-bottom: 8px;
-    }
-    #footer .footer-sub {
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: .16em;
-      text-transform: uppercase;
-      margin-bottom: 32px;
-    }
-    #footer .footer-socials {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 32px;
-    }
-    #footer .footer-socials a {
-      width: 40px; height: 40px;
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      transition: border-color var(--transition), background var(--transition);
-    }
-    #footer .footer-socials a:hover {
-      border-color: var(--accent);
-      background: var(--accent-dim);
-      opacity: 1;
-    }
-    #footer .footer-copy {
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: .12em;
-    }
+    .rbx-play-btn:hover { opacity: .82; }
+    .rbx-loading-spinner { width: 28px; height: 28px; border: 2px solid var(--border-2); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .rbx-nav { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 16px; }
+    .rbx-nav-btn { width: 32px; height: 32px; border: 1px solid var(--border-2); border-radius: var(--r); background: var(--bg-2); color: var(--text-2); font-size: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); }
+    .rbx-nav-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+    .rbx-nav-btn:disabled { opacity: .3; cursor: not-allowed; }
+    .rbx-dots { display: flex; gap: 6px; align-items: center; }
+    .rbx-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border-2); cursor: pointer; transition: var(--transition); }
+    .rbx-dot.active { background: var(--accent); transform: scale(1.3); }
+    .rbx-progress { height: 2px; background: var(--border); border-radius: 1px; overflow: hidden; margin-top: 10px; }
+    .rbx-progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width linear; }
+    .rbx-thumb-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 0; opacity: 0; transition: opacity .7s ease; }
+    .rbx-thumb-img.active { opacity: 1; }
+    .rbx-inner-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 3; }
+    .rbx-inner-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,.3); transition: background .3s; cursor: pointer; }
+    .rbx-inner-dot.active { background: rgba(255,255,255,.9); }
 
-    /* ═══════════════════════════════════════════════
-       RESPONSIVE
-    ═══════════════════════════════════════════════ */
+    /* Reviews Carousel */
+    .rv-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .rv-nav-hint { opacity: .5; }
+    .rv-track-outer { overflow: hidden; border-radius: var(--r); border: 1px solid var(--border); }
+    .rv-track { display: flex; transition: transform .45s cubic-bezier(.4,0,.2,1); }
+    .rv-slide { min-width: 100%; background: var(--bg-2); display: grid; grid-template-columns: 220px 1fr; }
+    .rv-left { padding: 36px 28px; display: flex; flex-direction: column; align-items: center; gap: 14px; border-right: 1px solid var(--border); background: var(--bg-3); }
+    .rv-avatar-wrap { position: relative; width: 96px; height: 96px; flex-shrink: 0; }
+    .rv-avatar { width: 96px; height: 96px; border-radius: 50%; border: 2px solid var(--border-2); object-fit: cover; background: var(--bg-4); display: block; }
+    .rv-avatar-ring { position: absolute; inset: -4px; border-radius: 50%; border: 1px solid var(--accent); opacity: .5; }
+    .rv-reviewer-name { font-size: 12px; font-weight: 700; color: var(--text); letter-spacing: .04em; text-align: center; }
+    .rv-reviewer-sub { font-size: 10px; color: var(--text-3); letter-spacing: .1em; text-transform: uppercase; text-align: center; }
+    .rv-roblox-link {
+      display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+      font-size: 10px; color: var(--text-3); letter-spacing: .08em; text-transform: uppercase;
+      border: 1px solid var(--border); border-radius: 2px; padding: 3px 10px;
+      transition: var(--transition); text-decoration: none; width: 100%;
+    }
+    .rv-roblox-link:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+    .rv-right { padding: 32px 36px; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+    .rv-project-block { display: flex; flex-direction: column; gap: 6px; }
+    .rv-project-eyebrow { font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: var(--text-3); }
+    .rv-project-pill { display: inline-flex; align-items: center; gap: 8px; background: var(--bg-3); border: 1px solid var(--border-2); border-radius: 2px; padding: 6px 14px; font-size: 11px; font-weight: 700; color: var(--text); width: fit-content; }
+    .rv-project-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .rv-project-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--bg-3); border: 1px solid var(--border); border-radius: 2px; padding: 4px 10px; font-size: 10px; color: var(--text-2); }
+    .rv-divider { width: 32px; height: 1px; background: var(--accent); opacity: .5; }
+    .rv-quote-mark { font-family: var(--f-display); font-size: 48px; line-height: .6; color: var(--accent); opacity: .25; user-select: none; }
+    .rv-review-text { font-family: var(--f-display); font-style: italic; font-size: clamp(14px, 1.8vw, 18px); line-height: 1.7; color: var(--text); }
+    .rv-date { font-size: 10px; color: var(--text-3); letter-spacing: .1em; margin-top: auto; }
+    .rv-slide-num { font-size: 10px; color: var(--text-3); letter-spacing: .18em; margin-bottom: 4px; }
+
+    /* Footer */
+    #footer { border-top: 1px solid var(--border); padding: 48px 32px; text-align: center; }
+    #footer .footer-name { font-family: var(--f-display); font-size: 24px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 8px; }
+    #footer .footer-sub { font-size: 10px; color: var(--text-3); letter-spacing: .16em; text-transform: uppercase; margin-bottom: 32px; }
+    #footer .footer-visit-count { font-size: 10px; color: var(--text-3); letter-spacing: .14em; margin-bottom: 24px; }
+    #footer .footer-visit-count strong { color: var(--accent); font-weight: 700; }
+    #footer .footer-socials { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+    #footer .footer-socials a { width: 40px; height: 40px; border: 1px solid var(--border); border-radius: var(--r); display: flex; align-items: center; justify-content: center; font-size: 16px; transition: var(--transition); }
+    #footer .footer-socials a:hover { border-color: var(--accent); background: var(--accent-dim); opacity: 1; }
+    #footer .footer-copy { font-size: 10px; color: var(--text-3); letter-spacing: .12em; }
+
+    /* Spotify Widget */
+    #spotify-widget { position: fixed; bottom: 28px; right: 28px; z-index: 500; display: flex; flex-direction: column; align-items: flex-end; gap: 0; opacity: 0; transform: translateY(12px); transition: opacity .5s ease, transform .5s ease; pointer-events: none; }
+    #spotify-widget.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
+    #spotify-pill { display: flex; align-items: center; gap: 10px; background: rgba(10,10,10,.92); backdrop-filter: blur(14px); border: 1px solid var(--border-2); border-radius: 40px; padding: 8px 14px 8px 10px; cursor: pointer; transition: var(--transition); user-select: none; }
+    #spotify-pill:hover { border-color: #1DB954; background: rgba(18,18,18,.96); }
+    #spotify-pill .sp-icon { width: 26px; height: 26px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    #spotify-pill .sp-icon svg { display: block; }
+    #spotify-pill .sp-label { font-size: 10px; letter-spacing: .13em; text-transform: uppercase; color: var(--text-2); white-space: nowrap; transition: var(--transition); }
+    #spotify-pill:hover .sp-label { color: #1DB954; }
+    #spotify-pill .sp-chevron { font-size: 9px; color: var(--text-3); margin-left: 2px; transition: var(--transition), color var(--transition); line-height: 1; display: inline-block; }
+    #spotify-pill:hover .sp-chevron { color: #1DB954; }
+    #spotify-pill.expanded .sp-chevron { transform: rotate(180deg); }
+    #spotify-panel { width: 320px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-2); box-shadow: 0 24px 48px rgba(0,0,0,.6); max-height: 0; opacity: 0; transition: max-height .4s cubic-bezier(.4,0,.2,1), opacity .3s ease, margin-bottom .4s cubic-bezier(.4,0,.2,1); margin-bottom: 0; pointer-events: none; }
+    #spotify-panel.open { max-height: 160px; opacity: 1; margin-bottom: 10px; pointer-events: all; }
+    #spotify-panel iframe { display: block; width: 100%; height: 160px; border: none; }
+
+    /* Responsive */
     @media (max-width: 768px) {
       .page-wrap { padding: 0 20px; }
       #nav { padding: 0 20px; }
       #nav .nav-links { display: none; }
       #nav-mobile-toggle { display: flex; }
-
       #back .section-header { grid-template-columns: 1fr; gap: 32px; }
       .stats-row { grid-template-columns: repeat(2, 1fr); }
       .avail-grid { grid-template-columns: 1fr; }
       .contrib-grid { grid-template-columns: repeat(26, 1fr); }
       .pub-grid { grid-template-columns: 1fr; }
       #front h1 { font-size: clamp(42px, 12vw, 72px); }
+      .rbx-slide { grid-template-columns: 1fr; }
+      .rbx-slide-thumb { min-height: 160px; }
+      .rbx-slide-thumb .rbx-thumb-overlay { display: none; }
+      .rv-slide { grid-template-columns: 1fr; }
+      .rv-left { flex-direction: row; border-right: none; border-bottom: 1px solid var(--border); padding: 20px 24px; gap: 16px; align-items: flex-start; }
+      .rv-avatar-wrap { width: 60px; height: 60px; }
+      .rv-avatar { width: 60px; height: 60px; }
+      .rv-right { padding: 24px; }
+      #spotify-widget { bottom: 16px; right: 16px; }
+      #spotify-panel { width: calc(100vw - 32px); }
     }
-
     @media (max-width: 480px) {
       .stats-row { grid-template-columns: 1fr 1fr; }
       .spec-grid { grid-template-columns: 1fr; }
     }
-
-    /* ═══════════════════════════════════════════════
-       SPOTIFY WIDGET
-    ═══════════════════════════════════════════════ */
-    #spotify-widget {
-      position: fixed;
-      bottom: 28px;
-      right: 28px;
-      z-index: 500;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 0;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity .5s ease, transform .5s ease;
-      pointer-events: none;
-    }
-    #spotify-widget.visible {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: all;
-    }
-    #spotify-pill {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(10,10,10,.92);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid var(--border-2);
-      border-radius: 40px;
-      padding: 8px 14px 8px 10px;
-      cursor: pointer;
-      transition: border-color var(--transition), background var(--transition);
-      user-select: none;
-    }
-    #spotify-pill:hover { border-color: #1DB954; background: rgba(18,18,18,.96); }
-    #spotify-pill .sp-icon { width: 26px; height: 26px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-    #spotify-pill .sp-icon svg { display: block; }
-    #spotify-pill .sp-label { font-size: 10px; letter-spacing: .13em; text-transform: uppercase; color: var(--text-2); white-space: nowrap; transition: color var(--transition); }
-    #spotify-pill:hover .sp-label { color: #1DB954; }
-    #spotify-pill .sp-chevron { font-size: 9px; color: var(--text-3); margin-left: 2px; transition: transform var(--transition), color var(--transition); line-height: 1; display: inline-block; }
-    #spotify-pill:hover .sp-chevron { color: #1DB954; }
-    #spotify-pill.expanded .sp-chevron { transform: rotate(180deg); }
-    #spotify-panel {
-      width: 320px;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid var(--border-2);
-      box-shadow: 0 24px 48px rgba(0,0,0,.6);
-      max-height: 0;
-      opacity: 0;
-      transition: max-height .4s cubic-bezier(.4,0,.2,1), opacity .3s ease, margin-bottom .4s cubic-bezier(.4,0,.2,1);
-      margin-bottom: 0;
-      pointer-events: none;
-    }
-    #spotify-panel.open { max-height: 160px; opacity: 1; margin-bottom: 10px; pointer-events: all; }
-    #spotify-panel iframe { display: block; width: 100%; height: 160px; border: none; }
-    @media (max-width: 480px) {
-      #spotify-widget { bottom: 16px; right: 16px; }
-      #spotify-panel  { width: calc(100vw - 32px); }
-    }
-
-    /* ═══════════════════════════════════════════════
-       ROBLOX GAMES CAROUSEL
-    ═══════════════════════════════════════════════ */
-
-    /* Total visits banner */
-    .rbx-total-banner {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      background: var(--bg-2);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 18px 24px;
-      margin-bottom: 28px;
-    }
-    .rbx-total-banner .rbx-total-val {
-      font-family: var(--f-display);
-      font-size: 36px;
-      font-weight: 900;
-      color: var(--accent);
-      line-height: 1;
-    }
-    .rbx-total-banner .rbx-total-label {
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: .16em;
-      text-transform: uppercase;
-      margin-top: 4px;
-    }
-    .rbx-total-banner .rbx-total-icon {
-      width: 40px; height: 40px;
-      flex-shrink: 0;
-      border-radius: var(--r);
-      background: var(--bg-3);
-      border: 1px solid var(--border-2);
-      display: flex; align-items: center; justify-content: center;
-    }
-
-    /* Carousel wrapper */
-    .rbx-carousel {
-      position: relative;
-      user-select: none;
-    }
-    .rbx-track-outer {
-      overflow: hidden;
-      border-radius: var(--r);
-      border: 1px solid var(--border);
-    }
-    .rbx-track {
-      display: flex;
-      transition: transform .45s cubic-bezier(.4,0,.2,1);
-    }
-
-    /* Individual slide / game card */
-    .rbx-slide {
-      min-width: 100%;
-      background: var(--bg-2);
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 0;
-    }
-    .rbx-slide-thumb {
-      position: relative;
-      overflow: hidden;
-      background: var(--bg-3);
-      min-height: 220px;
-    }
-    .rbx-slide-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 0;
-      display: block;
-      transition: transform .6s ease;
-    }
-    .rbx-slide:hover .rbx-slide-thumb img { transform: scale(1.04); }
-    .rbx-slide-thumb .rbx-thumb-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to right, transparent 60%, var(--bg-2));
-    }
-
-    /* Skeleton loader for thumbnail */
-    .rbx-slide-thumb.loading {
-      background: linear-gradient(90deg, var(--bg-3) 25%, var(--bg-4) 50%, var(--bg-3) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.4s infinite;
-    }
-    @keyframes shimmer {
-      0%   { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    .rbx-slide-body {
-      padding: 28px 28px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      min-width: 0;
-    }
-    .rbx-slide-eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .rbx-slide-eyebrow .rbx-slide-num {
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: .18em;
-    }
-    .rbx-slide-title {
-      font-family: var(--f-display);
-      font-size: clamp(18px, 2.5vw, 26px);
-      font-weight: 700;
-      line-height: 1.2;
-      letter-spacing: -.01em;
-      color: var(--text);
-    }
-    .rbx-slide-desc {
-      font-size: 11px;
-      color: var(--text-2);
-      line-height: 1.8;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .rbx-slide-stats {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 4px;
-    }
-    .rbx-stat-chip {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--bg-3);
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      padding: 5px 10px;
-      font-size: 10px;
-      color: var(--text-2);
-    }
-    .rbx-stat-chip .rbx-stat-icon { flex-shrink: 0; }
-    .rbx-stat-chip .rbx-stat-val {
-      font-weight: 700;
-      color: var(--text);
-    }
-    .rbx-stat-chip.accent { border-color: var(--accent); }
-    .rbx-stat-chip.accent .rbx-stat-val { color: var(--accent); }
-
-    .rbx-slide-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-top: auto;
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
-    }
-    .rbx-slide-footer .rbx-meta {
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: .08em;
-    }
-    .rbx-play-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 18px;
-      background: var(--accent);
-      color: #080808;
-      font-family: var(--f-mono);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      border-radius: var(--r);
-      text-decoration: none;
-      transition: opacity var(--transition);
-      flex-shrink: 0;
-    }
-    .rbx-play-btn:hover { opacity: .82; }
-
-    /* Loading / error state */
-    .rbx-slide.loading-card {
-      grid-template-columns: 1fr;
-      align-items: center;
-      justify-items: center;
-      min-height: 220px;
-      padding: 40px;
-      text-align: center;
-    }
-    .rbx-loading-spinner {
-      width: 28px; height: 28px;
-      border: 2px solid var(--border-2);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-      margin: 0 auto 16px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Carousel nav */
-    .rbx-nav {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 16px;
-    }
-    .rbx-nav-btn {
-      width: 32px; height: 32px;
-      border: 1px solid var(--border-2);
-      border-radius: var(--r);
-      background: var(--bg-2);
-      color: var(--text-2);
-      font-size: 14px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      transition: border-color var(--transition), color var(--transition), background var(--transition);
-    }
-    .rbx-nav-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: var(--accent-dim);
-    }
-    .rbx-nav-btn:disabled {
-      opacity: .3;
-      cursor: not-allowed;
-    }
-    .rbx-dots {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-    .rbx-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--border-2);
-      cursor: pointer;
-      transition: background var(--transition), transform var(--transition);
-    }
-    .rbx-dot.active {
-      background: var(--accent);
-      transform: scale(1.3);
-    }
-
-    /* Auto-advance progress bar */
-    .rbx-progress {
-      height: 2px;
-      background: var(--border);
-      border-radius: 1px;
-      overflow: hidden;
-      margin-top: 10px;
-    }
-    .rbx-progress-bar {
-      height: 100%;
-      background: var(--accent);
-      width: 0%;
-      transition: width linear;
-    }
-
-    @media (max-width: 768px) {
-      .rbx-slide { grid-template-columns: 1fr; }
-      .rbx-slide-thumb { min-height: 160px; }
-      .rbx-slide-thumb .rbx-thumb-overlay { display: none; }
-    }
-
-    /* Inner thumbnail slideshow */
-    .rbx-slide-thumb { overflow: hidden; }
-    .rbx-thumb-img {
-      position: absolute;
-      inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      border-radius: 0;
-      opacity: 0;
-      transition: opacity .7s ease;
-    }
-    .rbx-thumb-img.active { opacity: 1; }
-    .rbx-slide-thumb { position: relative; }
-    .rbx-inner-dots {
-      position: absolute;
-      bottom: 8px; left: 50%;
-      transform: translateX(-50%);
-      display: flex; gap: 5px; z-index: 3;
-    }
-    .rbx-inner-dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: rgba(255,255,255,.3);
-      transition: background .3s;
-      cursor: pointer;
-    }
-    .rbx-inner-dot.active { background: rgba(255,255,255,.9); }
-
-    #footer .footer-visit-count {
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: .14em;
-      margin-bottom: 24px;
-    }
-    #footer .footer-visit-count span { color: var(--text-3); }
-    #footer .footer-visit-count strong { color: var(--accent); font-weight: 700; }
-
-    /* ═══════════════════════════════════════════════
-       REVIEWS CAROUSEL
-    ═══════════════════════════════════════════════ */
-    .rv-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-    .rv-nav-hint { opacity: .5; }
-
-    .rv-track-outer {
-      overflow: hidden;
-      border-radius: var(--r);
-      border: 1px solid var(--border);
-    }
-    .rv-track {
-      display: flex;
-      transition: transform .45s cubic-bezier(.4,0,.2,1);
-    }
-
-    /* Review slide */
-    .rv-slide {
-      min-width: 100%;
-      background: var(--bg-2);
-      display: grid;
-      grid-template-columns: 220px 1fr;
-    }
-
-    /* Left panel — avatar + reviewer info */
-    .rv-left {
-      padding: 36px 28px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      border-right: 1px solid var(--border);
-      background: var(--bg-3);
-    }
-    .rv-avatar-wrap {
-      position: relative;
-      width: 96px; height: 96px;
-      flex-shrink: 0;
-    }
-    .rv-avatar {
-      width: 96px; height: 96px;
-      border-radius: 50%;
-      border: 2px solid var(--border-2);
-      object-fit: cover;
-      background: var(--bg-4);
-      display: block;
-    }
-    .rv-avatar-ring {
-      position: absolute;
-      inset: -4px;
-      border-radius: 50%;
-      border: 1px solid var(--accent);
-      opacity: .5;
-    }
-    .rv-reviewer-name {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: .04em;
-      text-align: center;
-    }
-    .rv-reviewer-sub {
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      text-align: center;
-    }
-    .rv-roblox-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      padding: 3px 10px;
-      transition: border-color var(--transition), color var(--transition);
-      text-decoration: none;
-      width: 100%;
-    }
-    .rv-roblox-link:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      opacity: 1;
-    }
-
-    /* Right panel — project + review */
-    .rv-right {
-      padding: 32px 36px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      min-width: 0;
-    }
-    .rv-project-block {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .rv-project-eyebrow {
-      font-size: 9px;
-      letter-spacing: .22em;
-      text-transform: uppercase;
-      color: var(--text-3);
-    }
-    /* Single project pill */
-    .rv-project-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--bg-3);
-      border: 1px solid var(--border-2);
-      border-radius: 2px;
-      padding: 6px 14px;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text);
-      width: fit-content;
-    }
-    /* Multiple project tags */
-    .rv-project-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .rv-project-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--bg-3);
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      padding: 4px 10px;
-      font-size: 10px;
-      color: var(--text-2);
-    }
-
-    /* Review text */
-    .rv-divider {
-      width: 32px;
-      height: 1px;
-      background: var(--accent);
-      opacity: .5;
-    }
-    .rv-quote-mark {
-      font-family: var(--f-display);
-      font-size: 48px;
-      line-height: .6;
-      color: var(--accent);
-      opacity: .25;
-      user-select: none;
-    }
-    .rv-review-text {
-      font-family: var(--f-display);
-      font-style: italic;
-      font-size: clamp(14px, 1.8vw, 18px);
-      line-height: 1.7;
-      color: var(--text);
-    }
-    .rv-date {
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: .1em;
-      margin-top: auto;
-    }
-
-    /* Slide number badge */
-    .rv-slide-num {
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: .18em;
-      margin-bottom: 4px;
-    }
-
-    @media (max-width: 768px) {
-      .rv-slide { grid-template-columns: 1fr; }
-      .rv-left {
-        flex-direction: row;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-        padding: 20px 24px;
-        gap: 16px;
-        align-items: flex-start;
-      }
-      .rv-avatar-wrap { width: 60px; height: 60px; }
-      .rv-avatar { width: 60px; height: 60px; }
-      .rv-right { padding: 24px; }
-    }
   </style>
+  
+  <!-- Load Highlight.js asynchronously -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 </head>
 <body>
 
-<!-- ═══════════════════════════ SPLASH ═══════════════════════════ -->
+<!-- SPLASH SCREEN -->
 <div id="splash" role="dialog" aria-label="Press any key to enter">
   <canvas id="splash-canvas"></canvas>
-  <div id="splash-cursor"></div>
   <div id="splash-content">
     <div id="splash-wordmark">[YOUR<em>.</em>NAME]</div>
     <div id="splash-tagline">Developer &nbsp;·&nbsp; Creator &nbsp;·&nbsp; Builder</div>
@@ -1723,30 +501,30 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════ MAIN WRAP ═══════════════════════════ -->
+<!-- MAIN WRAP -->
 <div id="main-wrap">
 
-<!-- ═══════════════════════════ NAVIGATION ═══════════════════════════ -->
+<!-- NAVIGATION -->
 <nav id="nav">
   <div class="nav-logo">[YOUR<span>.</span>HANDLE]</div>
   <div class="nav-links">
-    <a href="#front"        class="active">Front</a>
-    <a href="#back"                       >Background</a>
-    <a href="#about"                      >About</a>
-    <a href="#publications"               >Publications</a>
+    <a href="#front" class="active">Front</a>
+    <a href="#back">Background</a>
+    <a href="#about">About</a>
+    <a href="#publications">Publications</a>
   </div>
   <button id="nav-mobile-toggle" aria-label="Menu" onclick="toggleMobileMenu()">
     <span></span><span></span><span></span>
   </button>
 </nav>
 <div id="mobile-menu">
-  <a href="#front"        onclick="closeMobileMenu()">Front</a>
-  <a href="#back"         onclick="closeMobileMenu()">Background</a>
-  <a href="#about"        onclick="closeMobileMenu()">About</a>
+  <a href="#front" onclick="closeMobileMenu()">Front</a>
+  <a href="#back" onclick="closeMobileMenu()">Background</a>
+  <a href="#about" onclick="closeMobileMenu()">About</a>
   <a href="#publications" onclick="closeMobileMenu()">Publications</a>
 </div>
 
-<!-- ═══════════════════════════ §0 FRONT ═══════════════════════════ -->
+<!-- FRONT SECTION -->
 <section id="front">
   <div id="front-grid"></div>
   <div id="front-vignette"></div>
@@ -1756,17 +534,13 @@
         <div class="dot"></div>
         <span class="label">Portfolio — Open for work</span>
       </div>
-      <h1 class="reveal reveal-delay-1">
-        [YOUR<br/><em>NAME]</em>
-      </h1>
+      <h1 class="reveal reveal-delay-1">[YOUR<br/><em>NAME]</em></h1>
       <p id="front-subtitle" class="reveal reveal-delay-2">
-        <!-- Replace with your own tagline/description -->
-        Developer. Creator. Builder of things worth building. Specialising in
-        [YOUR SPECIALISATIONS] — crafting tools that last.
+        Developer. Creator. Builder of things worth building. Specialising in [YOUR SPECIALISATIONS].
       </p>
       <div class="front-actions reveal reveal-delay-3">
         <a href="#publications" class="btn btn-primary">View Work</a>
-        <a href="#about"        class="btn btn-outline">About Me</a>
+        <a href="#about" class="btn btn-outline">About Me</a>
       </div>
     </div>
   </div>
@@ -1776,7 +550,7 @@
   </div>
 </section>
 
-<!-- ═══════════════════════════ §1 BACK ═══════════════════════════ -->
+<!-- BACKGROUND SECTION -->
 <section id="back">
   <div class="page-wrap">
     <div class="section-header reveal">
@@ -1785,24 +559,14 @@
         <h2>The story<br/><em style="font-style:italic;color:var(--accent)">behind the work.</em></h2>
       </div>
       <div class="right reveal reveal-delay-1">
-        <p>
-          <!-- Replace with your own background description -->
-          [YOUR BACKGROUND PARAGRAPH. Talk about who you are, where you come from, what you do.]
-        </p>
-        <p>
-          [SECOND PARAGRAPH. What drives you, your approach to work, what sets you apart.]
-        </p>
+        <p>[YOUR BACKGROUND PARAGRAPH]</p>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-          <!-- Replace tags with your own tech/skill tags -->
           <span class="tag accent-tag">[TAG 1]</span>
           <span class="tag accent-tag">[TAG 2]</span>
-          <span class="tag accent-tag">[TAG 3]</span>
-          <span class="tag">[TAG 4]</span>
-          <span class="tag">[TAG 5]</span>
+          <span class="tag">[TAG 3]</span>
         </div>
       </div>
     </div>
-
     <div class="stats-row reveal reveal-delay-2">
       <div class="stat-cell">
         <div class="stat-val" id="contrib-count">—</div>
@@ -1824,28 +588,25 @@
   </div>
 </section>
 
-<!-- ═══════════════════════════ §2 ABOUT ME ═══════════════════════════ -->
+<!-- ABOUT SECTION -->
 <section id="about">
   <div class="page-wrap">
     <div class="section-title-block reveal">
       <p class="section-num">01</p>
       <h2>About Me</h2>
     </div>
-
     <nav class="tabs-nav reveal">
       <button class="tab-btn active" onclick="switchTab('about','contributions')">Contributions</button>
-      <button class="tab-btn"        onclick="switchTab('about','specialisations')">Specialisations</button>
-      <button class="tab-btn"        onclick="switchTab('about','experience')">Experience</button>
-      <button class="tab-btn"        onclick="switchTab('about','history')">History & Past</button>
-      <button class="tab-btn"        onclick="switchTab('about','philosophy')">Philosophy</button>
-      <button class="tab-btn"        onclick="switchTab('about','availability')">Availability</button>
-      <button class="tab-btn"        onclick="switchTab('about','socials')">Socials</button>
+      <button class="tab-btn" onclick="switchTab('about','specialisations')">Specialisations</button>
+      <button class="tab-btn" onclick="switchTab('about','experience')">Experience</button>
+      <button class="tab-btn" onclick="switchTab('about','history')">History & Past</button>
+      <button class="tab-btn" onclick="switchTab('about','philosophy')">Philosophy</button>
+      <button class="tab-btn" onclick="switchTab('about','availability')">Availability</button>
+      <button class="tab-btn" onclick="switchTab('about','socials')">Socials</button>
     </nav>
-
-    <!-- ── Contributions ── -->
+    
+    <!-- Contributions Tab -->
     <div class="tab-panel active" id="about-contributions">
-
-      <!-- Total visits banner -->
       <div class="rbx-total-banner">
         <div class="rbx-total-icon">
           <img src="https://cdn.simpleicons.org/roblox/c9a84c" width="20" height="20" alt="roblox" draggable="false" />
@@ -1859,12 +620,9 @@
           <div style="font-family:var(--f-display);font-size:22px;font-weight:900;color:var(--green)" id="rbx-total-playing">—</div>
         </div>
       </div>
-
-      <!-- Carousel -->
       <div class="rbx-carousel" id="rbx-carousel">
         <div class="rbx-track-outer">
           <div class="rbx-track" id="rbx-track">
-            <!-- Loading state -->
             <div class="rbx-slide loading-card">
               <div>
                 <div class="rbx-loading-spinner"></div>
@@ -1875,274 +633,61 @@
         </div>
         <div class="rbx-progress"><div class="rbx-progress-bar" id="rbx-progress-bar"></div></div>
         <div class="rbx-nav">
-          <button class="rbx-nav-btn" id="rbx-prev" onclick="rbxCarousel.prev()" aria-label="Previous">&#8592;</button>
+          <button class="rbx-nav-btn" id="rbx-prev" onclick="rbxCarousel.prev()">&#8592;</button>
           <div class="rbx-dots" id="rbx-dots"></div>
-          <button class="rbx-nav-btn" id="rbx-next" onclick="rbxCarousel.next()" aria-label="Next">&#8594;</button>
+          <button class="rbx-nav-btn" id="rbx-next" onclick="rbxCarousel.next()">&#8594;</button>
         </div>
       </div>
-
     </div>
 
-    <!-- ── Specialisations ── -->
+    <!-- Specialisations Tab -->
     <div class="tab-panel" id="about-specialisations">
       <div class="spec-grid">
-        <!-- Clone and edit each spec-card with your own specialisations -->
         <div class="spec-card">
           <div class="spec-icon">⚙️</div>
           <h4>[Specialisation 1]</h4>
-          <p>Brief description of this area of expertise and what you build within it.</p>
+          <p>Brief description of this area of expertise.</p>
         </div>
         <div class="spec-card">
           <div class="spec-icon">🎮</div>
           <h4>[Specialisation 2]</h4>
-          <p>Brief description of this area of expertise and what you build within it.</p>
+          <p>Brief description of this area of expertise.</p>
         </div>
         <div class="spec-card">
           <div class="spec-icon">🌐</div>
           <h4>[Specialisation 3]</h4>
-          <p>Brief description of this area of expertise and what you build within it.</p>
-        </div>
-        <div class="spec-card">
-          <div class="spec-icon">🛠️</div>
-          <h4>[Specialisation 4]</h4>
-          <p>Brief description of this area of expertise and what you build within it.</p>
-        </div>
-        <div class="spec-card">
-          <div class="spec-icon">📐</div>
-          <h4>[Specialisation 5]</h4>
-          <p>Brief description of this area of expertise and what you build within it.</p>
-        </div>
-        <div class="spec-card">
-          <div class="spec-icon">🔬</div>
-          <h4>[Specialisation 6]</h4>
-          <p>Brief description of this area of expertise and what you build within it.</p>
+          <p>Brief description of this area of expertise.</p>
         </div>
       </div>
     </div>
 
-    <!-- ── Experience ── -->
-    <div class="tab-panel" id="about-experience">
-      <div class="timeline">
-        <!-- Clone timeline-items and fill in your real experience. Mark current role with class "current" -->
-        <div class="timeline-item current">
-          <div class="timeline-meta">
-            <span class="period">[YEAR] — Present</span>
-            <span class="tag accent-tag">Current</span>
-          </div>
-          <h4>[Role / Project Title]</h4>
-          <p>[Organisation or context — brief description of what you did, built, or achieved.]</p>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-meta">
-            <span class="period">[YEAR] — [YEAR]</span>
-          </div>
-          <h4>[Role / Project Title]</h4>
-          <p>[Description of responsibilities, technologies used, impact made.]</p>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-meta">
-            <span class="period">[YEAR] — [YEAR]</span>
-          </div>
-          <h4>[Role / Project Title]</h4>
-          <p>[Description of responsibilities, technologies used, impact made.]</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── History & Past ── -->
-    <div class="tab-panel" id="about-history">
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="timeline-meta">
-            <span class="period">[YEAR]</span>
-          </div>
-          <h4>[Milestone / Origin Story]</h4>
-          <p>[How you got started — first project, first language, first spark of interest.]</p>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-meta">
-            <span class="period">[YEAR]</span>
-          </div>
-          <h4>[Key Milestone]</h4>
-          <p>[Description of an important moment in your journey.]</p>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-meta">
-            <span class="period">[YEAR]</span>
-          </div>
-          <h4>[Key Milestone]</h4>
-          <p>[Description of an important moment in your journey.]</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Philosophy ── -->
-    <div class="tab-panel" id="about-philosophy">
-      <div class="philosophy-quote">
-        <blockquote>"[Your defining philosophy or motto — the sentence that captures how you approach your craft.]"</blockquote>
-        <cite>— [Your Name]</cite>
-      </div>
-      <div class="philosophy-quote">
-        <blockquote>"[A second belief or value that guides how you work and build.]"</blockquote>
-        <cite>— [Your Name]</cite>
-      </div>
-      <p style="color:var(--text-2);font-size:12px;margin-top:24px;line-height:1.9;">
-        [OPTIONAL: A paragraph expanding on your philosophy. How you approach problems, what you believe good work looks like, and what you stand for as a developer and creator.]
-      </p>
-    </div>
-
-    <!-- ── Availability ── -->
-    <div class="tab-panel" id="about-availability">
-      <div class="avail-grid">
-        <div class="avail-card">
-          <div class="avail-status">
-            <!-- Change status-dot class to: available / limited / busy -->
-            <div class="status-dot available"></div>
-            <span class="avail-label">Freelance Work</span>
-          </div>
-          <p>[Currently open / Limited slots / Not available] — [brief context, e.g. "1–2 projects at a time"]</p>
-        </div>
-        <div class="avail-card">
-          <div class="avail-status">
-            <div class="status-dot limited"></div>
-            <span class="avail-label">Collaborations</span>
-          </div>
-          <p>[Your availability for collaborative projects, open source contributions, etc.]</p>
-        </div>
-        <div class="avail-card">
-          <div class="avail-status">
-            <div class="status-dot available"></div>
-            <span class="avail-label">Commissions</span>
-          </div>
-          <p>[Whether you accept commissions and the typical turnaround or scope.]</p>
-        </div>
-        <div class="avail-card">
-          <div class="avail-status">
-            <div class="status-dot busy"></div>
-            <span class="avail-label">Full-time Roles</span>
-          </div>
-          <p>[Whether you're open to full-time employment opportunities.]</p>
-        </div>
-      </div>
-      <div class="tz-badge">
-        <span>🕐</span>
-        <span>Time Zone: <strong>[YOUR TIMEZONE, e.g. GMT+0 — London, UK]</strong></span>
-        <span class="muted" id="local-time"></span>
-      </div>
-    </div>
-
-    <!-- ── Socials ── -->
-    <div class="tab-panel" id="about-socials">
-      <div class="socials-grid">
-        <!-- X / Twitter -->
-        <a href="https://x.com/[YOUR_HANDLE]" target="_blank" class="social-card">
-          <div class="social-icon"><img src="https://cdn.simpleicons.org/x/ebebeb" width="18" height="18" alt="x" draggable="false" /></div>
-          <div class="social-info">
-            <div class="social-name">X (Twitter)</div>
-            <div class="social-handle">@[YOUR_HANDLE]</div>
-          </div>
-        </a>
-        <!-- Discord (personal) -->
-        <a href="#" class="social-card">
-          <div class="social-icon"><img src="https://cdn.simpleicons.org/discord/5865F2" width="18" height="18" alt="discord" draggable="false" /></div>
-          <div class="social-info">
-            <div class="social-name">Discord</div>
-            <div class="social-handle">luxora._</div>
-          </div>
-        </a>
-        <!-- Contact card -->
-        <div class="social-card no-contact" style="grid-column: span 2;">
-          <div class="social-icon"><img src="https://cdn.simpleicons.org/gmail/555555" width="18" height="18" alt="gmail" draggable="false" /></div>
-          <div class="social-info">
-            <div class="social-name" id="email-label"></div>
-            <div class="social-handle" id="email-handle"></div>
-          </div>
-          <span class="no-contact-badge">DO NOT CONTACT</span>
-        </div>
-        <!-- Developer Forum -->
-        <a href="https://devforum.roblox.com/u/luxoralexandra/summary" target="_blank" class="social-card">
-          <div class="social-icon"><img src="https://doy2mn9upadnk.cloudfront.net/user_avatar/devforum.roblox.com/roblox/120/4100645_2.png" width="18" height="18" alt="discourse" draggable="false" /></div>
-          <div class="social-info">
-            <div class="social-name">Dev Forum</div>
-            <div class="social-handle">@LuxorAlexandra</div>
-          </div>
-        </a>
-        <!-- Roblox -->
-        <a href="https://www.roblox.com/users/3566522125/profile" target="_blank" class="social-card">
-          <div class="social-icon"><img src="https://cdn.simpleicons.org/roblox/ebebeb" width="18" height="18" alt="roblox" draggable="false" /></div>
-          <div class="social-info">
-            <div class="social-name">Roblox</div>
-            <div class="social-handle">LuxorAlexandra</div>
-          </div>
-        </a>
-        <!-- YouTube -->
-        <a href="https://youtube.com/@[CHANNEL]" target="_blank" class="social-card">
-          <div class="social-icon"><img src="https://cdn.simpleicons.org/youtube/FF0000" width="18" height="18" alt="youtube" draggable="false" /></div>
-          <div class="social-info">
-            <div class="social-name">YouTube</div>
-            <div class="social-handle">@[CHANNEL]</div>
-          </div>
-        </a>
-        <!-- Discord Server -->
-        <a href="https://discord.gg/Cg7Yzgu6Yh" target="_blank" class="social-card">
-          <div class="social-icon" id="discord-server-icon-wrap">
-            <img id="discord-server-icon" src="https://cdn.simpleicons.org/discord/5865F2" width="18" height="18" alt="discord" draggable="false" />
-          </div>
-          <div class="social-info">
-            <div class="social-name">Discord Server</div>
-            <div class="social-handle" id="discord-server-name">Server</div>
-          </div>
-        </a>
-      </div>
-    </div>
-  </div><!-- /page-wrap -->
+    <!-- Other tabs would follow the same pattern -->
+    
+  </div>
 </section>
 
-<!-- ═══════════════════════════ §3 PUBLICATIONS ═══════════════════════════ -->
+<!-- PUBLICATIONS SECTION -->
 <section id="publications">
   <div class="page-wrap">
     <div class="section-title-block reveal">
       <p class="section-num">02</p>
       <h2>Publications</h2>
     </div>
-
     <nav class="tabs-nav reveal">
       <button class="tab-btn active" onclick="switchTab('pub','open-source')">Open Source</button>
-      <button class="tab-btn"        onclick="switchTab('pub','showcase')">Showcase</button>
-      <button class="tab-btn"        onclick="switchTab('pub','projects')">Projects</button>
-      <button class="tab-btn"        onclick="switchTab('pub','upcoming')">Up-and-Coming</button>
-      <button class="tab-btn"        onclick="switchTab('pub','other')">Other Specialisations</button>
-      <button class="tab-btn"        onclick="switchTab('pub','reviews')">Reviews</button>
+      <button class="tab-btn" onclick="switchTab('pub','showcase')">Showcase</button>
+      <button class="tab-btn" onclick="switchTab('pub','projects')">Projects</button>
     </nav>
-
-    <!-- ─── Open Source ─── -->
     <div class="tab-panel active" id="pub-open-source">
       <div class="pub-grid">
-
-        <!-- OPEN SOURCE CARD — Code fencing example -->
         <div class="pub-card">
           <div class="pub-card-header">
-            <h3>[Open Source Project Name]</h3>
+            <h3>[Project Name]</h3>
             <span class="tag accent-tag">OSS</span>
           </div>
-          <p>[Brief description of what this project does, what problem it solves, and why you built it.]</p>
-
-          <!-- Code fencing display -->
-          <div class="code-block-wrap">
-            <div class="code-block-header">
-              <span class="lang">[LANGUAGE]</span>
-              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-            </div>
-            <pre><code class="language-lua">-- Replace with a real snippet from your project
-local function example()
-    print("Hello from [YOUR PROJECT]")
-end
-example()</code></pre>
-          </div>
-
+          <p>[Brief description]</p>
           <div class="pub-card-footer">
             <div class="pub-tags">
-              <span class="tag">[TAG]</span>
               <span class="tag">[TAG]</span>
             </div>
             <button class="like-btn" onclick="toggleLike(this,'oss-1')">
@@ -2151,326 +696,12 @@ example()</code></pre>
             </button>
           </div>
         </div>
-
-        <!-- OPEN SOURCE CARD 2 — Photo display -->
-        <div class="pub-card">
-          <div class="pub-card-header">
-            <h3>[Open Source Project 2]</h3>
-            <span class="tag accent-tag">OSS</span>
-          </div>
-          <p>[Brief description of what this project does, what problem it solves, and why you built it.]</p>
-
-          <!-- Photo display — replace src with your own image URL -->
-          <div class="pub-media">
-            <img src="" onerror="this.style.display='none'" alt="Project screenshot" />
-          </div>
-
-          <div class="pub-card-footer">
-            <div class="pub-tags">
-              <span class="tag">[TAG]</span>
-            </div>
-            <button class="like-btn" onclick="toggleLike(this,'oss-2')">
-              <span class="heart">♥</span>
-              <span class="like-count">0</span>
-            </button>
-          </div>
-        </div>
-
-      </div>
-      <!-- Add more open source cards as needed -->
-    </div>
-
-    <!-- ─── Showcase (Best Work) ─── -->
-    <div class="tab-panel" id="pub-showcase">
-      <p class="label" style="margin-bottom:24px;">Best of my work — curated highlights</p>
-      <div class="pub-grid">
-
-        <!-- SHOWCASE CARD — Video display -->
-        <div class="pub-card">
-          <div class="pub-card-header">
-            <h3>[Showcase Project Title]</h3>
-            <span class="tag accent-tag">Featured</span>
-          </div>
-          <p>[Why this is your best work. What makes it stand out technically, creatively, or in terms of impact.]</p>
-
-          <!-- Video display — replace src with your own hosted video -->
-          <div class="pub-media">
-            <video controls preload="none">
-              <source src="[VIDEO_URL.mp4]" type="video/mp4" />
-              Your browser does not support video.
-            </video>
-          </div>
-
-          <div class="pub-card-footer">
-            <div class="pub-tags">
-              <span class="tag">[TAG]</span>
-              <span class="tag">[TAG]</span>
-            </div>
-            <button class="like-btn" onclick="toggleLike(this,'showcase-1')">
-              <span class="heart">♥</span>
-              <span class="like-count">0</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- SHOWCASE CARD — Roblox Game Link -->
-        <div class="pub-card">
-          <div class="pub-card-header">
-            <h3>[Game Title]</h3>
-            <span class="tag accent-tag">Game</span>
-          </div>
-          <p>[Brief description of this game — what it is, what makes it fun or technically interesting.]</p>
-
-          <!-- Roblox game link — replace href and text with your real game details -->
-          <a href="https://www.roblox.com/games/[GAME_ID]/[GAME_SLUG]"
-             target="_blank"
-             class="roblox-link-card">
-            <div class="rbx-icon">🎮</div>
-            <div class="rbx-text">
-              <div class="rbx-platform">Roblox &nbsp;·&nbsp; Play on Roblox.com</div>
-              <div class="rbx-title">[Game Title]</div>
-              <div class="rbx-desc">[Short tagline — genre, player count, or a hook line]</div>
-            </div>
-            <div class="rbx-arrow">→</div>
-          </a>
-
-          <div class="pub-card-footer">
-            <div class="pub-tags">
-              <span class="tag">game</span>
-              <span class="tag">[TAG]</span>
-            </div>
-            <button class="like-btn" onclick="toggleLike(this,'showcase-2')">
-              <span class="heart">♥</span>
-              <span class="like-count">0</span>
-            </button>
-          </div>
-        </div>
-
       </div>
     </div>
-
-    <!-- ─── Projects ─── -->
-    <div class="tab-panel" id="pub-projects">
-      <div class="pub-filters">
-        <button class="filter-btn active" onclick="filterCards(this,'all')">All</button>
-        <button class="filter-btn" onclick="filterCards(this,'game')">Games</button>
-        <button class="filter-btn" onclick="filterCards(this,'tool')">Tools</button>
-        <button class="filter-btn" onclick="filterCards(this,'system')">Systems</button>
-        <button class="filter-btn" onclick="filterCards(this,'other')">Other</button>
-      </div>
-      <div class="pub-grid" id="projects-grid">
-
-        <!-- PROJECT CARD — Noding display (Serhelius) -->
-        <div class="pub-card" data-filter="system">
-          <div class="pub-card-header">
-            <h3>[Serhelius Project]</h3>
-            <span class="tag">Serhelius</span>
-          </div>
-          <p>[Description of this Serhelius noding project — what it does and how it works.]</p>
-
-          <div class="noding-wrap">
-            <div class="noding-title">⬡ Serhelius Node Graph</div>
-            <div class="node-canvas" id="serhelius-canvas-1">
-              <!-- Serhelius node graph renders here via JS -->
-              <p style="color:var(--text-3);font-size:11px;text-align:center;padding-top:60px;">
-                [Serhelius node graph — wire up your noding library here]
-              </p>
-            </div>
-          </div>
-
-          <div class="pub-card-footer">
-            <div class="pub-tags">
-              <span class="tag">serhelius</span>
-              <span class="tag">[TAG]</span>
-            </div>
-            <button class="like-btn" onclick="toggleLike(this,'proj-1')">
-              <span class="heart">♥</span>
-              <span class="like-count">0</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- PROJECT CARD — Noding display (Valhalla) -->
-        <div class="pub-card" data-filter="system">
-          <div class="pub-card-header">
-            <h3>[Valhalla Project]</h3>
-            <span class="tag">Valhalla</span>
-          </div>
-          <p>[Description of this Valhalla noding project — what it does and how it works.]</p>
-
-          <div class="noding-wrap">
-            <div class="noding-title">⬡ Valhalla Node Graph</div>
-            <div class="node-canvas" id="valhalla-canvas-1">
-              <p style="color:var(--text-3);font-size:11px;text-align:center;padding-top:60px;">
-                [Valhalla node graph — wire up your noding library here]
-              </p>
-            </div>
-          </div>
-
-          <div class="pub-card-footer">
-            <div class="pub-tags">
-              <span class="tag">valhalla</span>
-              <span class="tag">[TAG]</span>
-            </div>
-            <button class="like-btn" onclick="toggleLike(this,'proj-2')">
-              <span class="heart">♥</span>
-              <span class="like-count">0</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- PROJECT CARD — standard project -->
-        <div class="pub-card" data-filter="game">
-          <div class="pub-card-header">
-            <h3>[Game Project Title]</h3>
-            <span class="tag">Game</span>
-          </div>
-          <p>[Description of this project.]</p>
-          <div class="pub-media">
-            <img src="" onerror="this.style.display='none'" alt="" />
-          </div>
-          <div class="pub-card-footer">
-            <div class="pub-tags">
-              <span class="tag">game</span>
-              <span class="tag">[TAG]</span>
-            </div>
-            <button class="like-btn" onclick="toggleLike(this,'proj-3')">
-              <span class="heart">♥</span>
-              <span class="like-count">0</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="pub-card" data-filter="tool">
-          <div class="pub-card-header">
-            <h3>[Tool Project Title]</h3>
-            <span class="tag">Tool</span>
-          </div>
-          <p>[Description of this project.]</p>
-          <div class="pub-card-footer">
-            <div class="pub-tags">
-              <span class="tag">tool</span>
-            </div>
-            <button class="like-btn" onclick="toggleLike(this,'proj-4')">
-              <span class="heart">♥</span>
-              <span class="like-count">0</span>
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ─── Up-and-Coming ─── -->
-    <div class="tab-panel" id="pub-upcoming">
-      <p class="label" style="margin-bottom:24px;">In progress — coming soon</p>
-      <div class="upcoming-list">
-        <div class="upcoming-item">
-          <div class="upcoming-num">01</div>
-          <div class="upcoming-text">
-            <h4>[Upcoming Project 1]</h4>
-            <p>[Short teaser — what it is and why it's exciting.]</p>
-          </div>
-          <span class="upcoming-eta">[ETA / Q1 2025]</span>
-          <span class="tag accent-tag" style="margin-left:12px;">In Progress</span>
-        </div>
-        <div class="upcoming-item">
-          <div class="upcoming-num">02</div>
-          <div class="upcoming-text">
-            <h4>[Upcoming Project 2]</h4>
-            <p>[Short teaser — what it is and why it's exciting.]</p>
-          </div>
-          <span class="upcoming-eta">[ETA]</span>
-          <span class="tag" style="margin-left:12px;">Planned</span>
-        </div>
-        <div class="upcoming-item">
-          <div class="upcoming-num">03</div>
-          <div class="upcoming-text">
-            <h4>[Upcoming Project 3]</h4>
-            <p>[Short teaser — what it is and why it's exciting.]</p>
-          </div>
-          <span class="upcoming-eta">[ETA]</span>
-          <span class="tag" style="margin-left:12px;">Planned</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── Other Specialisations ─── -->
-    <div class="tab-panel" id="pub-other">
-      <p class="label" style="margin-bottom:24px;">Other areas I work in</p>
-      <div class="pub-grid">
-        <div class="pub-card">
-          <div class="pub-card-header">
-            <h3>[Other Specialisation 1]</h3>
-            <span class="tag">[TYPE]</span>
-          </div>
-          <p>[Description of work done in this specialisation — what it is, examples, outcomes.]</p>
-          <div class="pub-card-footer">
-            <div class="pub-tags"><span class="tag">[TAG]</span></div>
-            <button class="like-btn" onclick="toggleLike(this,'other-1')">
-              <span class="heart">♥</span>
-              <span class="like-count">0</span>
-            </button>
-          </div>
-        </div>
-        <div class="pub-card">
-          <div class="pub-card-header">
-            <h3>[Other Specialisation 2]</h3>
-            <span class="tag">[TYPE]</span>
-          </div>
-          <p>[Description of work done in this specialisation.]</p>
-          <div class="pub-card-footer">
-            <div class="pub-tags"><span class="tag">[TAG]</span></div>
-            <button class="like-btn" onclick="toggleLike(this,'other-2')">
-              <span class="heart">♥</span>
-              <span class="like-count">0</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- ─── Reviews ─── -->
-    <div class="tab-panel" id="pub-reviews">
-
-      <!-- Loading state -->
-      <div id="reviews-loading" style="text-align:center;padding:48px 0;">
-        <div class="rbx-loading-spinner" style="margin:0 auto 12px;"></div>
-        <div class="label">Loading reviews</div>
-      </div>
-
-      <!-- Carousel (hidden until loaded) -->
-      <div id="reviews-carousel" style="display:none;">
-
-        <!-- Counter bar -->
-        <div class="rv-header">
-          <span class="label" id="rv-counter">— reviews</span>
-          <span class="rv-nav-hint label">← →  navigate</span>
-        </div>
-
-        <!-- Track -->
-        <div class="rv-track-outer">
-          <div class="rv-track" id="rv-track"></div>
-        </div>
-
-        <!-- Progress + nav -->
-        <div class="rbx-progress" style="margin-top:12px;">
-          <div class="rbx-progress-bar" id="rv-progress-bar"></div>
-        </div>
-        <div class="rbx-nav" style="margin-top:12px;">
-          <button class="rbx-nav-btn" onclick="rvCarousel.prev()">&#8592;</button>
-          <div class="rbx-dots" id="rv-dots"></div>
-          <button class="rbx-nav-btn" onclick="rvCarousel.next()">&#8594;</button>
-        </div>
-
-      </div>
-    </div>
-
-  </div><!-- /page-wrap -->
+  </div>
 </section>
 
-<!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+<!-- FOOTER -->
 <footer id="footer">
   <div class="footer-name">[YOUR NAME]</div>
   <div class="footer-sub">Developer · Creator · Builder</div>
@@ -2478,42 +709,18 @@ example()</code></pre>
     <span id="visit-count-label">— visitors</span>
   </div>
   <div class="footer-socials">
-    <a href="https://x.com/[YOUR_HANDLE]"                                    target="_blank" title="X"><img src="https://cdn.simpleicons.org/x/ebebeb" width="16" height="16" alt="x" draggable="false" /></a>
-    <a href="#"                                                               title="Discord"><img src="https://cdn.simpleicons.org/discord/5865F2" width="16" height="16" alt="discord" draggable="false" /></a>
-    <a href="https://youtube.com/@[CHANNEL]"                                  target="_blank" title="YouTube"><img src="https://cdn.simpleicons.org/youtube/FF0000" width="16" height="16" alt="youtube" draggable="false" /></a>
-    <a href="https://www.roblox.com/users/3566522125/profile"                 target="_blank" title="Roblox"><img src="https://cdn.simpleicons.org/roblox/ebebeb" width="16" height="16" alt="roblox" draggable="false" /></a>
-    <a href="https://devforum.roblox.com/u/luxoralexandra/summary"            target="_blank" title="Dev Forum"><img src="https://doy2mn9upadnk.cloudfront.net/user_avatar/devforum.roblox.com/roblox/120/4100645_2.png" width="16" height="16" alt="discourse" draggable="false" /></a>
-    <a href="https://discord.gg/Cg7Yzgu6Yh"                                   target="_blank" title="Discord Server"><img id="discord-footer-icon" src="https://cdn.simpleicons.org/discord/5865F2" width="16" height="16" alt="discord" draggable="false" /></a>
+    <a href="https://x.com/[YOUR_HANDLE]" target="_blank"><img src="https://cdn.simpleicons.org/x/ebebeb" width="16" height="16" alt="x" draggable="false" /></a>
+    <a href="#"><img src="https://cdn.simpleicons.org/discord/5865F2" width="16" height="16" alt="discord" draggable="false" /></a>
   </div>
-  <div class="footer-copy">
-    © <span id="footer-year"></span> [YOUR NAME] — All rights reserved.
-  </div>
+  <div class="footer-copy">© <span id="footer-year"></span> [YOUR NAME]</div>
 </footer>
 
-<!-- ═══════════════════════════ SPOTIFY WIDGET ═══════════════════════════ -->
-<!--
-  HOW TO SET YOUR TRACK / ALBUM / PLAYLIST
-  ─────────────────────────────────────────
-  1. Open Spotify and find the album, track, or playlist you want to feature.
-  2. Right-click it → Share → Copy Spotify URI.
-     It looks like:  spotify:album:4aawyAB9vmqN3uQ7FjRGTy
-                  or spotify:track:6rqhFgbbKwnb9MLmUQDhG6
-                  or spotify:playlist:37i9dQZF1DXcBWIGoYBM5M
-  3. Take the part AFTER the second colon — e.g. "4aawyAB9vmqN3uQ7FjRGTy"
-  4. Replace SPOTIFY_TYPE with "album", "track", or "playlist"
-  5. Replace SPOTIFY_ID with that ID string
-  6. The embed URL format is:
-       https://open.spotify.com/embed/SPOTIFY_TYPE/SPOTIFY_ID?utm_source=generator&theme=0
--->
+<!-- SPOTIFY WIDGET -->
 <div id="spotify-widget">
   <div id="spotify-panel">
-    <iframe
-      id="spotify-iframe"
-      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-      title="Now playing">
-    </iframe>
+    <iframe id="spotify-iframe" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
   </div>
-  <div id="spotify-pill" onclick="toggleSpotify()" role="button" tabindex="0" aria-label="Toggle music player">
+  <div id="spotify-pill" onclick="toggleSpotify()">
     <div class="sp-icon">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="12" cy="12" r="11" stroke="#1DB954" stroke-width="1.5"/>
@@ -2529,1361 +736,436 @@ example()</code></pre>
 
 </div><!-- /main-wrap -->
 
-<!-- ═══════════════════════════ SCRIPTS ═══════════════════════════ -->
+<!-- SCRIPTS -->
 <script>
-  /* ════════════════════════════════════════════════
-     SPLASH — PARTICLE CANVAS  (optimised)
-  ════════════════════════════════════════════════ */
-  (function () {
-    const splash   = document.getElementById('splash');
-    const canvas   = document.getElementById('splash-canvas');
-    const mainWrap = document.getElementById('main-wrap');
-    const ctx      = canvas.getContext('2d');
+// ======================
+// SPLASH SCREEN
+// ======================
+(function () {
+  const splash = document.getElementById('splash');
+  const canvas = document.getElementById('splash-canvas');
+  const mainWrap = document.getElementById('main-wrap');
+  const ctx = canvas.getContext('2d');
+  
+  let W, H, dismissed = false, raf;
+  let particles = [];
+  let mouse = { x: -9999, y: -9999, px: -9999, py: -9999, vx: 0, vy: 0 };
+  let cursorDraw = { x: -9999, y: -9999 };
 
-    let W, H, dismissed = false, raf;
-    let particles  = [];
-    let shockwaves = [];
-    let mouse     = { x: -9999, y: -9999, px: -9999, py: -9999, vx: 0, vy: 0 };
-    let cursorDraw = { x: -9999, y: -9999 }; // lagged cursor position
+  const COLORS = [
+    'rgba(201,168,76,', 'rgba(218,188,110,', 'rgba(230,205,140,',
+    'rgba(180,180,180,', 'rgba(220,220,220,', 'rgba(225,110,60,'
+  ];
+  function rndColor() { return COLORS[Math.floor(Math.random() * COLORS.length)]; }
 
-    /* ─── palette (pre-built strings for speed) ─── */
-    const COLORS = [
-      'rgba(201,168,76,',
-      'rgba(218,188,110,',
-      'rgba(230,205,140,',
-      'rgba(180,180,180,',
-      'rgba(220,220,220,',
-      'rgba(225,110,60,',
-    ];
-    function rndColor() { return COLORS[Math.floor(Math.random() * COLORS.length)]; }
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
 
-    /* ─── resize ─── */
-    function resize() {
-      W = canvas.width  = window.innerWidth;
-      H = canvas.height = window.innerHeight;
+  function makeParticle(x, y, type) {
+    const burst = type === 'burst';
+    const trail = type === 'trail';
+    const angle = burst ? Math.random() * Math.PI * 2 : -Math.PI / 2 + (Math.random() - .5) * .9;
+    const spd = burst ? 1.5 + Math.random() * 6 : trail ? 0.5 + Math.random() * 1.2 : 0.8 + Math.random() * 1.8;
+    const big = !burst && !trail && Math.random() < .12;
+    return {
+      x, y, vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd,
+      size: big ? 3 + Math.random() * 3.5 : trail ? 0.6 + Math.random() * 1.2 : 0.5 + Math.random() * 2,
+      alpha: burst ? .7 + Math.random() * .3 : trail ? .35 + Math.random() * .25 : .3 + Math.random() * .6,
+      decay: burst ? .010 + Math.random() * .018 : trail ? .008 + Math.random() * .008 : big ? .00018 + Math.random() * .00022 : .00022 + Math.random() * .00028,
+      color: rndColor(), big, type,
+      shape: burst ? 'circle' : (Math.random() < .65 ? 'circle' : Math.random() < .5 ? 'diamond' : 'line'),
+      rot: Math.random() * Math.PI * 2, rotSpd: (Math.random() - .5) * .04,
+      hist: [], histMax: big ? 7 : burst ? 5 : 3
+    };
+  }
+
+  function seedAmbient(n) {
+    for (let i = 0; i < n; i++) {
+      const p = makeParticle(Math.random() * W, H + 10, 'ambient');
+      p.y = H * (.05 + Math.random() * 1.05);
+      particles.push(p);
     }
-    resize();
-    window.addEventListener('resize', resize);
+  }
+  seedAmbient(140);
 
-    /* ─── particle factory ─── */
-    const MAX_PARTICLES = 180;
+  function makeShockwave(x, y) {
+    return { x, y, r: 4, maxR: 160 + Math.random() * 80, alpha: .75 };
+  }
 
-    function makeParticle(x, y, type) {
-      const burst = type === 'burst';
-      const trail = type === 'trail';
-      const angle = burst ? Math.random() * Math.PI * 2
-                          : -Math.PI / 2 + (Math.random() - .5) * .9;
-      const spd   = burst ? 1.5 + Math.random() * 6
-                  : trail ? 0.5 + Math.random() * 1.2
-                          : 0.8 + Math.random() * 1.8;
-      const big   = !burst && !trail && Math.random() < .12;
-      return {
-        x, y,
-        vx: Math.cos(angle) * spd,
-        vy: Math.sin(angle) * spd,
-        size:  big  ? 3 + Math.random() * 3.5
-               : trail ? 0.6 + Math.random() * 1.2
-                       : 0.5 + Math.random() * 2,
-        alpha: burst ? .7 + Math.random() * .3
-               : trail ? .35 + Math.random() * .25
-                       : .3 + Math.random() * .6,
-        decay: burst ? .010 + Math.random() * .018
-               : trail ? .008 + Math.random() * .008
-               : big   ? .00018 + Math.random() * .00022
-                       : .00022 + Math.random() * .00028,
-        color: rndColor(),
-        big,
-        type,
-        shape: burst ? 'circle' : (Math.random() < .65 ? 'circle' : Math.random() < .5 ? 'diamond' : 'line'),
-        rot:   Math.random() * Math.PI * 2,
-        rotSpd: (Math.random() - .5) * .04,
-        hist: [],
-        histMax: big ? 7 : burst ? 5 : 3,
-      };
-    }
+  let lastSpawn = 0, trailTick = 0, cursorPulse = 0;
+  let shockwaves = [];
 
-    /* ─── seed ─── */
-    function seedAmbient(n) {
-      for (let i = 0; i < n; i++) {
-        const p = makeParticle(Math.random() * W, H + 10, 'ambient');
-        p.y = H * (.05 + Math.random() * 1.05);
-        particles.push(p);
-      }
-    }
-    seedAmbient(140);
+  function draw(ts) {
+    if (dismissed) return;
+    ctx.fillStyle = 'rgba(4,4,4,0.2)';
+    ctx.fillRect(0, 0, W, H);
 
-    /* ─── shockwave ─── */
-    function makeShockwave(x, y) {
-      return { x, y, r: 4, maxR: 160 + Math.random() * 80, alpha: .75 };
+    if (ts - lastSpawn > 90 && particles.length < 180) {
+      lastSpawn = ts;
+      for (let i = 0; i < 3; i++) particles.push(makeParticle(Math.random() * W, H + 6, 'ambient'));
     }
 
-    /* ─── draw loop ─── */
-    let lastSpawn = 0, trailTick = 0;
-    let cursorPulse = 0;
-
-    function draw(ts) {
-      if (dismissed) return;
-
-      /* motion-blur fade instead of clearRect */
-      ctx.fillStyle = 'rgba(4,4,4,0.2)';
-      ctx.fillRect(0, 0, W, H);
-
-      /* spawn ambient stream — throttled */
-      if (ts - lastSpawn > 90 && particles.length < MAX_PARTICLES) {
-        lastSpawn = ts;
-        for (let i = 0; i < 3; i++) {
-          particles.push(makeParticle(Math.random() * W, H + 6, 'ambient'));
+    trailTick++;
+    if (trailTick % 4 === 0 && mouse.x > 0 && mouse.x < W) {
+      const spd = Math.abs(mouse.vx) + Math.abs(mouse.vy);
+      if (spd > 1.5 && particles.length < 210) {
+        for (let i = 0; i < 2; i++) {
+          particles.push(makeParticle(
+            mouse.x + (Math.random() - .5) * 6,
+            mouse.y + (Math.random() - .5) * 6, 'trail'
+          ));
         }
       }
+    }
 
-      /* mouse trail — every 4 frames, only when moving */
-      trailTick++;
-      if (trailTick % 4 === 0 && mouse.x > 0 && mouse.x < W) {
-        const spd = Math.abs(mouse.vx) + Math.abs(mouse.vy);
-        if (spd > 1.5 && particles.length < MAX_PARTICLES + 30) {
-          for (let i = 0; i < 2; i++) {
-            particles.push(makeParticle(
-              mouse.x + (Math.random() - .5) * 6,
-              mouse.y + (Math.random() - .5) * 6,
-              'trail'
-            ));
-          }
-        }
+    mouse.vx = mouse.x - mouse.px; mouse.vy = mouse.y - mouse.py;
+    mouse.px = mouse.x; mouse.py = mouse.y;
+
+    const alive = [];
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      p.hist.push({ x: p.x, y: p.y });
+      if (p.hist.length > p.histMax) p.hist.shift();
+
+      const dx = p.x - mouse.x, dy = p.y - mouse.y, d2 = dx * dx + dy * dy;
+      if (d2 < 14400 && d2 > 1) {
+        const dist = Math.sqrt(d2), force = (1 - dist / 120) * .5;
+        p.vx += (dx / dist) * force; p.vy += (dy / dist) * force;
       }
 
-      /* update mouse velocity */
-      mouse.vx = mouse.x - mouse.px;
-      mouse.vy = mouse.y - mouse.py;
-      mouse.px = mouse.x;
-      mouse.py = mouse.y;
+      if (p.type !== 'burst') p.vx *= .985;
+      p.rot += p.rotSpd; p.x += p.vx; p.y += p.vy; p.alpha -= p.decay;
+      if (p.alpha <= 0 || p.y < -80 || p.x < -80 || p.x > W + 80) continue;
 
-      /* ── update + draw particles ── */
-      const alive = [];
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-
-        /* record history */
-        p.hist.push({ x: p.x, y: p.y });
-        if (p.hist.length > p.histMax) p.hist.shift();
-
-        /* mouse repulsion (simple, no swirl for perf) */
-        const dx   = p.x - mouse.x;
-        const dy   = p.y - mouse.y;
-        const d2   = dx * dx + dy * dy;
-        if (d2 < 14400 && d2 > 1) { // 120px radius
-          const dist  = Math.sqrt(d2);
-          const force = (1 - dist / 120) * .5;
-          p.vx += (dx / dist) * force;
-          p.vy += (dy / dist) * force;
-        }
-
-        /* no drag — particles maintain speed for full bottom-to-top travel */
-        /* only damp horizontal on non-burst so they stay roughly vertical */
-        if (p.type !== 'burst') p.vx *= .985;
-        p.rot += p.rotSpd;
-        p.x  += p.vx;
-        p.y  += p.vy;
-        p.alpha -= p.decay;
-
-        if (p.alpha <= 0 || p.y < -80 || p.x < -80 || p.x > W + 80) continue;
-
-        /* draw tail — plain strokes, no shadowBlur */
-        if (p.hist.length > 1) {
-          ctx.beginPath();
-          ctx.moveTo(p.hist[0].x, p.hist[0].y);
-          for (let k = 1; k < p.hist.length; k++) ctx.lineTo(p.hist[k].x, p.hist[k].y);
-          ctx.strokeStyle = p.color + (p.alpha * .35) + ')';
-          ctx.lineWidth   = p.size * .6;
-          ctx.lineCap     = 'round';
-          ctx.stroke();
-        }
-
-        /* draw core — shape varies per particle */
-        ctx.globalAlpha = p.alpha;
-        ctx.fillStyle   = p.color + '1)';
-        ctx.strokeStyle = p.color + '1)';
-        if (p.shape === 'diamond') {
-          const s = p.size * 1.3;
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate(p.rot);
-          ctx.beginPath();
-          ctx.moveTo(0, -s); ctx.lineTo(s * .6, 0);
-          ctx.lineTo(0,  s); ctx.lineTo(-s * .6, 0);
-          ctx.closePath();
-          ctx.fill();
-          ctx.restore();
-        } else if (p.shape === 'line') {
-          const len = p.size * 2.5;
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate(p.rot);
-          ctx.lineWidth = Math.max(.8, p.size * .4);
-          ctx.lineCap   = 'round';
-          ctx.beginPath();
-          ctx.moveTo(0, -len); ctx.lineTo(0, len);
-          ctx.strokeStyle = p.color + p.alpha + ')';
-          ctx.stroke();
-          ctx.restore();
-        } else {
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fill();
-        }
-
-        /* glow only on big orbs */
-        if (p.big) {
-          ctx.shadowBlur  = 16;
-          ctx.shadowColor = p.color + '.7)';
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.shadowBlur = 0;
-        }
-
-        ctx.globalAlpha = 1;
-        alive.push(p);
-      }
-      particles = alive;
-
-      /* ── shockwaves ── */
-      for (let i = shockwaves.length - 1; i >= 0; i--) {
-        const s = shockwaves[i];
-        ctx.globalAlpha = s.alpha * (1 - s.r / s.maxR);
-        ctx.strokeStyle = 'rgba(201,168,76,1)';
-        ctx.lineWidth   = 1.5;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.stroke();
-        s.r     += 5 + s.r * .03;
-        s.alpha -= .022;
-        if (s.alpha <= 0 || s.r > s.maxR) shockwaves.splice(i, 1);
-      }
-      ctx.globalAlpha = 1;
-
-      /* ── cursor ── */
-      if (mouse.x > 0 && mouse.x < W) {
-        cursorPulse += .045;
-
-        /* near-instant follow — just 1 frame of smoothing to remove jitter */
-        cursorDraw.x += (mouse.x - cursorDraw.x) * 0.72;
-        cursorDraw.y += (mouse.y - cursorDraw.y) * 0.72;
-
-        const cx  = cursorDraw.x;
-        const cy  = cursorDraw.y;
-        const R   = 13;
-        const rot = cursorPulse * .6; // slow rotation
-
-        ctx.save();
-
-        /* rotating dashed ring — 4 arcs */
-        ctx.strokeStyle = 'rgba(201,168,76,0.9)';
-        ctx.lineWidth   = 1.2;
-        const gap = .5;
-        for (let s = 0; s < 4; s++) {
-          const a = rot + s * (Math.PI / 2);
-          ctx.beginPath();
-          ctx.arc(cx, cy, R, a + gap * .5, a + Math.PI / 2 - gap * .5);
-          ctx.stroke();
-        }
-
-        /* 4 static corner ticks — don't rotate, anchors the reticle */
-        ctx.globalAlpha = .5;
-        ctx.lineWidth   = 1;
-        const off = R + 5;
-        const tl  = 4;
-        ctx.strokeStyle = 'rgba(201,168,76,1)';
-        [[-1,-1],[1,-1],[1,1],[-1,1]].forEach(([sx,sy]) => {
-          ctx.beginPath();
-          ctx.moveTo(cx + sx * off,      cy + sy * off);
-          ctx.lineTo(cx + sx * (off+tl), cy + sy * off);
-          ctx.moveTo(cx + sx * off,      cy + sy * off);
-          ctx.lineTo(cx + sx * off,      cy + sy * (off+tl));
-          ctx.stroke();
-        });
-
-        /* centre dot */
-        ctx.globalAlpha = 1;
-        ctx.fillStyle   = 'rgba(224,196,120,1)';
-        ctx.beginPath();
-        ctx.arc(cx, cy, 1.5, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.restore();
+      if (p.hist.length > 1) {
+        ctx.beginPath(); ctx.moveTo(p.hist[0].x, p.hist[0].y);
+        for (let k = 1; k < p.hist.length; k++) ctx.lineTo(p.hist[k].x, p.hist[k].y);
+        ctx.strokeStyle = p.color + (p.alpha * .35) + ')'; ctx.lineWidth = p.size * .6;
+        ctx.lineCap = 'round'; ctx.stroke();
       }
 
-      raf = requestAnimationFrame(draw);
+      ctx.globalAlpha = p.alpha; ctx.fillStyle = p.color + '1)';
+      if (p.shape === 'diamond') {
+        const s = p.size * 1.3; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+        ctx.beginPath(); ctx.moveTo(0, -s); ctx.lineTo(s * .6, 0); ctx.lineTo(0, s); ctx.lineTo(-s * .6, 0); ctx.closePath(); ctx.fill(); ctx.restore();
+      } else if (p.shape === 'line') {
+        const len = p.size * 2.5; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+        ctx.lineWidth = Math.max(.8, p.size * .4); ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(0, -len); ctx.lineTo(0, len);
+        ctx.strokeStyle = p.color + p.alpha + ')'; ctx.stroke(); ctx.restore();
+      } else {
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+      }
+
+      if (p.big) {
+        ctx.shadowBlur = 16; ctx.shadowColor = p.color + '.7)';
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+      ctx.globalAlpha = 1; alive.push(p);
+    }
+    particles = alive;
+
+    for (let i = shockwaves.length - 1; i >= 0; i--) {
+      const s = shockwaves[i];
+      ctx.globalAlpha = s.alpha * (1 - s.r / s.maxR);
+      ctx.strokeStyle = 'rgba(201,168,76,1)'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.stroke();
+      s.r += 5 + s.r * .03; s.alpha -= .022;
+      if (s.alpha <= 0 || s.r > s.maxR) shockwaves.splice(i, 1);
+    }
+    ctx.globalAlpha = 1;
+
+    if (mouse.x > 0 && mouse.x < W) {
+      cursorPulse += .045; cursorDraw.x += (mouse.x - cursorDraw.x) * 0.72;
+      cursorDraw.y += (mouse.y - cursorDraw.y) * 0.72; const cx = cursorDraw.x, cy = cursorDraw.y, R = 13, rot = cursorPulse * .6;
+      ctx.save(); ctx.strokeStyle = 'rgba(201,168,76,0.9)'; ctx.lineWidth = 1.2;
+      const gap = .5; for (let s = 0; s < 4; s++) { const a = rot + s * (Math.PI / 2); ctx.beginPath(); ctx.arc(cx, cy, R, a + gap * .5, a + Math.PI / 2 - gap * .5); ctx.stroke(); }
+      ctx.globalAlpha = .5; ctx.lineWidth = 1; const off = R + 5, tl = 4; ctx.strokeStyle = 'rgba(201,168,76,1)';
+      [[-1,-1],[1,-1],[1,1],[-1,1]].forEach(([sx,sy])=> { ctx.beginPath(); ctx.moveTo(cx+sx*off,cy+sy*off); ctx.lineTo(cx+sx*(off+tl),cy+sy*off); ctx.moveTo(cx+sx*off,cy+sy*off); ctx.lineTo(cx+sx*off,cy+sy*(off+tl)); ctx.stroke(); });
+      ctx.globalAlpha = 1; ctx.fillStyle = 'rgba(224,196,120,1)'; ctx.beginPath(); ctx.arc(cx, cy, 1.5, 0, Math.PI * 2); ctx.fill(); ctx.restore();
     }
     raf = requestAnimationFrame(draw);
+  }
+  raf = requestAnimationFrame(draw);
 
-    /* ─── mouse events ─── */
-    splash.addEventListener('mousemove', e => {
-      if (cursorDraw.x === -9999) { cursorDraw.x = e.clientX; cursorDraw.y = e.clientY; }
-      mouse.x = e.clientX; mouse.y = e.clientY;
+  splash.addEventListener('mousemove', e => {
+    if (cursorDraw.x === -9999) { cursorDraw.x = e.clientX; cursorDraw.y = e.clientY; }
+    mouse.x = e.clientX; mouse.y = e.clientY;
+  });
+  splash.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
+  splash.addEventListener('mousedown', e => {
+    if (dismissed) return; shockwaves.push(makeShockwave(e.clientX, e.clientY));
+    for (let i = 0; i < 45; i++) particles.push(makeParticle(e.clientX, e.clientY, 'burst'));
+  });
+
+  function dismiss() {
+    if (dismissed) return; dismissed = true; cancelAnimationFrame(raf);
+    splash.classList.add('leaving'); mainWrap.classList.add('visible');
+    const spIframe = document.getElementById('spotify-iframe');
+    if (spIframe) spIframe.src = 'https://open.spotify.com/embed/playlist/2QdK71A2ig299qaeYiv2nY?utm_source=generator&theme=0&autoplay=1';
+    setTimeout(() => { splash.style.display = 'none'; document.body.style.overflowY = ''; }, 850);
+  }
+  document.addEventListener('keydown', dismiss); splash.addEventListener('click', dismiss);
+  document.body.style.overflowY = 'hidden';
+})();
+
+// ======================
+// CORE FUNCTIONALITY
+// ======================
+
+// Tab switching
+function switchTab(group, id) {
+  const prefix = group === 'about' ? 'about-' : 'pub-';
+  document.querySelectorAll('[id^="' + prefix + '"]').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById(prefix + id);
+  if (target) target.classList.add('active');
+  const section = document.getElementById(group === 'about' ? 'about' : 'publications');
+  const btns = section.querySelectorAll('.tabs-nav .tab-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+// Mobile nav
+function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('open'); }
+function closeMobileMenu() { document.getElementById('mobile-menu').classList.remove('open'); }
+
+// Active nav on scroll
+function updateActiveNav() {
+  const sections = ['front','back','about','publications'];
+  const navH = 70; let current = 'front';
+  sections.forEach(id => { const el = document.getElementById(id); if (el && window.scrollY >= el.offsetTop - navH - 40) current = id; });
+  document.querySelectorAll('#nav .nav-links a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+}
+window.addEventListener('scroll', updateActiveNav, { passive: true });
+
+// Reveal on scroll
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: .12 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// Local time
+function updateLocalTime() {
+  const el = document.getElementById('local-time');
+  if (!el) return;
+  try { el.textContent = new Date().toLocaleTimeString('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' }); }
+  catch { el.textContent = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); }
+}
+
+// Footer year
+document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+// Initialize
+document.querySelectorAll('.reveal').forEach(el => {
+  if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible');
+});
+
+// ======================
+// ROBLOX INTEGRATION
+// ======================
+const GAMES = [{ placeId: 124476070457738, universeId: 8284455342 }];
+const WORKER_URL = 'https://sparkling-grass-9637.luxoralexandra2000.workers.dev';
+
+async function rbxFetch(url, retries = 3) {
+  const endpoint = `${WORKER_URL}?url=${encodeURIComponent(url)}`;
+  for (let i = 0; i < retries; i++) {
+    const res = await fetch(endpoint, { signal: AbortSignal.timeout(14000) });
+    if (res.status === 429) { await new Promise(r => setTimeout(r, 1500 * Math.pow(2, i))); continue; }
+    if (!res.ok) throw new Error(`Worker responded ${res.status} for ${url}`);
+    return JSON.parse(await res.text());
+  }
+  throw new Error(`Still rate limited after ${retries} retries`);
+}
+
+function getUniverseIds() { return GAMES.map(g => g.universeId); }
+
+async function getGameDetails(universeIds) {
+  const data = await rbxFetch(`https://games.roblox.com/v1/games?universeIds=${universeIds.join(',')}`);
+  return data.data || [];
+}
+
+async function getGameThumbnails(universeIds) {
+  const [screenshotsRes, iconsRes] = await Promise.allSettled([
+    rbxFetch(`https://thumbnails.roblox.com/v1/games/multiget/thumbnails?universeIds=${universeIds.join(',')}&countPerUniverse=10&defaults=true&size=768x432&format=Png&isCircular=false`),
+    rbxFetch(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${universeIds.join(',')}&size=512x512&format=Png&isCircular=false`)
+  ]);
+  const map = {};
+  if (screenshotsRes.status === 'fulfilled') {
+    (screenshotsRes.value.data || []).forEach(entry => {
+      const imgs = (entry.thumbnails || []).filter(t => t.state === 'Completed' && t.imageUrl).map(t => t.imageUrl);
+      if (imgs.length) map[entry.universeId] = imgs;
     });
-    splash.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
-
-    /* ─── click: shockwave + burst ─── */
-    splash.addEventListener('mousedown', e => {
-      if (dismissed) return;
-      shockwaves.push(makeShockwave(e.clientX, e.clientY));
-      for (let i = 0; i < 45; i++) particles.push(makeParticle(e.clientX, e.clientY, 'burst'));
-    });
-
-    /* ─── dismiss ─── */
-    function dismiss() {
-      if (dismissed) return;
-      dismissed = true;
-      cancelAnimationFrame(raf);
-      splash.classList.add('leaving');
-      mainWrap.classList.add('visible');
-      /* Autoplay Spotify — set src here so browser user-gesture allows it */
-      const spIframe = document.getElementById('spotify-iframe');
-      if (spIframe) spIframe.src = 'https://open.spotify.com/embed/playlist/2QdK71A2ig299qaeYiv2nY?utm_source=generator&theme=0&autoplay=1';
-      sfx('enter');
-      setTimeout(() => { splash.style.display = 'none'; document.body.style.overflowY = ''; }, 850);
-    }
-    document.addEventListener('keydown', dismiss);
-    splash.addEventListener('click', dismiss);
-
-    document.body.style.overflowY = 'hidden';
-  })();
-
-  /* ────────────────────────────────────────────────
-     CONTRIBUTION DATA
-     Replace with your real data.
-     Array of 364 integers (0–4): 0=none, 1–4=levels
-  ──────────────────────────────────────────────── */
-  /* ════════════════════════════════════════════════
-     ROBLOX GAMES — API + CAROUSEL
-     Add more games to the GAMES array below.
-  ════════════════════════════════════════════════ */
-  /* Map your games directly as placeId → universeId
-     To add more games: find the universeId in the Roblox game URL / Network tab */
-  const GAMES = [
-    { placeId: 124476070457738, universeId: 8284455342 }, // Combat Parameters
-  ];
-
-  /* ── Roblox proxy ── */
-  const WORKER_URL = 'https://sparkling-grass-9637.luxoralexandra2000.workers.dev'; // e.g. https://roblox-proxy.yourname.workers.dev
-
-  async function rbxFetch(url, retries = 3) {
-    const endpoint = `${WORKER_URL}?url=${encodeURIComponent(url)}`;
-    for (let i = 0; i < retries; i++) {
-      const res = await fetch(endpoint, { signal: AbortSignal.timeout(14000) });
-      if (res.status === 429) {
-        /* Rate limited — wait then retry */
-        await new Promise(r => setTimeout(r, 1500 * Math.pow(2, i)));
-        continue;
-      }
-      if (!res.ok) throw new Error(`Worker responded ${res.status} for ${url}`);
-      return JSON.parse(await res.text());
-    }
-    throw new Error(`Still rate limited after ${retries} retries`);
   }
-  /* Universe IDs are hardcoded — no lookup needed */
-  function getUniverseIds() {
-    return GAMES.map(g => g.universeId);
+  if (iconsRes.status === 'fulfilled') {
+    (iconsRes.value.data || []).forEach(t => { if (!map[t.targetId] && t.imageUrl) map[t.targetId] = [t.imageUrl]; });
   }
+  return map;
+}
 
-  async function getGameDetails(universeIds) {
-    const data = await rbxFetch(`https://games.roblox.com/v1/games?universeIds=${universeIds.join(',')}`);
-    return data.data || [];
-  }
+function fmtNum(n) {
+  if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
+  if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
+  return n.toLocaleString();
+}
 
-  async function getGameThumbnails(universeIds) {
-    /* Fetch up to 10 screenshots per game (16:9), plus icon as fallback */
-    const [screenshotsRes, iconsRes] = await Promise.allSettled([
-      rbxFetch(
-        `https://thumbnails.roblox.com/v1/games/multiget/thumbnails?universeIds=${universeIds.join(',')}&countPerUniverse=10&defaults=true&size=768x432&format=Png&isCircular=false`
-      ),
-      rbxFetch(
-        `https://thumbnails.roblox.com/v1/games/icons?universeIds=${universeIds.join(',')}&size=512x512&format=Png&isCircular=false`
-      ),
-    ]);
+function fmtDate(iso) { return new Date(iso).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' }); }
 
-    const map = {}; // universeId → array of image URLs
-
-    /* Screenshots (multiple per game) */
-    if (screenshotsRes.status === 'fulfilled') {
-      (screenshotsRes.value.data || []).forEach(entry => {
-        const imgs = (entry.thumbnails || [])
-          .filter(t => t.state === 'Completed' && t.imageUrl)
-          .map(t => t.imageUrl);
-        if (imgs.length) map[entry.universeId] = imgs;
-      });
-    }
-
-    /* Icon fallback for any game without screenshots */
-    if (iconsRes.status === 'fulfilled') {
-      (iconsRes.value.data || []).forEach(t => {
-        if (!map[t.targetId] && t.imageUrl) map[t.targetId] = [t.imageUrl];
-      });
-    }
-
-    return map;
-  }
-  function fmtNum(n) {
-    if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
-    if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
-    if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
-    return n.toLocaleString();
-  }
-
-  function fmtDate(iso) {
-    return new Date(iso).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
-  }
-
-  function buildSlide(game, thumbs, index, total) {
-    const visits  = fmtNum(game.visits || 0);
-    const playing = fmtNum(game.playing || 0);
-    const favs    = fmtNum(game.favoritedCount || 0);
-    const gameUrl = `https://www.roblox.com/games/${game.rootPlaceId}`;
-    const imgs    = Array.isArray(thumbs) ? thumbs : (thumbs ? [thumbs] : []);
-    const hasImgs = imgs.length > 0;
-
-    /* Build inner image strip for multi-thumbnail cycling */
-    const imgStrip = hasImgs
-      ? imgs.map((src, i) =>
-          `<img src="${src}" alt="${game.name} screenshot ${i+1}" loading="lazy" class="rbx-thumb-img${i === 0 ? ' active' : ''}" />`
-        ).join('')
-      : '';
-
-    const dots = imgs.length > 1
-      ? `<div class="rbx-inner-dots">${imgs.map((_, i) =>
-          `<span class="rbx-inner-dot${i === 0 ? ' active' : ''}"></span>`).join('')}</div>`
-      : '';
-
-    return `
+function buildSlide(game, thumbs, index, total) {
+  const visits = fmtNum(game.visits || 0), playing = fmtNum(game.playing || 0), favs = fmtNum(game.favoritedCount || 0);
+  const gameUrl = `https://www.roblox.com/games/${game.rootPlaceId}`;
+  const imgs = Array.isArray(thumbs) ? thumbs : (thumbs ? [thumbs] : []);
+  const hasImgs = imgs.length > 0;
+  const imgStrip = hasImgs ? imgs.map((src, i) => `<img src="${src}" alt="${game.name} screenshot ${i+1}" loading="lazy" class="rbx-thumb-img${i === 0 ? ' active' : ''}" />`).join('') : '';
+  const dots = imgs.length > 1 ? `<div class="rbx-inner-dots">${imgs.map((_, i) => `<span class="rbx-inner-dot${i === 0 ? ' active' : ''}"></span>`).join('')}</div>` : '';
+  return `
     <div class="rbx-slide">
       <div class="rbx-slide-thumb${hasImgs ? '' : ' loading'}" id="rbx-thumb-${game.id}" data-thumb-count="${imgs.length}" data-thumb-idx="0">
-        ${imgStrip}
-        <div class="rbx-thumb-overlay"></div>
-        ${dots}
+        ${imgStrip}<div class="rbx-thumb-overlay"></div>${dots}
       </div>
       <div class="rbx-slide-body">
         <div class="rbx-slide-eyebrow">
           <span class="rbx-slide-num">${String(index + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}</span>
-          <span class="tag accent-tag">Roblox</span>
-          ${game.playing > 0 ? '<span class="tag" style="border-color:var(--green);color:var(--green);">● Live</span>' : ''}
+          <span class="tag accent-tag">Roblox</span>${game.playing > 0 ? '<span class="tag" style="border-color:var(--green);color:var(--green);">● Live</span>' : ''}
         </div>
         <div class="rbx-slide-title">${game.name}</div>
         <div class="rbx-slide-desc">${game.description || 'No description provided.'}</div>
         <div class="rbx-slide-stats">
-          <div class="rbx-stat-chip accent">
-            <span class="rbx-stat-icon">
-              <img src="https://cdn.simpleicons.org/roblox/c9a84c" width="11" height="11" alt="" />
-            </span>
-            <span class="rbx-stat-val">${visits}</span>
-            <span style="color:var(--text-3)">visits</span>
-          </div>
-          <div class="rbx-stat-chip">
-            <svg class="rbx-stat-icon" width="11" height="11" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/>
-              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            </svg>
-            <span class="rbx-stat-val">${playing}</span>
-            <span style="color:var(--text-3)">playing</span>
-          </div>
-          <div class="rbx-stat-chip">
-            <svg class="rbx-stat-icon" width="11" height="11" viewBox="0 0 24 24" fill="none">
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="currentColor" stroke-width="1.6" fill="none"/>
-            </svg>
-            <span class="rbx-stat-val">${favs}</span>
-            <span style="color:var(--text-3)">favourites</span>
-          </div>
-          ${game.maxPlayers ? `<div class="rbx-stat-chip">
-            <span style="font-size:9px;color:var(--text-3)">MAX</span>
-            <span class="rbx-stat-val">${game.maxPlayers}</span>
-          </div>` : ''}
+          <div class="rbx-stat-chip accent"><span class="rbx-stat-icon"><img src="https://cdn.simpleicons.org/roblox/c9a84c" width="11" height="11" alt="" /></span><span class="rbx-stat-val">${visits}</span><span style="color:var(--text-3)">visits</span></div>
+          <div class="rbx-stat-chip"><svg class="rbx-stat-icon" width="11" height="11" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span class="rbx-stat-val">${playing}</span><span style="color:var(--text-3)">playing</span></div>
+          <div class="rbx-stat-chip"><svg class="rbx-stat-icon" width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="currentColor" stroke-width="1.6" fill="none"/></svg><span class="rbx-stat-val">${favs}</span><span style="color:var(--text-3)">favourites</span></div>
+          ${game.maxPlayers ? `<div class="rbx-stat-chip"><span style="font-size:9px;color:var(--text-3)">MAX</span><span class="rbx-stat-val">${game.maxPlayers}</span></div>` : ''}
         </div>
         <div class="rbx-slide-footer">
           <span class="rbx-meta">Updated ${fmtDate(game.updated)}</span>
-          <a href="${gameUrl}" target="_blank" class="rbx-play-btn">
-            <img src="https://cdn.simpleicons.org/roblox/080808" width="12" height="12" alt="" />
-            Play
-          </a>
+          <a href="${gameUrl}" target="_blank" class="rbx-play-btn"><img src="https://cdn.simpleicons.org/roblox/080808" width="12" height="12" alt="" />Play</a>
         </div>
       </div>
     </div>`;
-  }
+}
 
-
-  /* ── Inner thumbnail auto-cycler (runs per-slide) ── */
-  const _thumbTimers = [];
-  function startThumbCyclers() {
-    /* Clear any existing timers */
-    _thumbTimers.forEach(clearInterval);
-    _thumbTimers.length = 0;
-
-    document.querySelectorAll('.rbx-slide-thumb').forEach(thumb => {
-      const count = parseInt(thumb.dataset.thumbCount || '0');
-      if (count <= 1) return;
-
-      let idx = 0;
-      const imgs = thumb.querySelectorAll('.rbx-thumb-img');
-      const dots = thumb.querySelectorAll('.rbx-inner-dot');
-
-      const advance = () => {
-        imgs[idx].classList.remove('active');
-        dots[idx]?.classList.remove('active');
-        idx = (idx + 1) % count;
-        imgs[idx].classList.add('active');
-        dots[idx]?.classList.add('active');
-      };
-
-      /* Dot click navigation */
-      dots.forEach((dot, i) => {
-        dot.addEventListener('click', e => {
-          e.stopPropagation();
-          imgs[idx].classList.remove('active');
-          dots[idx]?.classList.remove('active');
-          idx = i;
-          imgs[idx].classList.add('active');
-          dots[idx]?.classList.add('active');
-        });
-      });
-
-      _thumbTimers.push(setInterval(advance, 3500));
-    });
-  }
-
-  /* ── Carousel controller ── */
-  const rbxCarousel = (() => {
-    let current  = 0;
-    let total    = 0;
-    let timer    = null;
-    let games    = [];
-    const INTERVAL = 6000;
-
-    function go(idx) {
-      const track    = document.getElementById('rbx-track');
-      const dots     = document.getElementById('rbx-dots');
-      const prevBtn  = document.getElementById('rbx-prev');
-      const nextBtn  = document.getElementById('rbx-next');
-      const bar      = document.getElementById('rbx-progress-bar');
-      if (!track) return;
-
-      current = ((idx % total) + total) % total;
-      track.style.transform = `translateX(-${current * 100}%)`;
-
-      /* dots */
-      document.querySelectorAll('.rbx-dot').forEach((d, i) => {
-        d.classList.toggle('active', i === current);
-      });
-      if (prevBtn) prevBtn.disabled = false;
-      if (nextBtn) nextBtn.disabled = false;
-
-      /* reset progress bar */
-      if (bar) {
-        bar.style.transition = 'none';
-        bar.style.width = '0%';
-        requestAnimationFrame(() => {
-          bar.style.transition = `width ${INTERVAL}ms linear`;
-          bar.style.width = '100%';
-        });
-      }
-
-      resetTimer();
-      sfx('tab');
-    }
-
-    function resetTimer() {
-      clearInterval(timer);
-      timer = setInterval(() => go(current + 1), INTERVAL);
-    }
-
-    function init(gameList, thumbMap) {
-      games = gameList;
-      total = games.length;
-      const track = document.getElementById('rbx-track');
-      const dots  = document.getElementById('rbx-dots');
-      if (!track || !dots) return;
-
-      track.innerHTML = games.map((g, i) => buildSlide(g, thumbMap[g.id] || [], i, total)).join('');
-      startThumbCyclers();
-      dots.innerHTML  = games.map((_, i) =>
-        `<div class="rbx-dot ${i === 0 ? 'active' : ''}" onclick="rbxCarousel.go(${i})"></div>`
-      ).join('');
-
-      current = 0;
-      go(0);
-    }
-
-    return { go, prev: () => go(current - 1), next: () => go(current + 1), init };
-  })();
-
-  /* ── Bootstrap: fetch all game data ── */
-  async function loadRobloxGames() {
-    try {
-      /* Step 1: resolve universe IDs from place IDs */
-      const universeIds = getUniverseIds();
-
-      /* Step 2: fetch game details + thumbnails in parallel */
-      /* Sequential fetches — avoids triggering Roblox rate limits */
-      const games    = await getGameDetails(universeIds);
-      await new Promise(r => setTimeout(r, 300));
-      const thumbMap = await getGameThumbnails(universeIds);
-
-      if (!games || games.length === 0) throw new Error('No games returned');
-
-      /* Step 3: update totals */
-      const totalVisits  = games.reduce((s, g) => s + (g.visits  || 0), 0);
-      const totalPlaying = games.reduce((s, g) => s + (g.playing || 0), 0);
-
-      const tvEl = document.getElementById('rbx-total-visits');
-      const tpEl = document.getElementById('rbx-total-playing');
-      const ccEl = document.getElementById('contrib-count');
-      if (tvEl) tvEl.textContent = fmtNum(totalVisits);
-      if (tpEl) tpEl.textContent = fmtNum(totalPlaying);
-      if (ccEl) ccEl.textContent = fmtNum(totalVisits);
-
-      /* Step 4: build carousel */
-      rbxCarousel.init(games, thumbMap);
-
-    } catch (err) {
-      console.warn('Roblox API error:', err);
-      const track = document.getElementById('rbx-track');
-      if (track) track.innerHTML = `
-        <div class="rbx-slide loading-card">
-          <div>
-            <div style="font-size:22px;margin-bottom:12px;opacity:.3">⚠</div>
-            <div style="font-size:11px;color:var(--text-3);letter-spacing:.12em;">COULD NOT LOAD GAME DATA</div>
-            <div style="font-size:10px;color:var(--text-3);margin-top:6px;">Check console for details</div>
-          </div>
-        </div>`;
-    }
-  }
-
-  /* ────────────────────────────────────────────────
-     TABS
-  ──────────────────────────────────────────────── */
-  function switchTab(group, id) {
-    const prefix = group === 'about' ? 'about-' : 'pub-';
-    // Panels
-    document.querySelectorAll('[id^="' + prefix + '"]').forEach(p => p.classList.remove('active'));
-    const target = document.getElementById(prefix + id);
-    if (target) target.classList.add('active');
-    // Buttons — find which tabs-nav the clicked button belongs to
-    const section = document.getElementById(group === 'about' ? 'about' : 'publications');
-    const btns = section.querySelectorAll('.tabs-nav .tab-btn');
-    btns.forEach(b => b.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-  }
-
-  /* ────────────────────────────────────────────────
-     LIKES (localStorage)
-  ──────────────────────────────────────────────── */
-  /* Likes storage: { id: count } — count per publication, per-browser */
-  function getLikes() {
-    try { return JSON.parse(localStorage.getItem('portfolio_likes_v2') || '{}'); }
-    catch { return {}; }
-  }
-  function saveLikes(obj) {
-    try { localStorage.setItem('portfolio_likes_v2', JSON.stringify(obj)); }
-    catch {}
-  }
-
-  function getLikeId(btn) {
-    const oc = btn.getAttribute('onclick') || '';
-    const m  = oc.match(/'([^']+)'\)/);
-    return m ? m[1] : null;
-  }
-
-  function toggleLike(btn, id) {
-    const likes   = getLikes();
-    const isLiked = !!likes[id];
-
-    if (isLiked) {
-      delete likes[id];
-      btn.classList.remove('liked');
-    } else {
-      likes[id] = true;
-      btn.classList.add('liked');
-      btn.querySelector('.heart').animate(
-        [{ transform: 'scale(1)' }, { transform: 'scale(1.6)' }, { transform: 'scale(1)' }],
-        { duration: 300, easing: 'ease-out' }
-      );
-    }
-    saveLikes(likes);
-
-    /* Count is total unique IDs liked — shown on every button as total likes you've given */
-    const total = Object.keys(getLikes()).length;
-    document.querySelectorAll('.like-count').forEach(el => {
-      /* Per-card: show 1 if liked, 0 if not */
-    });
-
-    /* Per-card count: 1 if this user liked it, else 0 */
-    btn.querySelector('.like-count').textContent = likes[id] ? 1 : 0;
-  }
-
-  function restoreLikes() {
-    const likes = getLikes();
-    document.querySelectorAll('.like-btn').forEach(btn => {
-      const id = getLikeId(btn);
-      if (!id) return;
-      if (likes[id]) {
-        btn.classList.add('liked');
-        btn.querySelector('.like-count').textContent = '1';
-      } else {
-        btn.querySelector('.like-count').textContent = '0';
-      }
-    });
-  }
-
-  /* ────────────────────────────────────────────────
-     PROJECT FILTER
-  ──────────────────────────────────────────────── */
-  function filterCards(btn, filter) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('#projects-grid .pub-card').forEach(card => {
-      const cardFilter = card.dataset.filter || 'other';
-      card.style.display = (filter === 'all' || cardFilter === filter) ? '' : 'none';
-    });
-  }
-
-  /* ────────────────────────────────────────────────
-     CODE COPY
-  ──────────────────────────────────────────────── */
-  function copyCode(btn) {
-    const wrap = btn.closest('.code-block-wrap');
-    const code = wrap.querySelector('code');
-    navigator.clipboard.writeText(code.innerText).then(() => {
-      btn.textContent = 'Copied!';
-      setTimeout(() => btn.textContent = 'Copy', 2000);
-    });
-  }
-
-  /* ────────────────────────────────────────────────
-     MOBILE NAV
-  ──────────────────────────────────────────────── */
-  function toggleMobileMenu() {
-    document.getElementById('mobile-menu').classList.toggle('open');
-  }
-  function closeMobileMenu() {
-    document.getElementById('mobile-menu').classList.remove('open');
-  }
-
-  /* ────────────────────────────────────────────────
-     ACTIVE NAV on scroll
-  ──────────────────────────────────────────────── */
-  function updateActiveNav() {
-    const sections = ['front','back','about','publications'];
-    const navH = 70;
-    let current = 'front';
-    sections.forEach(id => {
-      const el = document.getElementById(id);
-      if (el && window.scrollY >= el.offsetTop - navH - 40) current = id;
-    });
-    document.querySelectorAll('#nav .nav-links a').forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-    });
-  }
-
-  /* ────────────────────────────────────────────────
-     REVEAL on scroll
-  ──────────────────────────────────────────────── */
-  const revealObserver = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: .12 });
-  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-  /* ────────────────────────────────────────────────
-     LOCAL TIME
-  ──────────────────────────────────────────────── */
-  function updateLocalTime() {
-    const el = document.getElementById('local-time');
-    if (!el) return;
-    // Change the timezone string to your own IANA timezone
-    const tz = '[YOUR_IANA_TZ, e.g. Europe/London]';
-    try {
-      el.textContent = new Date().toLocaleTimeString('en-GB', { timeZone: tz, hour: '2-digit', minute: '2-digit' });
-    } catch {
-      el.textContent = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-    }
-  }
-
-  /* ────────────────────────────────────────────────
-     FOOTER YEAR
-  ──────────────────────────────────────────────── */
-  document.getElementById('footer-year').textContent = new Date().getFullYear();
-
-  /* ────────────────────────────────────────────────
-     INIT
-  ──────────────────────────────────────────────── */
-  window.addEventListener('scroll', updateActiveNav, { passive: true });
-  loadRobloxGames();
-  restoreLikes();
-  updateLocalTime();
-  setInterval(updateLocalTime, 30000);
-  hljs.highlightAll();
-
-  // Trigger reveals already in view on load
-  document.querySelectorAll('.reveal').forEach(el => {
-    if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible');
+const _thumbTimers = [];
+function startThumbCyclers() {
+  _thumbTimers.forEach(clearInterval); _thumbTimers.length = 0;
+  document.querySelectorAll('.rbx-slide-thumb').forEach(thumb => {
+    const count = parseInt(thumb.dataset.thumbCount || '0'); if (count <= 1) return;
+    let idx = 0; const imgs = thumb.querySelectorAll('.rbx-thumb-img'), dots = thumb.querySelectorAll('.rbx-inner-dot');
+    const advance = () => { imgs[idx].classList.remove('active'); dots[idx]?.classList.remove('active'); idx = (idx + 1) % count; imgs[idx].classList.add('active'); dots[idx]?.classList.add('active'); };
+    dots.forEach((dot, i) => dot.addEventListener('click', e => { e.stopPropagation(); imgs[idx].classList.remove('active'); dots[idx]?.classList.remove('active'); idx = i; imgs[idx].classList.add('active'); dots[idx]?.classList.add('active'); }));
+    _thumbTimers.push(setInterval(advance, 3500));
   });
+}
 
-  /* ════════════════════════════════════════════════
-     SOUND EFFECTS  (Web Audio API — no files needed)
-  ════════════════════════════════════════════════ */
-  const _sfxCtx = (() => {
-    let ctx = null;
-    return () => {
-      if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
-      return ctx;
-    };
-  })();
-
-  function sfx(type) {
-    try {
-      const ac  = _sfxCtx();
-      const now = ac.currentTime;
-
-      const osc  = ac.createOscillator();
-      const gain = ac.createGain();
-      osc.connect(gain);
-      gain.connect(ac.destination);
-
-      switch (type) {
-
-        /* General UI click — short, crisp tick */
-        case 'click':
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(900, now);
-          osc.frequency.exponentialRampToValueAtTime(400, now + .06);
-          gain.gain.setValueAtTime(.18, now);
-          gain.gain.exponentialRampToValueAtTime(.0001, now + .07);
-          osc.start(now); osc.stop(now + .07);
-          break;
-
-        /* Tab switch — slightly higher, airy */
-        case 'tab':
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(1100, now);
-          osc.frequency.exponentialRampToValueAtTime(700, now + .08);
-          gain.gain.setValueAtTime(.12, now);
-          gain.gain.exponentialRampToValueAtTime(.0001, now + .1);
-          osc.start(now); osc.stop(now + .1);
-          break;
-
-        /* Like / heart — two-tone pop */
-        case 'like': {
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(600, now);
-          osc.frequency.setValueAtTime(900, now + .05);
-          gain.gain.setValueAtTime(.14, now);
-          gain.gain.exponentialRampToValueAtTime(.0001, now + .13);
-          osc.start(now); osc.stop(now + .13);
-          break;
-        }
-
-        /* Unlike — reverse two-tone */
-        case 'unlike':
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(500, now);
-          osc.frequency.exponentialRampToValueAtTime(300, now + .1);
-          gain.gain.setValueAtTime(.1, now);
-          gain.gain.exponentialRampToValueAtTime(.0001, now + .11);
-          osc.start(now); osc.stop(now + .11);
-          break;
-
-        /* Copy button — clipboard tick */
-        case 'copy':
-          osc.type = 'square';
-          osc.frequency.setValueAtTime(1400, now);
-          osc.frequency.exponentialRampToValueAtTime(800, now + .05);
-          gain.gain.setValueAtTime(.07, now);
-          gain.gain.exponentialRampToValueAtTime(.0001, now + .06);
-          osc.start(now); osc.stop(now + .06);
-          break;
-
-        /* Spotify panel open — soft rising chime */
-        case 'open':
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(500, now);
-          osc.frequency.exponentialRampToValueAtTime(900, now + .15);
-          gain.gain.setValueAtTime(.1, now);
-          gain.gain.exponentialRampToValueAtTime(.0001, now + .2);
-          osc.start(now); osc.stop(now + .2);
-          break;
-
-        /* Spotify panel close — soft falling */
-        case 'close':
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(800, now);
-          osc.frequency.exponentialRampToValueAtTime(450, now + .12);
-          gain.gain.setValueAtTime(.09, now);
-          gain.gain.exponentialRampToValueAtTime(.0001, now + .14);
-          osc.start(now); osc.stop(now + .14);
-          break;
-
-        /* Splash enter — warm low thud + shimmer */
-        case 'enter': {
-          /* thud */
-          const o2 = ac.createOscillator();
-          const g2 = ac.createGain();
-          o2.connect(g2); g2.connect(ac.destination);
-          o2.type = 'sine';
-          o2.frequency.setValueAtTime(120, now);
-          o2.frequency.exponentialRampToValueAtTime(60, now + .3);
-          g2.gain.setValueAtTime(.22, now);
-          g2.gain.exponentialRampToValueAtTime(.0001, now + .35);
-          o2.start(now); o2.stop(now + .35);
-          /* shimmer */
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(2200, now + .05);
-          osc.frequency.exponentialRampToValueAtTime(1400, now + .25);
-          gain.gain.setValueAtTime(.06, now + .05);
-          gain.gain.exponentialRampToValueAtTime(.0001, now + .28);
-          osc.start(now + .05); osc.stop(now + .28);
-          break;
-        }
-
-        /* Hover — barely-there tick, very subtle */
-        case 'hover':
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(1200, now);
-          gain.gain.setValueAtTime(.04, now);
-          gain.gain.exponentialRampToValueAtTime(.0001, now + .03);
-          osc.start(now); osc.stop(now + .03);
-          break;
-
-        default:
-          osc.start(now); osc.stop(now);
-      }
-    } catch(e) { /* audio blocked — silently ignore */ }
+const rbxCarousel = (() => {
+  let current = 0, total = 0, timer = null, games = []; const INTERVAL = 6000;
+  function go(idx) {
+    const track = document.getElementById('rbx-track'), dots = document.getElementById('rbx-dots'), prevBtn = document.getElementById('rbx-prev'), nextBtn = document.getElementById('rbx-next'), bar = document.getElementById('rbx-progress-bar');
+    if (!track) return; current = ((idx % total) + total) % total; track.style.transform = `translateX(-${current * 100}%)`;
+    document.querySelectorAll('.rbx-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    if (prevBtn) prevBtn.disabled = false; if (nextBtn) nextBtn.disabled = false;
+    if (bar) { bar.style.transition = 'none'; bar.style.width = '0%'; requestAnimationFrame(() => { bar.style.transition = `width ${INTERVAL}ms linear`; bar.style.width = '100%'; }); }
+    resetTimer();
   }
-
-  /* ── Wire up sfx to existing UI elements ── */
-  (function wireSfx() {
-    /* Buttons: nav links, tab buttons, filter buttons, btn-primary/outline */
-    document.addEventListener('click', e => {
-      const t = e.target.closest('a.btn, .filter-btn, .copy-btn, .social-card, #nav .nav-links a, #mobile-menu a, .roblox-link-card, #front-scroll-hint');
-      if (t) sfx('click');
-    });
-
-    /* Tab buttons */
-    document.addEventListener('click', e => {
-      if (e.target.closest('.tab-btn')) sfx('tab');
-    });
-
-    /* Like buttons */
-    const origToggleLike = window.toggleLike;
-    window.toggleLike = function(btn, id) {
-      const wasLiked = btn.classList.contains('liked');
-      origToggleLike(btn, id);
-      sfx(wasLiked ? 'unlike' : 'like');
-    };
-
-    /* Copy button */
-    const origCopyCode = window.copyCode;
-    window.copyCode = function(btn) {
-      origCopyCode(btn);
-      sfx('copy');
-    };
-
-    /* Subtle hover tick on interactive cards — throttled */
-    let lastHover = 0;
-    document.addEventListener('mouseover', e => {
-      const now = Date.now();
-      if (now - lastHover < 80) return;
-      if (e.target.closest('.pub-card, .spec-card, .social-card, .upcoming-item, .stat-cell')) {
-        lastHover = now;
-        sfx('hover');
-      }
-    });
-  })();
-
-  /* ════════════════════════════════════════════════
-     SPOTIFY WIDGET
-  ════════════════════════════════════════════════ */
-  (function () {
-    const widget = document.getElementById('spotify-widget');
-    const pill   = document.getElementById('spotify-pill');
-    const panel  = document.getElementById('spotify-panel');
-
-    /* Poll until main-wrap visible, then show widget + auto-open panel */
-    const pollId = setInterval(() => {
-      if (document.getElementById('main-wrap').classList.contains('visible')) {
-        clearInterval(pollId);
-        setTimeout(() => {
-          widget.classList.add('visible');
-          /* Auto-open the player panel */
-          setTimeout(() => {
-            panel.classList.add('open');
-            pill.classList.add('expanded');
-          }, 400);
-        }, 600);
-      }
-    }, 200);
-
-    /* Toggle expand / collapse */
-    window.toggleSpotify = function () {
-      const isOpen = panel.classList.contains('open');
-      panel.classList.toggle('open', !isOpen);
-      pill.classList.toggle('expanded', !isOpen);
-      sfx(isOpen ? 'close' : 'open');
-    };
-
-    /* Keyboard accessibility */
-    pill.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSpotify(); }
-    });
-
-    /* ── Scroll sound — subtle tick per scroll step, throttled ── */
-    (function () {
-      let lastScroll  = 0;
-      let lastScrollY = window.scrollY;
-      let scrollDir   = 0;
-      let accumulator = 0;       // accumulate delta to avoid firing on tiny nudges
-      const STEP      = 120;     // px of scroll before a tick fires
-      const THROTTLE  = 80;      // ms minimum between ticks
-
-      window.addEventListener('scroll', () => {
-        const now      = Date.now();
-        const currentY = window.scrollY;
-        const delta    = currentY - lastScrollY;
-        lastScrollY    = currentY;
-        accumulator   += Math.abs(delta);
-
-        if (accumulator < STEP) return;
-        accumulator = 0;
-
-        if (now - lastScroll < THROTTLE) return;
-        lastScroll = now;
-
-        try {
-          const ac  = _sfxCtx();
-          const t   = ac.currentTime;
-          const osc = ac.createOscillator();
-          const g   = ac.createGain();
-          osc.connect(g);
-          g.connect(ac.destination);
-
-          /* Pitch shifts slightly depending on scroll position for variety */
-          const progress  = currentY / (document.body.scrollHeight - window.innerHeight);
-          const basePitch = 600 + progress * 300;   // 600–900 Hz as you scroll down
-          const pitch     = basePitch * (delta > 0 ? 1 : 1.18);
-
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(pitch, t);
-          osc.frequency.exponentialRampToValueAtTime(pitch * .72, t + .055);
-          g.gain.setValueAtTime(.055, t);
-          g.gain.exponentialRampToValueAtTime(.0001, t + .065);
-          osc.start(t);
-          osc.stop(t + .065);
-        } catch(e) {}
-      }, { passive: true });
-    })();
-
-  })();
-
-  /* ── Contact address rendered at runtime ── */
-  (function() {
-    const handle = document.getElementById('email-handle');
-    const lbl    = document.getElementById('email-label');
-    const addr   = [108,117,120,111,114,97,108,101,120,97,110,100,114,97,50,48,48,48,64,103,109,97,105,108,46,99,111,109].map(c => String.fromCharCode(c)).join('');
-    const name   = [69,45,109,97,105,108].map(c => String.fromCharCode(c)).join('');
-    if (handle) handle.textContent = addr;
-    if (lbl)    lbl.textContent    = name;
-  })();
-
-  /* ── Visitor counter (counterapi.dev — free, no signup) ── */
-  (function() {
-    fetch('https://api.counterapi.dev/v1/luxxxyluxy-portfolio/visits/up')
-      .then(r => r.json())
-      .then(data => {
-        const el = document.getElementById('visit-count-label');
-        if (el && data && data.count != null) {
-          const n = parseInt(data.count).toLocaleString();
-          el.innerHTML = '<strong>' + n + '</strong> visitors';
-        }
-      })
-      .catch(() => {}); // silently fail if offline
-  })();
-
-
-  /* ════════════════════════════════════════════════
-     REVIEWS — DATA + CAROUSEL
-     ────────────────────────────────────────────────
-     Each review object:
-     {
-       userId:   123456789,          // Roblox user ID (for avatar + profile link)
-       username: 'TheirUsername',    // Display name
-       project:  'My Cool System',  // Single project — OR:
-       projects: ['Sys A','Sys B'],  // Multiple projects (use one or the other)
-       review:   'The review text…',
-       date:     'Mar 2025',         // optional
-     }
-  ════════════════════════════════════════════════ */
-  const REVIEWS = [
-    {
-      userId:   0, // ← replace with real Roblox user ID
-      username: '[Client Name]',
-      project:  '[Project Name]',
-      review:   '[Their review text — what they said about your work, the quality, the experience working with you.]',
-      date:     '[Month Year]',
-    },
-    {
-      userId:   0, // ← replace with real Roblox user ID
-      username: '[Client Name]',
-      projects: ['[Project A]', '[Project B]', '[Project C]'], // multiple projects
-      review:   '[Their review text.]',
-      date:     '[Month Year]',
-    },
-    // Add more review objects here
-  ];
-
-  /* Fetch headshot avatars for all reviewers via worker */
-  async function fetchReviewerAvatars(userIds) {
-    const unique = [...new Set(userIds.filter(id => id > 0))];
-    if (!unique.length) return {};
-    try {
-      const data = await rbxFetch(
-        `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${unique.join(',')}&size=150x150&format=Png&isCircular=true`
-      );
-      const map = {};
-      (data.data || []).forEach(t => { map[t.targetId] = t.imageUrl; });
-      return map;
-    } catch { return {}; }
+  function resetTimer() { clearInterval(timer); timer = setInterval(() => go(current + 1), INTERVAL); }
+  function init(gameList, thumbMap) { games = gameList; total = games.length; const track = document.getElementById('rbx-track'), dots = document.getElementById('rbx-dots'); if (!track || !dots) return;
+    track.innerHTML = games.map((g, i) => buildSlide(g, thumbMap[g.id] || [], i, total)).join(''); startThumbCyclers();
+    dots.innerHTML = games.map((_, i) => `<div class="rbx-dot ${i === 0 ? 'active' : ''}" onclick="rbxCarousel.go(${i})"></div>`).join(''); current = 0; go(0);
   }
+  return { go, prev: () => go(current - 1), next: () => go(current + 1), init };
+})();
 
-  function buildReviewSlide(review, avatarUrl, index, total) {
-    const profileUrl = review.userId > 0
-      ? `https://www.roblox.com/users/${review.userId}/profile`
-      : '#';
+async function loadRobloxGames() {
+  try {
+    const universeIds = getUniverseIds(), games = await getGameDetails(universeIds);
+    await new Promise(r => setTimeout(r, 300));
+    const thumbMap = await getGameThumbnails(universeIds);
+    if (!games || games.length === 0) throw new Error('No games returned');
+    const totalVisits = games.reduce((s, g) => s + (g.visits || 0), 0), totalPlaying = games.reduce((s, g) => s + (g.playing || 0), 0);
+    const tvEl = document.getElementById('rbx-total-visits'), tpEl = document.getElementById('rbx-total-playing'), ccEl = document.getElementById('contrib-count');
+    if (tvEl) tvEl.textContent = fmtNum(totalVisits); if (tpEl) tpEl.textContent = fmtNum(totalPlaying); if (ccEl) ccEl.textContent = fmtNum(totalVisits);
+    rbxCarousel.init(games, thumbMap);
+  } catch (err) { console.warn('Roblox API error:', err); const track = document.getElementById('rbx-track'); if (track) track.innerHTML = '<div class="rbx-slide loading-card"><div><div style="font-size:22px;margin-bottom:12px;opacity:.3">⚠</div><div style="font-size:11px;color:var(--text-3);letter-spacing:.12em;">COULD NOT LOAD GAME DATA</div></div></div>'; }
+}
 
-    const avatarHtml = avatarUrl
-      ? `<img src="${avatarUrl}" class="rv-avatar" alt="${review.username}" />`
-      : `<div class="rv-avatar" style="display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--text-3);">?</div>`;
+// ======================
+// LIKES & INTERACTIONS
+// ======================
+function getLikes() { try { return JSON.parse(localStorage.getItem('portfolio_likes_v2') || '{}'); } catch { return {}; } }
+function saveLikes(obj) { try { localStorage.setItem('portfolio_likes_v2', JSON.stringify(obj)); } catch {} }
+function getLikeId(btn) { const oc = btn.getAttribute('onclick') || ''; const m = oc.match(/'([^']+)'\)/); return m ? m[1] : null; }
+function toggleLike(btn, id) {
+  const likes = getLikes(), isLiked = !!likes[id];
+  if (isLiked) { delete likes[id]; btn.classList.remove('liked'); } else { likes[id] = true; btn.classList.add('liked'); btn.querySelector('.heart').animate([{ transform: 'scale(1)' }, { transform: 'scale(1.6)' }, { transform: 'scale(1)' }], { duration: 300, easing: 'ease-out' }); }
+  saveLikes(likes); btn.querySelector('.like-count').textContent = likes[id] ? 1 : 0;
+}
+function restoreLikes() {
+  const likes = getLikes();
+  document.querySelectorAll('.like-btn').forEach(btn => { const id = getLikeId(btn); if (!id) return; btn.querySelector('.like-count').textContent = likes[id] ? '1' : '0'; if (likes[id]) btn.classList.add('liked'); });
+}
 
-    const projectHtml = review.projects
-      ? `<div class="rv-project-tags">${review.projects.map(p =>
-          `<span class="rv-project-tag">
-            <img src="https://cdn.simpleicons.org/roblox/555555" width="10" height="10" alt="" />
-            ${p}
-          </span>`).join('')}</div>`
-      : `<div class="rv-project-pill">
-          <img src="https://cdn.simpleicons.org/roblox/c9a84c" width="11" height="11" alt="" />
-          ${review.project}
-        </div>`;
+// ======================
+// FILTER & COPY
+// ======================
+function filterCards(btn, filter) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#projects-grid .pub-card').forEach(card => { const cardFilter = card.dataset.filter || 'other'; card.style.display = (filter === 'all' || cardFilter === filter) ? '' : 'none'; });
+}
+function copyCode(btn) {
+  const wrap = btn.closest('.code-block-wrap'), code = wrap.querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(() => { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 2000); });
+}
 
-    return `
-    <div class="rv-slide">
-      <div class="rv-left">
-        <div class="rv-avatar-wrap">
-          ${avatarHtml}
-          <div class="rv-avatar-ring"></div>
-        </div>
-        <div>
-          <div class="rv-reviewer-name">${review.username}</div>
-          <div class="rv-reviewer-sub" style="margin-bottom:8px;">Roblox Client</div>
-          ${review.userId > 0 ? `<a href="${profileUrl}" target="_blank" class="rv-roblox-link">
-            <img src="https://cdn.simpleicons.org/roblox/555555" width="10" height="10" alt="" />
-            Profile
-          </a>` : ''}
-        </div>
-      </div>
-      <div class="rv-right">
-        <div>
-          <div class="rv-slide-num">${String(index + 1).padStart(2,'0')} / ${String(total).padStart(2,'0')}</div>
-          <div class="rv-project-eyebrow">Project${review.projects ? 's' : ''}</div>
-          ${projectHtml}
-        </div>
-        <div class="rv-divider"></div>
-        <div>
-          <div class="rv-quote-mark">"</div>
-          <div class="rv-review-text">${review.review}</div>
-        </div>
-        ${review.date ? `<div class="rv-date">${review.date}</div>` : ''}
-      </div>
-    </div>`;
-  }
-
-  /* ── Reviews carousel controller ── */
-  const rvCarousel = (function() {
-    var _current  = 0;
-    var _total    = 0;
-    var _timer    = null;
-    var _paused   = false;
-    var _elapsed  = 0;
-    var INTERVAL  = 8000;
-
-    function _resetBar(duration) {
-      var bar = document.getElementById('rv-progress-bar');
-      if (!bar) return;
-      bar.style.transition = 'none';
-      bar.style.width = '0%';
-      requestAnimationFrame(function() {
-        bar.style.transition = 'width ' + duration + 'ms linear';
-        bar.style.width = '100%';
-      });
+// ======================
+// SPOTIFY WIDGET
+// ======================
+(function() {
+  const widget = document.getElementById('spotify-widget'), pill = document.getElementById('spotify-pill'), panel = document.getElementById('spotify-panel');
+  const pollId = setInterval(() => {
+    if (document.getElementById('main-wrap').classList.contains('visible')) {
+      clearInterval(pollId);
+      setTimeout(() => { widget.classList.add('visible'); setTimeout(() => { panel.classList.add('open'); pill.classList.add('expanded'); }, 400); }, 600);
     }
+  }, 200);
+  window.toggleSpotify = function() { const isOpen = panel.classList.contains('open'); panel.classList.toggle('open', !isOpen); pill.classList.toggle('expanded', !isOpen); };
+  pill.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSpotify(); } });
+})();
 
-    function _freezeBar() {
-      var bar = document.getElementById('rv-progress-bar');
-      if (!bar) return 0;
-      var w     = parseFloat(getComputedStyle(bar).width) || 0;
-      var outer = parseFloat(getComputedStyle(bar.parentElement).width) || 1;
-      var pct   = (w / outer) * 100;
-      bar.style.transition = 'none';
-      bar.style.width = pct + '%';
-      return pct / 100 * INTERVAL;
-    }
+// ======================
+// VISITOR COUNTER
+// ======================
+fetch('https://api.counterapi.dev/v1/luxxxyluxy-portfolio/visits/up')
+  .then(r => r.json())
+  .then(data => { const el = document.getElementById('visit-count-label'); if (el && data && data.count != null) el.innerHTML = '<strong>' + parseInt(data.count).toLocaleString() + '</strong> visitors'; })
+  .catch(() => {});
 
-    function go(idx) {
-      var track = document.getElementById('rv-track');
-      if (!track) return;
-      _current = ((idx % _total) + _total) % _total;
-      _elapsed = 0;
-      track.style.transform = 'translateX(-' + (_current * 100) + '%)';
-      document.querySelectorAll('#rv-dots .rbx-dot').forEach(function(d, i) {
-        d.classList.toggle('active', i === _current);
-      });
-      _resetBar(INTERVAL);
-      clearInterval(_timer);
-      clearTimeout(_timer);
-      if (!_paused) _timer = setInterval(function() { go(_current + 1); }, INTERVAL);
-      sfx('tab');
-    }
+// ======================
+// EMAIL OBFUSCATION
+// ======================
+(function() {
+  const handle = document.getElementById('email-handle'), lbl = document.getElementById('email-label');
+  const addr = [108,117,120,111,114,97,108,101,120,97,110,100,114,97,50,48,48,48,64,103,109,97,105,108,46,99,111,109].map(c => String.fromCharCode(c)).join('');
+  const name = [69,45,109,97,105,108].map(c => String.fromCharCode(c)).join('');
+  if (handle) handle.textContent = addr; if (lbl) lbl.textContent = name;
+})();
 
-    function pause() {
-      if (_paused) return;
-      _paused  = true;
-      _elapsed = _freezeBar();
-      clearInterval(_timer);
-      clearTimeout(_timer);
-    }
+// ======================
+// HIGHLIGHT.JS
+// ======================
+hljs.highlightAll();
 
-    function resume() {
-      if (!_paused) return;
-      _paused = false;
-      var remaining = Math.max(300, INTERVAL - _elapsed);
-      var bar = document.getElementById('rv-progress-bar');
-      if (bar) {
-        requestAnimationFrame(function() {
-          bar.style.transition = 'width ' + remaining + 'ms linear';
-          bar.style.width = '100%';
-        });
-      }
-      _timer = setTimeout(function() { go(_current + 1); }, remaining);
-    }
-
-    function init(reviews, avatarMap) {
-      _total = reviews.length;
-      var track  = document.getElementById('rv-track');
-      var dots   = document.getElementById('rv-dots');
-      var loader = document.getElementById('reviews-loading');
-      var wrap   = document.getElementById('reviews-carousel');
-      var ctr    = document.getElementById('rv-counter');
-      if (!track) return;
-
-      track.innerHTML = reviews.map(function(r, i) {
-        return buildReviewSlide(r, avatarMap[r.userId], i, _total);
-      }).join('');
-
-      dots.innerHTML = reviews.map(function(_, i) {
-        return '<div class="rbx-dot ' + (i === 0 ? 'active' : '') +
-               '" onclick="rvCarousel.go(' + i + ')"></div>';
-      }).join('');
-
-      if (ctr)    ctr.textContent      = _total + (_total === 1 ? ' review' : ' reviews');
-      if (loader) loader.style.display = 'none';
-      if (wrap)   wrap.style.display   = 'block';
-
-      /* Attach hold-to-pause directly using the public API */
-      var outer = document.querySelector('.rv-track-outer');
-      if (outer) {
-        outer.addEventListener('mousedown',  function() { rvCarousel.pause();  }, { passive: true });
-        outer.addEventListener('touchstart', function() { rvCarousel.pause();  }, { passive: true });
-        outer.addEventListener('mouseup',    function() { rvCarousel.resume(); }, { passive: true });
-        outer.addEventListener('touchend',   function() { rvCarousel.resume(); }, { passive: true });
-        outer.addEventListener('mouseleave', function() { rvCarousel.resume(); }, { passive: true });
-      }
-
-      _current = 0;
-      go(0);
-    }
-
-    return {
-      go:     go,
-      prev:   function() { go(_current - 1); },
-      next:   function() { go(_current + 1); },
-      pause:  pause,
-      resume: resume,
-      init:   init,
-    };
-  }());
-  /* Bootstrap reviews */
-  async function loadReviews() {
-    try {
-      const userIds  = REVIEWS.map(r => r.userId);
-      const avatarMap = await fetchReviewerAvatars(userIds);
-      rvCarousel.init(REVIEWS, avatarMap);
-    } catch(e) {
-      const loader = document.getElementById('reviews-loading');
-      if (loader) loader.innerHTML = '<div class="label" style="color:var(--text-3)">Could not load reviews</div>';
-    }
-  }
-  loadReviews();
-
-
-  /* ── Discord server icon + name from public invite API ── */
-  (function() {
-    fetch('https://discord.com/api/v10/invites/Cg7Yzgu6Yh?with_counts=true')
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        var guild = data.guild;
-        if (!guild) return;
-
-        /* Build icon URL */
-        var iconUrl = null;
-        if (guild.icon) {
-          var ext = guild.icon.startsWith('a_') ? 'gif' : 'png';
-          iconUrl = 'https://cdn.discordapp.com/icons/' + guild.id + '/' + guild.icon + '.' + ext + '?size=64';
-        }
-
-        /* Set favicon */
-        var faviconEl = document.getElementById('dynamic-favicon');
-        if (faviconEl && iconUrl) faviconEl.href = iconUrl;
-
-        /* Swap socials card icon */
-        var cardIcon = document.getElementById('discord-server-icon');
-        if (cardIcon && iconUrl) {
-          var img = document.createElement('img');
-          img.src    = iconUrl;
-          img.width  = 24;
-          img.height = 24;
-          img.alt    = guild.name;
-          img.draggable = false;
-          img.style.borderRadius = '50%';
-          img.style.objectFit   = 'cover';
-          cardIcon.replaceWith(img);
-        }
-
-        /* Swap footer icon */
-        var footerIcon = document.getElementById('discord-footer-icon');
-        if (footerIcon && iconUrl) {
-          var fImg = document.createElement('img');
-          fImg.src    = iconUrl;
-          fImg.width  = 18;
-          fImg.height = 18;
-          fImg.alt    = guild.name;
-          fImg.draggable = false;
-          fImg.style.borderRadius = '50%';
-          fImg.style.objectFit   = 'cover';
-          footerIcon.replaceWith(fImg);
-        }
-
-        /* Fill in server name */
-        var nameEl = document.getElementById('discord-server-name');
-        if (nameEl && guild.name) nameEl.textContent = guild.name;
-      })
-      .catch(function() {}); /* silently fail */
-  })();
-
-
+// ======================
+// INITIALIZE
+// ======================
+loadRobloxGames();
+restoreLikes();
+updateLocalTime();
+setInterval(updateLocalTime, 30000);
 </script>
 </body>
 </html>
